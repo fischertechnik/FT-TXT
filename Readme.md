@@ -5,8 +5,34 @@
 
 Erstellung mit Buildroot, Bootloader "Das U-Boot"
 
-Voraussetzungen siehe
+Voraussetzungen:
+
+Sie benötigen zum Erstellen des BSB und des Bootlodaers ein Linux System mit Entwicklungsumgebung. (mit einem Intelk i7 und 16 GB Ram dauert das Übersetzen ca. eine Stunde !)
+
+Das BSP wurde unter ubuntu mate 16.04 erstellt und getestet:
+
+im Script ./LinuxPakete.sh sind alle zusätzlichen Pakte die verwendet wurden enthalten.
+
+[Download ubuntu mate 16.04](http://cdimage.ubuntu.com/ubuntu-mate/releases/16.04.4/release/ubuntu-mate-16.04.4-desktop-amd64.iso) 
+
+zum Installieren der Zusatzpakete:
+
+ ```
+ cd ./FT-TXT
+ sudo ./LinuxPakte.sh
+ ```
+durchführen
+
+danach sollten Sie ein System zur Verfügung haben mit dem das BSP und der Bootloader wie angegeben übersetzt/erstellt werden kann.
+
+Rootfilesystem
 [BuildrootManual](https://buildroot.org/downloads/manual/manual.pdf) 
+
+Allgemeines
+
+Imageerstellung
+[kpartx](https://robert.penz.name/73/kpartx-a-tool-for-mounting-partitions-within-an-image-file/) 
+
 
 ## Erstellen des Rootfs, Bootloader und Kernel
 
@@ -57,4 +83,8 @@ Voraussetzungen siehe
  ../u-boot/bin
 
 ## Zusatzscripte
+
+###MakeImage.sh
+
+Erstellt ein SD Kartenimage mit Bootsektion und Rootfilesystem
 
