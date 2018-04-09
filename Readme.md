@@ -125,9 +125,10 @@ MAP IMAGE:root@NB-RU:/hdd2/ru/FT/BUILD/FT-TXT#
 Sie befinden sich dann in einer Shell 
 das image bzw die Dateien) finden Sie unter
 
+```
 /tmp/boot
-/tmp/rootf
-
+/tmp/rootfs
+```
 ```
 df -h
 
