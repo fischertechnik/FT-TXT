@@ -84,8 +84,7 @@ Imageerstellung
 
 ## Zusatzscripte
 
-###MakeIMAGE.sh
-
+### MakeIMAGE.sh
 Erstellt ein SD Kartenimage mit Bootsektion und Rootfilesystem
 
 im Verzeichnis ./FT-TXT
