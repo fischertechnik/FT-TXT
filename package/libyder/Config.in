@@ -1,0 +1,6 @@
+config BR2_PACKAGE_LIBYDER
+	bool "libyder"
+	select BR2_PACKAGE_LIBORCANIA
+	help
+		liborcania component.config V 1.1.1
+

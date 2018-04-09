@@ -1,0 +1,87 @@
+#! /bin/sh
+#
+# setting random password and device id
+
+#--- check and/or create rootpassword
+ROOTPWDFILE="/etc/rootpwd.enc"
+ROOTPWDREDO="/etc/rootpwd.redo"
+if [ -f $ROOTPWDREDO ]
+then
+    NEWPASSWORD=`cat /dev/random | tr -dc 'A-HJ-NP-Z2-9' | fold -w 12 | head -n 1`
+#	NEWPASSWORD="root"
+    # Do the password update chained with &&, so that the procedure aborts if one step fails
+    # Also kepp a .old and .new backup of the encrypted password file
+    /sbin/pwencrypt $NEWPASSWORD $ROOTPWDFILE.new &&
+    chmod a+r $ROOTPWDFILE.new && 
+    { echo $NEWPASSWORD; echo $NEWPASSWORD; } | passwd &&
+    cp -f $ROOTPWDFILE $ROOTPWDFILE.old &&
+    chmod a+r $ROOTPWDFILE.old && 
+    cp -f $ROOTPWDFILE.new $ROOTPWDFILE &&
+    chmod a+r $ROOTPWDFILE && 
+    rm $ROOTPWDREDO
+fi
+
+#--- check and/or create device id
+DEVICEIDFILE="/etc/deviceid"
+# Recreate all 3 files or none of them. Otherwise IDs get inconsistent.
+if [ ! -f $DEVICEIDFILE ] || [ ! -f /etc/init.d/wlan_ap_ssid ] || [ ! -f /etc/init.d/bt_name ]
+then
+    NEWDEVICEID=`cat /dev/random | tr -dc '0-9' | fold -w 4 | head -n 1`
+    echo $NEWDEVICEID > $DEVICEIDFILE
+    echo "ft-txt_$NEWDEVICEID" > /etc/init.d/wlan_ap_ssid
+    echo "ROBOTICS TXT $NEWDEVICEID" > /etc/init.d/bt_name
+
+    # update WLAN config
+    sed -i -e "s/ssid=.*/ssid=ft-txt_$NEWDEVICEID/" /etc/hostapd.conf
+
+    # update Bluetooth config
+    BTMAC=`hciconfig hci0 | grep BD\ Address\: | cut -d ' ' -f 3`
+    BTDIR=/usr/var/lib/bluetooth/$BTMAC
+    BTNAME=`cat /etc/init.d/bt_name`
+    echo "$BTMAC $BTNAME $BTDIR"
+    sed -i -e "s/Name =.*/Name = $BTNAME/" /etc/bluetooth/main.conf
+    sed -i -e "s/name .*/name $BTNAME/" $BTDIR/config
+fi
+
+#--- Create random BT pairing key
+BT_DEFAULTKEY_FILE="/etc/init.d/bt_defaultkey"
+if [ ! -f $BT_DEFAULTKEY_FILE ]
+then
+   BT_DEFAULTKEY=`cat /dev/random | tr -dc '0-9' | fold -w 6 | head -n 1`
+   echo $BT_DEFAULTKEY > $BT_DEFAULTKEY_FILE
+fi
+
+#--- Create random WLAN security key
+WLAN_WPA2PKI_FILE="/etc/init.d/wlan_ap_wpa2psk"
+if [ ! -f $WLAN_WPA2PKI_FILE ]
+then
+   WLAN_WPA2PKI=`cat /dev/random | tr -dc 'A-HJ-NP-Z2-9' | fold -w 12 | head -n 1`
+   echo $WLAN_WPA2PKI > $WLAN_WPA2PKI_FILE
+   sed -i -e "s/wpa_passphrase=.*/wpa_passphrase=$WLAN_WPA2PKI/" /etc/hostapd.conf
+fi
+
+#--- recreate /etc/hostapd.conf if /etc/hostapd.conf.redo exists
+if [ -f /etc/hostapd.conf.redo ]
+then
+   echo Recreating /etc/hostapd.conf
+   cp -f /etc/hostapd.conf.redo /etc/hostapd.conf
+   WLAN_WPA2PKI=`cat $WLAN_WPA2PKI_FILE`
+   sed -i -e "s/wpa_passphrase=.*/wpa_passphrase=$WLAN_WPA2PKI/" /etc/hostapd.conf
+   WLAN_SSID=`cat /etc/init.d/wlan_ap_ssid`
+   sed -i -e "s/ssid=.*/ssid=$WLAN_SSID/" /etc/hostapd.conf
+   rm /etc/hostapd.conf.redo
+fi
+
+#--- recreate /etc/bluetooth/main.conf is /etc/bluetooth/main.conf.redo exists
+if [ -f /etc/bluetooth/main.conf.redo ]
+then
+   echo Recreating /etc/bluetooth/main.conf
+   BTMAC=`hciconfig hci0 | grep BD\ Address\: | cut -d ' ' -f 3`
+   BTDIR=/usr/var/lib/bluetooth/$BTMAC
+   BTNAME=`cat /etc/init.d/bt_name`
+   echo "$BTMAC $BTNAME $BTDIR"
+   cp -f /etc/bluetooth/main.conf.redo /etc/bluetooth/main.conf
+   sed -i -e "s/Name =.*/Name = $BTNAME/" /etc/bluetooth/main.conf
+   sed -i -e "s/name .*/name $BTNAME/" $BTDIR/config
+   rm /etc/bluetooth/main.conf.redo
+fi

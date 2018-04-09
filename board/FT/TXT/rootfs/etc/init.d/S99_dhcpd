@@ -1,0 +1,31 @@
+#!/bin/sh
+#
+# Start the dhcpd for usb0 and wlan0
+#
+
+case "$1" in
+  start)
+ 	echo "Starting dhcpd..."
+ 	rm /tmp/dhcp_leases.list
+ 	touch /tmp/dhcp_leases.list
+        if [ -f /etc/init.d/wlan_ap_on ]
+          then
+ 	  /etc/init.d/wlan_ap start
+ 	fi
+	dhcpd -s server -cf /etc/dhcp/dhcpd.conf -lf /tmp/dhcp_leases.list
+	;;
+  stop)
+	echo -n "Stopping dhcpd..."
+	killall dhcpd
+	;;
+  restart|reload)
+	"$0" stop
+	"$0" start
+	;;
+  *)
+	echo "Usage: $0 {start|stop|restart}"
+	exit 1
+esac
+
+exit $?
+

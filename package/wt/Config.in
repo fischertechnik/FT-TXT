@@ -1,0 +1,21 @@
+config BR2_PACKAGE_WT
+	bool "wt"
+	help
+		Wt is a C++ library for developing web applications. It consists of:
+
+		- libwt, a widget/rendering library
+		- libwthttp, an (async I/O) HTTP/WebSockets server
+		- libwtfcgi, a FastCGI connector library (Unix)
+		- libwtisapi, an ISAPI connector library (Windows)
+		- libwttest, a test connector environment
+
+		It also contains a C++ ORM, which can be used in a web application
+		(obviously), but can also be used on its own:
+
+		- libwtdbo, a C++ ORM
+		- libwtdbopostgres, PostgreSQL backend
+		- libwtdbosqlite3, Sqlite3 backend
+		- libwtdbofirebird, Firebird backend
+
+		For more information, see [the homepage](http://www.webtoolkit.eu/wt
+		"Wt homepage").

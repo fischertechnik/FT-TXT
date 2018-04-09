@@ -1,0 +1,3 @@
+#!/bin/sh
+brctl delif pan0 $1
+ifconfig $1 down

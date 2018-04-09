@@ -1,0 +1,39 @@
+diff --git a/CrossCompile.sh b/CrossCompile.sh
+new file mode 100755
+index 0000000..3ad58d8
+--- /dev/null
++++ b/CrossCompile.sh
+@@ -0,0 +1,33 @@
++#! /bin/bash
++#
++#
++
++WRKDIR=`pwd`
++CMDDIR=`dirname $0`
++cd $CMDDIR
++
++TOOLCHAIN=`grep BR2_HOST_DIR .config | awk -F\= -F\" '{print $2}'`
++echo $TOOLCHAIN
++
++if [[ $TOOLCHAIN = *\$\(BASE_DIR\)* ]]; then
++	export SYSROOT=`readlink -f $CMDDIR`/output/host/usr/bin/
++else
++	export SYSROOT=$TOOLCHAIN/usr/bin
++fi
++
++export PATH=$PATH:$SYSROOT
++
++export CROSS_COMPILE=arm-buildroot-linux-gnueabihf-
++export ARCH=arm
++export KERNELDIR=`pwd`/output/build/linux-7f280334068b7c875ade51f8f3921ab311f0c824
++export BB_KERNEL_SOURCES=$KERNELDIR
++export SYSROOTARM=`grep BR2_HOST_DIR .config | awk -F\= -F\" '{print $2}'`/usr/arm-buildroot-linux-gnueabihf/sysroot
++export CC_FULLPATH="${SYSROOT}${CROSS_COMPILE}"
++
++cd $WRKDIR
++if [ $# -eq "0" ] 
++then
++PROMPT_COMMAND='PS1="\[\033[0;31m\]CROSS CC:\[\033[0;32m\]$PS1";unset PROMPT_COMMAND' bash ; reset
++else
++$1
++fi

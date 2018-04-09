@@ -1,0 +1,29 @@
+diff --git a/build_kernel.sh b/build_kernel.sh
+index df9f455..86bc6da 100755
+--- a/build_kernel.sh
++++ b/build_kernel.sh
+@@ -19,7 +19,7 @@
+ # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ # THE SOFTWARE.
+-
++AUTO_BUILD=1
+ DIR=$PWD
+ git_bin=$(which git)
+ 
+@@ -251,11 +251,11 @@ fi
+ if [  -f "${DIR}/.yakbuild" ] ; then
+ 	BUILD=$(echo ${kernel_tag} | sed 's/[^-]*//'|| true)
+ fi
+-make_kernel
+-make_modules_pkg
+-make_firmware_pkg
++#make_kernel
++#make_modules_pkg
++#make_firmware_pkg
+ if grep -q dtbs "${DIR}/KERNEL/arch/${KERNEL_ARCH}/Makefile"; then
+-	make_dtbs_pkg
++#	make_dtbs_pkg
+ fi
+ echo "-----------------------------"
+ echo "Script Complete"

@@ -1,0 +1,70 @@
+#!/bin/sh
+#
+# Start the bluetooth pan ap network....
+#
+BT_DEFAULTKEY_FILE="/etc/init.d/bt_defaultkey"
+
+case "$1" in
+  start)
+  	if [ -f $BT_DEFAULTKEY_FILE ] && [ -f /etc/init.d/bt_name ]
+        then
+ 	    echo "Starting bluetooth NAP..."
+	    BTMAC=`hciconfig hci0 | grep BD\ Address\: | cut -d ' ' -f 3`
+	    BTDIR=/usr/var/lib/bluetooth/$BTMAC
+ 	    BTNAME=`cat /etc/init.d/bt_name`
+ 	    echo "$BTMAC $BTNAME $BTDIR"
+ 	
+ 	    hciconfig hci0 up piscan lm master,accept class 0x020300
+ 	    bluetoothd -dd
+ 	    if [ ! -L /sys/class/net/pan0 ]
+ 	    then
+ 	        brctl addbr pan0
+ 	        brctl setfd pan0 0
+ 	        brctl stp pan0 off
+ 	        ifconfig pan0 192.168.9.2 netmask 255.255.255.0
+ 	    fi  
+ 	    #----
+ 	    sleep 3
+ 	    pand --listen --role NAP --master --devup /etc/bluetooth/dev-up --devdown /etc/bluetooth/dev-down
+ 	    #-- Pairing agent
+  	    BT_DEFAULTKEY=`cat $BT_DEFAULTKEY_FILE`
+	    #-- Pairing Agent starten
+	    hciconfig hci0 sspmode 0
+	    agent -c NoInputNoOutput $BT_DEFAULTKEY &
+	    #-- SER Start
+	    sdptool add --channel 22 SP
+	    /etc/init.d/bt_ser &
+ 	    #-- NAP Server Starten
+ 	    bt-nap -N pan0 &
+            if [ ! -f /etc/init.d/bt_ap_on ]
+            then
+  	        touch /etc/init.d/bt_ap_on
+            fi
+  	else
+  	    echo "Bluetooth name or pairing key not set"
+  	fi
+	;;
+	
+  stop)
+	echo -n "Stopping bluetooth NAP..."
+	killall -SIGTERM bt_ser
+	killall -SIGTERM rfcomm
+	killall -SIGTERM bt-nap
+	killall -SIGTERM agent
+	killall -SIGTERM pand
+	killall -SIGTERM bluetoothd
+	hciconfig hci0 down
+ 	rm /etc/init.d/bt_ap_on
+	;;
+	
+  restart|reload)
+	"$0" stop
+	"$0" start
+	;;
+  *)
+	echo "Usage: $0 {start|stop|restart}"
+	exit 1
+esac
+
+exit $?
+

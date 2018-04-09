@@ -1,0 +1,4 @@
+config BR2_PACKAGE_PYTHON_UFW
+	bool "python-ufw"
+	help
+	  UFW uncomplicated fore wall

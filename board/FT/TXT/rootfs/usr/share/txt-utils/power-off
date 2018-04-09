@@ -1,0 +1,4 @@
+#!/bin/sh
+sync
+sleep 2
+echo 1 > /sys/class/leds/off-uc/brightness 

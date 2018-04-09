@@ -1,0 +1,3 @@
+#!/bin/sh
+ifconfig $1 up
+brctl addif pan0 $1

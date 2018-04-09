@@ -1,0 +1,42 @@
+#!/bin/sh
+echo 0 > /proc/sys/kernel/randomize_va_space
+export EDITOR=/bin/vi
+echo -e "\033[?25l\033[9;0]\033[14;0]" > /dev/tty1
+psplash -n -f /etc/ft-logo.bmp -y 212 --BarCol 00FF00 --BarBkCol 0000FF --BkCol 000000&
+loadkmap < /etc/keymaps/de-latin1-nodeadkeys.bmap
+
+# Load keymap
+loadkmap < /etc/keymaps/de-latin1-nodeadkeys.bmap
+echo -e "\033[?25l\033[9;0]\033[14;0]" > /dev/tty1
+
+# Start all init scripts in /etc/init.d
+# executing them in numerical order.
+#
+SPLASH=0
+
+for i in /etc/init.d/S??* ;do
+
+     # Ignore dangling symlinks (if any).
+     [ ! -f "$i" ] && continue
+     
+     SPLASH=$((SPLASH+7))
+     psplash-write PROGRESS\ $SPLASH
+     case "$i" in
+	*.sh)
+	    # Source shell script for speed.
+	    (
+		trap - INT QUIT TSTP
+		set start
+		. $i
+	    )
+	    ;;
+	*)
+	    # No sh extension, so fork subprocess.
+	    $i start
+	    ;;
+    esac
+done
+psplash-write "QUIT"
+
+/etc/init.d/rc.local
+

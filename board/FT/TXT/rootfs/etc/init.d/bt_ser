@@ -1,0 +1,6 @@
+#!/bin/sh
+
+while true; do
+  rfcomm listen /dev/rfcomm0 22
+  sleep 1
+done

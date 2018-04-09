@@ -1,0 +1,5 @@
+config BR2_PACKAGE_LIBORCANIA
+	bool "liborcania"
+	help
+		liborcania V 1.1.1
+

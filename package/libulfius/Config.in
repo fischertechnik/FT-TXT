@@ -1,0 +1,7 @@
+config BR2_PACKAGE_LIBULFIUS
+	bool "libulfius"
+	select BR2_PACKAGE_LIBORCANIA
+	select BR2_PACKAGE_LIBYDER
+	help
+		libulfius V 2.2.4
+

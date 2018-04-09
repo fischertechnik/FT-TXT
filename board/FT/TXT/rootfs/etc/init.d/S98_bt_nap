@@ -1,0 +1,35 @@
+#!/bin/sh
+#
+# Start the bluetooth pan ap network....
+#
+
+case "$1" in
+  start)
+ 	echo "Starting bluetooth NAP..."
+ 	if [ ! -L /sys/class/net/pan0 ]
+ 	  then
+ 	  brctl addbr pan0
+ 	  brctl setfd pan0 0
+ 	  brctl stp pan0 off
+ 	  ifconfig pan0 192.168.9.2 netmask 255.255.255.0
+ 	fi  
+
+	if [ -f /etc/init.d/bt_ap_on ]
+	  then
+          /etc/init.d/bt_ap start
+        fi
+	;;
+  stop)
+	echo -n "Stopping bluetooth NAP..."
+	;;
+  restart|reload)
+	"$0" stop
+	"$0" start
+	;;
+  *)
+	echo "Usage: $0 {start|stop|restart}"
+	exit 1
+esac
+
+exit $?
+

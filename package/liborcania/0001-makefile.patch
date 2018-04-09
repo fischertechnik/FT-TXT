@@ -1,0 +1,21 @@
+diff -pruN a/src/Makefile b/src/Makefile
+--- a/src/Makefile	2018-01-03 16:03:08.000000000 +0100
++++ b/src/Makefile	2018-01-17 11:19:54.387542091 +0100
+@@ -18,8 +18,7 @@
+ # You should have received a copy of the GNU General Public
+ # License along with this library.	If not, see <http://www.gnu.org/licenses/>.
+ #
+-PREFIX=/usr/local
+-CC=gcc
++PREFIX=/usr
+ CFLAGS=-c -fPIC -Wall -D_REENTRANT $(ADDITIONALFLAGS) $(JANSSONFLAG)
+ OUTPUT=liborcania.so
+ VERSION=1.1.1
+@@ -54,7 +53,6 @@ clean:
+ install: all
+ 	cp $(OUTPUT).$(VERSION) $(PREFIX)/lib
+ 	cp orcania.h $(PREFIX)/include
+-	-ldconfig
+ 
+ static-install: static
+ 	cp liborcania.a $(PREFIX)/lib

@@ -1,0 +1,27 @@
+#!/bin/sh
+#
+# Start the usb gadget network....
+#
+
+case "$1" in
+  start)
+ 	echo "Starting usb g_ether network..."
+	modprobe g_ether
+	/sbin/ifdown usb0
+	/sbin/ifup usb0
+	;;
+  stop)
+	echo -n "Stopping usb g_ether network..."
+	rmmod g_ether
+	;;
+  restart|reload)
+	"$0" stop
+	"$0" start
+	;;
+  *)
+	echo "Usage: $0 {start|stop|restart}"
+	exit 1
+esac
+
+exit $?
+

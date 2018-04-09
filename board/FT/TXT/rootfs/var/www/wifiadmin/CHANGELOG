@@ -1,0 +1,88 @@
+version unreleased
+- ADD: ADD mysqli extension check at install time
+- MOD: GUI, Remove table layout
+- MOD: Add proper ecaping to sql queries
+- CMB: PHP 5.4 Deprecations Remove mysql_ functions, use mysqli_ instead
+- CMD: PHP 5.3 Deprecations Remove split() function
+- FIX: Sometimes no wireless interfaces are listed, remove /proc/net/wireless binding
+- FIX: SQL compatibility with mysql >= 5.1, Create table ENGINE=MyISAM (from TYPE=MyISAM)
+- FIX: Add config option timezone, PHP 5.4 default timezone compat
+- FIX: Set wireless settings double quoting
+- FIX: Scan results list clickable
+
+version 0.1.2
+- MOD: wexec(p) add forcelocal parameter
+- ADD: DHCP command support
+- FIX: unregister host daedlock
+- FIX: register scripts, error conditions
+- FIX: do not use flush (on system binding checks)
+- FIX: translation tags in user.php
+- FIX: short_open_tag: From now and on all php tags are long (<?php)
+
+version 0.1.0
+korki addons
+-i18n edits: *include/footer.php *users_edit.php *iwsecurity.php *iwsettings.php *iwstatus.php *register.php *users.php *include/community_functions.php
+- added install.php script (to install the mysql and check for issues)
+- minor bug fixes (1) (Some portions of the code depended on sql db and action was taken to prevent such an access if sql was disabled)
+- minor bug fixes (2) (included footer.php on some on error exits)
+- changed definitions @ community_function.php @ echo_user_add_form && add_user ($lang variable is being passed as an argument)
+- IMPORTANT : May need change on all files; change _include_ function call with _include_once_ function call
+- minor fix in copying.php (if no COPYING file existed it still tried to access it)
+- minor fixes in functions.php (may rewrite them later without the use of the proc filesystem)
+- created en_GB.php
+basOS mods
+- Add: System bindings check option @ index.php to assert missing binaries
+- Add: New main page : manage_routers.php : Used to add/remove router information from rhe system. Added a new privilege for this (manage_routers)
+- Add: Generated installation infastracture. Added config file install/update. Database install/update.
+- Mod: Moved all auth stuff (logout,login) to auth.php.
+- Add: Implemented multiple router configuration infastracture. Now You can manage lots of hosts.
+- Clean: Created system abstraction API. Moved linux system specific commands to func_linux.php. Moved linux specific global config variables (pointing to binaries or system localtions) to func_linux.php. Created func_common.php with common funcs. Updated functions.php to prepare for 1:N configuration
+- Mod: On wireless settings added txpower support
+- Add: New Code to initialize language according to language user option. Also added language selector code at the header.php
+- Mod: Modified Database Schema: New priviledge (view_status_ext) and new table user_options to store user prefs
+- Mod: Fixed confirmation email system. Now confirmation is enabled only when $C_confirm_new_account AND $C_send_emails is true. Also added the ability to resend the confirmation email
+- Mod: Added new privilege for extended status view
+- Add: Realtime Traffic Graphs with enlighted digram lib (Maybe add more later)
+- Mod: Fixed 802.11a freq2channel mapping in iwsettings
+- Mod: Now we remember the if name when changing aspects
+- Mod: Assign C_ prefix to all config variables (clean TM)
+- Added: Clickable Site Survey (Tested for hostap)
+- Mod: Fixed Footer (always, on all heights be at bottom)
+- Mod: Fixed site survey to parse newer wireless tools (v29) and show signal/noise/SNR/Rates
+- Mod: Cleaned edit_users.php a litle and removed the ability to delete the last user with (edit_users and edit_privileges) privileges to avoid lock out
+- Mod: Changed a little the presenttion of wireless settings
+- Added: A textarea, the "console", on the footer, where all executed commands and their output will be echoed if the $show_console is true
+- Added: ability for remote commands via ssh
+- Added: If Up/Down control utility
+- Mod: Cleaned if list. Support listing of madwifi devs @iwstatus.php.Reimplemented a couple of funcs to get only what is neccesary
+- Mod: Now graphs are generated on the fly each $ses_generate_graphs secs configuration variable only if $gen_graphs is true
+  So only create-update-rrds needs to be croned
+- Added: execution wrapper function to protect and possibly log all executed commands (except those concerning graph and rrd creation create_graphs.php,create-update-rrds.php, they are safe and huge to be logged)
+-Mod: Fixed a bug with new hostap and madwifi drivers. They produce some fake interface names, called wifiX. We now ignore those names.
+
+version 0.0.4
+-Adopted iwconfig output parsing instead of reading /proc files for
+ interaction with the system, as this method guarantees greater
+ compatibility with drivers other than HOSTAP.Everything apart association
+ list is tested with madwifi drivers too.
+-Site survey results now appear in a nifty sortable table
+-Added a new setting. New users are either allowed to register themselves,
+ or only admin can insert new users.
+-CSS, layout improvements, code enhancements throughout the project
+-Several security fixes, hardened sudo configuration
+-Dynamic sorting on the client side with JavaScript for various tables, needs some work though
+-802.11 "rate" and network traffic graphs per interface added
+
+version 0.0.3
+-Bugs fixed, improved navigation in community section
+
+
+version 0.0.2
+-Community section added, optional mysql usage, improved appearance, static
+-routing table manipulation added
+
+
+
+version 0.0.1
+-initial version, basic wireless and ethernet configuration implemented
+

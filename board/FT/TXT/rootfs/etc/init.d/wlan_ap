@@ -1,0 +1,39 @@
+#!/bin/sh
+#start stop WLAN AP
+#
+#
+WLAN_WPA2PKI_FILE="/etc/init.d/wlan_ap_wpa2psk"
+
+case "$1" in
+  start)
+  	if [ -f $WLAN_WPA2PKI_FILE ] && [ -f /etc/init.d/wlan_ap_ssid ]
+        then
+	    if [ ! -L /sys/class/net/wlan1 ]
+	    then
+                iw phy0 interface add wlan1 type managed
+            fi
+            ifup wlan1
+            hostapd /etc/hostapd.conf &
+            if [ ! -f /etc/init.d/wlan_ap_on ]
+            then
+                touch /etc/init.d/wlan_ap_on
+            fi
+        else
+  	    echo "WLAN SSID or passphrase not set"
+        fi
+  	;;
+  	
+  stop)
+	killall hostapd
+	ifdown wlan1  
+        rm /etc/init.d/wlan_ap_on
+  	;;
+  	
+  *)
+       echo "Usage: $0 {start|stop}"
+       exit 1
+          
+esac
+
+exit $?
+

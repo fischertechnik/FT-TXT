@@ -1,0 +1,5 @@
+#!/bin/sh
+
+#-- start ROBOPro app
+su ROBOPro -c 'screen -A -m -d -S ROBOPRO /opt/knobloch/run.sh'
+

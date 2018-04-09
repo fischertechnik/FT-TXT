@@ -1,0 +1,6 @@
+source "$BR2_EXTERNAL_FT_TXT_PATH/package/wt/Config.in"
+source "$BR2_EXTERNAL_FT_TXT_PATH/package/python-ufw/Config.in"
+source "$BR2_EXTERNAL_FT_TXT_PATH/package/libulfius/Config.in"
+source "$BR2_EXTERNAL_FT_TXT_PATH/package/libyder/Config.in"
+source "$BR2_EXTERNAL_FT_TXT_PATH/package/liborcania/Config.in"
+

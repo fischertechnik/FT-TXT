@@ -1,0 +1,18 @@
+# Configure Loopback
+auto lo
+auto usb0
+auto eth0
+
+iface lo inet loopback
+
+iface eth0 inet dhcp
+
+iface usb0 inet static
+	address 192.168.7.2
+	broadcast 192.168.7.3
+	netmask 255.255.255.252
+
+iface wlan1 inet static
+	address 192.168.8.2
+	broadcast 192.168.8.255
+	netmask 255.255.255.0

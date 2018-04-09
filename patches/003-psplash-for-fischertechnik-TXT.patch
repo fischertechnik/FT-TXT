@@ -1,0 +1,410 @@
+diff --git a/package/psplash/0001-ft-splash.patch b/package/psplash/0001-ft-splash.patch
+new file mode 100644
+index 0000000..887ff1b
+--- /dev/null
++++ b/package/psplash/0001-ft-splash.patch
+@@ -0,0 +1,144 @@
++--- psplash.orig/psplash.c	2014-10-31 16:24:47.000000000 +0100
+++++ psplash-14c8f7b705de944beb4de3f296506d80871e410f/psplash.c	2016-03-02 11:42:21.456995767 +0100
++@@ -25,6 +25,9 @@
++ #include "psplash-bar-img.h"
++ #include "radeon-font.h"
++ 
+++int YPos = -1;
+++unsigned long BarCol=0xFFFFFFFF;
+++
++ #define SPLIT_LINE_POS(fb)                                  \
++ 	(  (fb)->height                                     \
++ 	 - ((  PSPLASH_IMG_SPLIT_DENOMINATOR                \
++@@ -73,7 +76,11 @@
++ 
++   /* 4 pix border */
++   x      = ((fb->width  - BAR_IMG_WIDTH)/2) + 4 ;
++-  y      = SPLIT_LINE_POS(fb) + 4;
+++  if(YPos < 0)
+++    y      = SPLIT_LINE_POS(fb) + 4;
+++  else
+++    y      = YPos + 4;
+++
++   width  = BAR_IMG_WIDTH - 8; 
++   height = BAR_IMG_HEIGHT - 8;
++ 
++@@ -83,8 +90,21 @@
++       psplash_fb_draw_rect (fb, x + barwidth, y, 
++     			width - barwidth, height,
++ 			PSPLASH_BAR_BACKGROUND_COLOR);
++-      psplash_fb_draw_rect (fb, x, y, barwidth,
+++			
+++      if(BarCol == 0xFFFFFFFF)			
+++       psplash_fb_draw_rect (fb, x, y, barwidth,
++ 			    height, PSPLASH_BAR_COLOR);
+++       else {
+++            uint8 r,g,b;
+++            
+++            b = BarCol & 0x000000FF;
+++            g = (BarCol >> 8) & 0x000000FF;
+++            r = (BarCol >> 16) & 0x000000FF;
+++       psplash_fb_draw_rect (fb, x, y, barwidth,
+++			    height, r, g, b);
+++            
+++            
+++       }
++     }
++   else
++     {
++@@ -207,11 +227,16 @@
++ int 
++ main (int argc, char** argv) 
++ {
+++  char 	FileName[250];
+++  
++   char      *tmpdir;
++   int        pipe_fd, i = 0, angle = 0, ret = 0;
++   PSplashFB *fb;
++   bool       disable_console_switch = FALSE;
++   
+++  
+++  memset(FileName, 0, sizeof(FileName));
+++  
++   signal(SIGHUP, psplash_exit);
++   signal(SIGINT, psplash_exit);
++   signal(SIGQUIT, psplash_exit);
++@@ -230,10 +255,33 @@
++ 	  angle = atoi(argv[i]);
++ 	  continue;
++ 	}
+++      if (!strcmp(argv[i],"-y") || !strcmp(argv[i],"--YPos"))
+++        {
+++	  if (++i >= argc) goto fail;
+++	  YPos = atoi(argv[i]);
+++	  continue;
+++	}
+++
+++      if (!strcmp(argv[i],"--BarCol"))
+++        {
+++	  if (++i >= argc) goto fail;
+++	  sscanf(argv[i],"%X", &BarCol);
+++	  continue;
+++	}
+++      
+++      if (!strcmp(argv[i],"-f") || !strcmp(argv[i],"--filename"))
+++        {
+++	  if (++i >= argc) goto fail;
+++	  sprintf(FileName, argv[i]);
+++	  angle = atoi(argv[i]);
+++	  continue;
+++	}
++       
++     fail:
++       fprintf(stderr, 
++-	      "Usage: %s [-n|--no-console-switch][-a|--angle <0|90|180|270>]\n", 
+++	      "Usage: %s [-n|--no-console-switch][-a|--angle <0|90|180|270>] [-f|--filename] [-y|--YPos]\n"
+++	      "\t\t [--BarCol]\n"
+++	      , 
++ 	      argv[0]);
++       exit(-1);
++     }
++@@ -271,11 +319,12 @@
++   }
++ 
++   /* Clear the background with #ecece1 */
++-  psplash_fb_draw_rect (fb, 0, 0, fb->width, fb->height,
+++  if(strlen(FileName) == 0) {
+++    psplash_fb_draw_rect (fb, 0, 0, fb->width, fb->height,
++                         PSPLASH_BACKGROUND_COLOR);
++ 
++-  /* Draw the Poky logo  */
++-  psplash_fb_draw_image (fb, 
+++    /* Draw the Poky logo  */
+++    psplash_fb_draw_image (fb, 
++ 			 (fb->width  - POKY_IMG_WIDTH)/2, 
++ #if PSPLASH_IMG_FULLSCREEN
++ 			 (fb->height - POKY_IMG_HEIGHT)/2,
++@@ -288,11 +337,17 @@
++ 			 POKY_IMG_BYTES_PER_PIXEL,
++ 			 POKY_IMG_ROWSTRIDE,
++ 			 POKY_IMG_RLE_PIXEL_DATA);
+++  } else {
+++    char Cmd[512];
+++    memset(Cmd, 0, sizeof(Cmd));
+++    sprintf(Cmd,"fbv -s1 %s", FileName);
+++    system(Cmd); /* Draw file with fbv command */
+++  }
++ 
++   /* Draw progress bar border */
++   psplash_fb_draw_image (fb, 
++ 			 (fb->width  - BAR_IMG_WIDTH)/2, 
++-			 SPLIT_LINE_POS(fb),
+++			 (YPos < 0)?SPLIT_LINE_POS(fb):YPos, 
++ 			 BAR_IMG_WIDTH,
++ 			 BAR_IMG_HEIGHT,
++ 			 BAR_IMG_BYTES_PER_PIXEL,
++@@ -302,7 +357,7 @@
++   psplash_draw_progress (fb, 0);
++ 
++ #ifdef PSPLASH_STARTUP_MSG
++-  psplash_draw_msg (fb, PSPLASH_STARTUP_MSG);
+++  if(strlen(FileName) == 0) psplash_draw_msg (fb, PSPLASH_STARTUP_MSG);
++ #endif
++ 
++   psplash_main (fb, pipe_fd, 0);
+diff --git a/package/psplash/0002-ft-splash_BkCols.patch b/package/psplash/0002-ft-splash_BkCols.patch
+new file mode 100644
+index 0000000..863d281
+--- /dev/null
++++ b/package/psplash/0002-ft-splash_BkCols.patch
+@@ -0,0 +1,169 @@
++--- psplash.orig/psplash.c	2016-03-02 11:52:31.088994247 +0100
+++++ psplash-14c8f7b705de944beb4de3f296506d80871e410f/psplash.c	2016-03-02 11:54:22.488993969 +0100
++@@ -27,6 +27,8 @@
++ 
++ int YPos = -1;
++ unsigned long BarCol=0xFFFFFFFF;
+++unsigned long BarBkCol=0xFFFFFFFF;
+++unsigned long BkCol=0xFFFFFFFF;
++ 
++ #define SPLIT_LINE_POS(fb)                                  \
++ 	(  (fb)->height                                     \
++@@ -54,13 +56,28 @@
++ 
++   /* Clear */
++ 
++-  psplash_fb_draw_rect (fb, 
+++  if(BkCol == 0xFFFFFFFF)
+++   psplash_fb_draw_rect (fb, 
++ 			0, 
++ 			SPLIT_LINE_POS(fb) - h, 
++ 			fb->width,
++ 			h,
++ 			PSPLASH_BACKGROUND_COLOR);
+++  else {
+++            uint8 r,g,b;
+++            
+++            b = (uint8)(BkCol & 0x000000FF);
+++            g = (uint8)((BkCol >> 8) & 0x000000FF);
+++            r = (uint8)((BkCol >> 16) & 0x000000FF);
++ 
+++   psplash_fb_draw_rect (fb, 
+++			0, 
+++			SPLIT_LINE_POS(fb) - h, 
+++			fb->width,
+++			h,
+++			r, g, b);
+++  }  
+++ 
++   psplash_fb_draw_text (fb,
++ 			(fb->width-w)/2, 
++ 			SPLIT_LINE_POS(fb) - h,
++@@ -87,9 +104,22 @@
++   if (value > 0)
++     {
++       barwidth = (CLAMP(value,0,100) * width) / 100;
++-      psplash_fb_draw_rect (fb, x + barwidth, y, 
+++      if(BarBkCol == 0xFFFFFFFF)
+++       psplash_fb_draw_rect (fb, x + barwidth, y, 
++     			width - barwidth, height,
++ 			PSPLASH_BAR_BACKGROUND_COLOR);
+++      else {
+++            uint8 r,g,b;
+++            
+++            b = (uint8)(BarBkCol & 0x000000FF);
+++            g = (uint8)((BarBkCol >> 8) & 0x000000FF);
+++            r = (uint8)((BarBkCol >> 16) & 0x000000FF);
+++       psplash_fb_draw_rect (fb, x + barwidth, y, 
+++    			width - barwidth, height,
+++			r, g, b);
+++      }
+++      
+++      			
++ 			
++       if(BarCol == 0xFFFFFFFF)			
++        psplash_fb_draw_rect (fb, x, y, barwidth,
++@@ -97,9 +127,9 @@
++        else {
++             uint8 r,g,b;
++             
++-            b = BarCol & 0x000000FF;
++-            g = (BarCol >> 8) & 0x000000FF;
++-            r = (BarCol >> 16) & 0x000000FF;
+++            b = (uint8)(BarCol & 0x000000FF);
+++            g = (uint8)((BarCol >> 8) & 0x000000FF);
+++            r = (uint8)((BarCol >> 16) & 0x000000FF);
++        psplash_fb_draw_rect (fb, x, y, barwidth,
++ 			    height, r, g, b);
++             
++@@ -109,12 +139,38 @@
++   else
++     {
++       barwidth = (CLAMP(-value,0,100) * width) / 100;
++-      psplash_fb_draw_rect (fb, x, y, 
+++
+++
+++      if(BarBkCol == 0xFFFFFFFF)
+++       psplash_fb_draw_rect (fb, x, y, 
++     			width - barwidth, height,
++ 			PSPLASH_BAR_BACKGROUND_COLOR);
++-      psplash_fb_draw_rect (fb, x + width - barwidth,
+++      else {
+++            uint8 r,g,b;
+++            
+++            b = (uint8)(BarBkCol & 0x000000FF);
+++            g = (uint8)((BarBkCol >> 8) & 0x000000FF);
+++            r = (uint8)((BarBkCol >> 16) & 0x000000FF);
+++       psplash_fb_draw_rect (fb, x, y, 
+++    			width - barwidth, height,
+++			r, g, b);
+++      }
+++
+++
+++      if(BarCol == 0xFFFFFFFF)
+++       psplash_fb_draw_rect (fb, x + width - barwidth,
++ 			    y, barwidth, height,
++ 			    PSPLASH_BAR_COLOR);
+++      else {
+++            uint8 r,g,b;
+++            
+++            b = (uint8)(BarCol & 0x000000FF);
+++            g = (uint8)((BarCol >> 8) & 0x000000FF);
+++            r = (uint8)((BarCol >> 16) & 0x000000FF);
+++       psplash_fb_draw_rect (fb, x + width - barwidth,
+++			    y, barwidth, height,
+++			    r, g, b);
+++      }			    
++     }
++ 
++   DBG("value: %i, width: %i, barwidth :%i\n", value, 
++@@ -265,7 +321,21 @@
++       if (!strcmp(argv[i],"--BarCol"))
++         {
++ 	  if (++i >= argc) goto fail;
++-	  sscanf(argv[i],"%X", &BarCol);
+++	  sscanf(argv[i],"%lX", &BarCol);
+++	  continue;
+++	}
+++
+++      if (!strcmp(argv[i],"--BarBkCol"))
+++        {
+++	  if (++i >= argc) goto fail;
+++	  sscanf(argv[i],"%lX", &BarBkCol);
+++	  continue;
+++	}
+++
+++      if (!strcmp(argv[i],"--BkCol"))
+++        {
+++	  if (++i >= argc) goto fail;
+++	  sscanf(argv[i],"%lX", &BkCol);
++ 	  continue;
++ 	}
++       
++@@ -281,6 +351,8 @@
++       fprintf(stderr, 
++ 	      "Usage: %s [-n|--no-console-switch][-a|--angle <0|90|180|270>] [-f|--filename] [-y|--YPos]\n"
++ 	      "\t\t [--BarCol]\n"
+++	      "\t\t [--BarBkCol]\n"
+++	      "\t\t [--BkCol]\n"
++ 	      , 
++ 	      argv[0]);
++       exit(-1);
++@@ -345,7 +417,8 @@
++   }
++ 
++   /* Draw progress bar border */
++-  psplash_fb_draw_image (fb, 
+++  if ( BkCol == 0xFFFFFFFF)
+++   psplash_fb_draw_image (fb, 
++ 			 (fb->width  - BAR_IMG_WIDTH)/2, 
++ 			 (YPos < 0)?SPLIT_LINE_POS(fb):YPos, 
++ 			 BAR_IMG_WIDTH,
++@@ -354,6 +427,7 @@
++ 			 BAR_IMG_ROWSTRIDE,
++ 			 BAR_IMG_RLE_PIXEL_DATA);
++ 
+++ 
++   psplash_draw_progress (fb, 0);
++ 
++ #ifdef PSPLASH_STARTUP_MSG
+diff --git a/package/psplash/0003-remove-inline-func.patch b/package/psplash/0003-remove-inline-func.patch
+new file mode 100644
+index 0000000..30f869f
+--- /dev/null
++++ b/package/psplash/0003-remove-inline-func.patch
+@@ -0,0 +1,24 @@
++diff -Naurp a/psplash-fb.c b/psplash-fb.c
++--- a/psplash-fb.c	2014-10-31 16:24:47.000000000 +0100
+++++ b/psplash-fb.c	2018-04-03 12:37:03.930934367 +0200
++@@ -260,7 +260,7 @@ psplash_fb_new (int angle)
++ 
++ #define OFFSET(fb,x,y) (((y) * (fb)->stride) + ((x) * ((fb)->bpp >> 3)))
++ 
++-inline void
+++void
++ psplash_fb_plot_pixel (PSplashFB    *fb,
++ 		       int          x,
++ 		       int          y,
++diff -Naurp a/psplash-fb.h b/psplash-fb.h
++--- a/psplash-fb.h	2014-10-31 16:24:47.000000000 +0100
+++++ b/psplash-fb.h	2018-04-03 12:36:58.170935697 +0200
++@@ -57,7 +57,7 @@ psplash_fb_destroy (PSplashFB *fb);
++ PSplashFB*
++ psplash_fb_new (int angle);
++ 
++-inline void
+++void
++ psplash_fb_plot_pixel (PSplashFB    *fb, 
++ 		       int          x, 
++ 		       int          y, 
+diff --git a/package/psplash/Config.in b/package/psplash/Config.in
+index 5053eba..d68aaa2 100644
+--- a/package/psplash/Config.in
++++ b/package/psplash/Config.in
+@@ -2,18 +2,18 @@ config BR2_PACKAGE_PSPLASH
+ 	bool "psplash"
+ 	depends on BR2_USE_WCHAR
+ 	help
+-	  PSplash is a userspace graphical boot splash screen for
+-	  mainly embedded Linux devices supporting a 16bpp or 32bpp
+-	  framebuffer. It has few dependencies (just libc), supports
+-	  basic images and text and handles rotation. Its visual look
+-	  is configurable by basic source changes.
++	  PSplash is a userspace graphical boot splash screen for mainly
++	  embedded Linux devices supporting a 16bpp or 32bpp framebuffer.
++	  It has few dependencies (just libc), supports basic images and
++	  text and handles rotation. Its visual look is configurable by
++	  basic source changes.
+ 
+ 	  Also included is a 'client' command utility for sending
+ 	  information to psplash such as boot progress information.
+ 
+-	  Start the drawing process with 'psplash -n&' as early as
+-	  possible. Note: psplash creates a FIFO in /tmp for
+-	  communication with psplash-write.
++	  Start the drawing process with 'psplash -n&' as early as possible.
++	  Note: psplash creates a FIFO in /tmp for communication with
++	  psplash-write.
+ 
+ 	  Usage:
+ 	  * Set progress bar to 50 percent:
+diff --git a/package/psplash/psplash.hash b/package/psplash/psplash.hash
+deleted file mode 100644
+index 68c6ffa..0000000
+--- a/package/psplash/psplash.hash
++++ /dev/null
+@@ -1,2 +0,0 @@
+-# Locally computed
+-sha256 aaddb20ef892dfb03d4e046cc634159bbcdfe555f7291652dde2b7d4cf491289  psplash-5b3c1cc28f5abdc2c33830150b48b278cc4f7bca.tar.gz
+diff --git a/package/psplash/psplash.mk b/package/psplash/psplash.mk
+index fe00978..4e365c5 100644
+--- a/package/psplash/psplash.mk
++++ b/package/psplash/psplash.mk
+@@ -4,9 +4,9 @@
+ #
+ ################################################################################
+ 
+-PSPLASH_VERSION = 5b3c1cc28f5abdc2c33830150b48b278cc4f7bca
++PSPLASH_VERSION = 14c8f7b705de944beb4de3f296506d80871e410f
+ PSPLASH_SITE = git://git.yoctoproject.org/psplash
+-PSPLASH_LICENSE = GPL-2.0+
++PSPLASH_LICENSE = GPLv2+
+ PSPLASH_AUTORECONF = YES
+ 
+ define PSPLASH_INSTALL_INIT_SYSTEMD

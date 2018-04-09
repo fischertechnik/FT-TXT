@@ -1,0 +1,30 @@
+interface=wlan1
+driver=nl80211
+channel=11
+hw_mode=g
+preamble=1
+dtim_period=2
+beacon_int=100
+logger_syslog=-1
+logger_syslog_level=2
+logger_stdout=-1
+logger_stdout_level=2
+dump_file=/tmp/hostapd.dump
+ctrl_interface=/var/run/hostapd
+ctrl_interface_group=0
+supported_rates=60 90 120 180 240 360 480 540
+basic_rates=60 90 120 180 240
+ssid=ft-TXT_78:a5:04:23:d0:9e
+#-------------
+auth_algs=3   
+wpa=2
+wpa_passphrase=abcdefgh
+wpa_pairwise=TKIP CCMP  
+rsn_preauth=1
+rsn_pairwise=CCMP
+#--------------  
+#ap_table_max_size=255
+#ap_table_expiration_time=60
+eap_server=1
+disassoc_low_ack=1
+ap_max_inactivity=4294967295

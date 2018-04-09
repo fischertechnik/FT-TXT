@@ -1,0 +1,35 @@
+Binärdateien a/src/libulfius.so und b/src/libulfius.so sind verschieden.
+Binärdateien a/src/libulfius.so.2.2.4 und b/src/libulfius.so.2.2.4 sind verschieden.
+diff -pruN a/src/Makefile b/src/Makefile
+--- a/src/Makefile	2018-01-16 23:17:38.000000000 +0100
++++ b/src/Makefile	2018-01-17 13:30:28.881587726 +0100
+@@ -19,12 +19,9 @@
+ # License along with this library.	If not, see <http://www.gnu.org/licenses/>.
+ #
+ 
+-LIBORCANIA_LOCATION=../lib/orcania/src
+-LIBYDER_LOCATION=../lib/yder/src
+-PREFIX=/usr/local
+-CC=gcc
+-CFLAGS=-c -pedantic -std=gnu99 -fPIC -Wall -D_REENTRANT -I$(PREFIX)/include -I$(LIBORCANIA_LOCATION) -I$(LIBYDER_LOCATION) $(ADDITIONALFLAGS) $(JANSSONFLAG) $(CURLFLAG) $(WEBSOCKETFLAG)
+-LIBS=-L$(PREFIX)/lib -L$(LIBORCANIA_LOCATION) -L$(LIBYDER_LOCATION) -lc -lmicrohttpd -lyder -lorcania -lpthread
++PREFIX=/usr
++CFLAGS=-c -pedantic -std=gnu99 -fPIC -Wall -D_REENTRANT $(ADDITIONALFLAGS) $(JANSSONFLAG) $(CURLFLAG) $(WEBSOCKETFLAG)
++LIBS= -lc -lmicrohttpd -lyder -lorcania -lpthread
+ OUTPUT=libulfius.so
+ VERSION=2.2.4
+ 
+@@ -73,7 +70,6 @@ clean:
+ install: all
+ 	cp $(OUTPUT).$(VERSION) $(PREFIX)/lib
+ 	cp ulfius.h $(PREFIX)/include
+-	-ldconfig
+ 
+ static-install: static
+ 	cp libulfius.a $(PREFIX)/lib
+Binärdateien a/src/ulfius.o und b/src/ulfius.o sind verschieden.
+Binärdateien a/src/u_map.o und b/src/u_map.o sind verschieden.
+Binärdateien a/src/u_request.o und b/src/u_request.o sind verschieden.
+Binärdateien a/src/u_response.o und b/src/u_response.o sind verschieden.
+Binärdateien a/src/u_send_request.o und b/src/u_send_request.o sind verschieden.
+Binärdateien a/src/u_websocket.o und b/src/u_websocket.o sind verschieden.
