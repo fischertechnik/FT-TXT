@@ -432,17 +432,17 @@
 
 		partition@8 {
 			label = "uImage";
-			reg = <0x00200000 0x00500000>;
+			reg = <0x00200000 0x00600000>;
 		};
 
 		partition@9 {
 			label = "bootlogo";
-			reg = <0x00700000 0x00040000>;
+			reg = <0x00800000 0x00040000>;
 		};
 
 		partition@10 {
 			label = "rootfs";
-			reg = <0x00740000 0x078C0000>;
+			reg = <0x00840000 0x078C0000>;
 		};
 	};
 };
