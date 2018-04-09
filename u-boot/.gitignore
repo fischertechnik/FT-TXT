@@ -1,7 +1,7 @@
 *.o
 *.su
 *.s
-*.mk
+#*.mk
 *.bin
 *.img
 *.map
