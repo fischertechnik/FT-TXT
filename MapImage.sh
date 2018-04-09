@@ -14,11 +14,11 @@ echo ">>>>>>>>>>>>>>>>>>"
 echo $DRIVE1
 echo $DRIVE2
 echo ">>>>>>>>>>>>>>>>>>"
-
+usleep 500000
 kpartx -asv $IMAGEFILE
 #-- mount partitions
-umount /tmp/boot
-umount /tmp/rootfs
+umount /tmp/boot 2>/dev/null
+umount /tmp/rootfs 2>/dev/null
 
 rm -rf /tmp/boot  
 rm -rf /tmp/rootfs
@@ -29,7 +29,7 @@ mkdir /tmp/rootfs
 mount ${DRIVE1} /tmp/boot
 mount ${DRIVE2} /tmp/rootfs
 
-bash
+PROMPT_COMMAND='PS1="\[\033[0;31m\]MAP IMAGE:\[\033[0;30m\]$PS1";unset PROMPT_COMMAND' bash
 
 umount ${DRIVE1}
 umount ${DRIVE2}
