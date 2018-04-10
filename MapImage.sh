@@ -14,8 +14,9 @@ echo ">>>>>>>>>>>>>>>>>>"
 echo $DRIVE1
 echo $DRIVE2
 echo ">>>>>>>>>>>>>>>>>>"
-usleep 500000
+sleep 1
 kpartx -asv $IMAGEFILE
+sleep 1
 #-- mount partitions
 umount /tmp/boot 2>/dev/null
 umount /tmp/rootfs 2>/dev/null
