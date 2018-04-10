@@ -25,6 +25,7 @@ gd_t gdata __attribute__ ((section(".data")));
  */
 void __weak board_init_f(ulong dummy)
 {
+	udelay(500000);
 	/* Clear the BSS. */
 	memset(__bss_start, 0, __bss_end - __bss_start);
 
