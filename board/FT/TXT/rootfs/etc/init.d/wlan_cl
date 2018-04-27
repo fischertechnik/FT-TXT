@@ -1,0 +1,87 @@
+#!/bin/sh
+# wlan_main_setup
+
+case "$1" in
+  start1)
+# WPA2 and dhcp
+    sudo /sbin/ifconfig wlan0 up
+    sudo /usr/sbin/iw dev wlan0 set power_save off
+    sudo /usr/sbin/wpa_supplicant -B -iwlan0 -c/etc/init.d/wpa_cl
+    sudo /usr/sbin/dhcpcd wlan0
+    touch /etc/init.d/wlan_cl_on
+  	;;
+
+  start2)
+# WPA2 and fixed IP
+    sudo /sbin/ifconfig wlan0 up
+    sudo /usr/sbin/iw dev wlan0 set power_save off
+    sudo /usr/sbin/wpa_supplicant -B -iwlan0 -c/etc/init.d/wpa_cl
+    sudo /sbin/ifconfig wlan0 $2 $3 $4
+    touch /etc/init.d/wlan_cl_on
+  	;;
+
+  start3)
+# no Key and dhcp
+    sudo /sbin/ifconfig wlan0 up
+    sudo /usr/sbin/iw dev wlan0 set power_save off
+    sudo /usr/sbin/iw dev wlan0 connect $2
+    sudo /usr/sbin/dhcpcd wlan0
+    touch /etc/init.d/wlan_cl_on
+  	;;
+  	
+  start4)
+# no Key and fixed IP
+    sudo /sbin/ifconfig wlan0 up
+    sudo /usr/sbin/iw dev wlan0 set power_save off
+    sudo /usr/sbin/iw dev wlan0 connect $2
+    sudo /sbin/ifconfig wlan0 $3 $4 $5
+    touch /etc/init.d/wlan_cl_on
+  	;;
+
+  	
+  stop)
+    sudo /usr/bin/killall -q dhcpcd
+    sudo /usr/bin/killall -q wpa_supplicant
+    sudo /sbin/ifconfig wlan0 down
+    sudo /sbin/ip addr flush dev wlan0
+    rm /etc/init.d/wlan_cl_on
+        ;;
+
+  scan)
+	wlan0_status=`cat /sys/class/net/wlan0/flags`
+	if [ "$wlan0_status" == "0x1002" ]
+	then
+		wlan0_was_started = 0
+		sudo /sbin/ifconfig wlan0 up
+	else
+		wlan0_was_started = 1
+	fi
+	sudo /usr/sbin/iw dev wlan0 scan | grep $2
+	if [ $wlan0_was_started -eq 0 ]
+	then
+		sudo /sbin/ifconfig wlan0 down
+	fi
+        ;;
+  	
+  new)
+    sudo /bin/touch /etc/init.d/wlan_main_setup
+    sudo /bin/chown root:ROBOPro /etc/init.d/wlan_main_setup
+    sudo /bin/chmod 660 /etc/init.d/wlan_main_setup
+    
+    sudo /bin/touch /etc/init.d/wlan_cl_start
+    sudo /bin/chown root:ROBOPro /etc/init.d/wlan_cl_start
+    sudo /bin/chmod 770 /etc/init.d/wlan_cl_start
+
+    sudo /bin/touch /etc/init.d/wpa_cl
+    sudo /bin/chown root:ROBOPro /etc/init.d/wpa_cl
+    sudo /bin/chmod 660 /etc/init.d/wpa_cl
+        ;;
+
+  *)
+       echo "Usage: $0 {start1..start4|stop}"
+       exit 1
+          
+esac
+
+exit $?
+
