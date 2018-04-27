@@ -26,6 +26,8 @@ mkdir bin
 cp board-support/u-boot-2013.10-ti2013.12.01/MLO ./bin
 cp board-support/u-boot-2013.10-ti2013.12.01/u-boot.img ./bin
 
+cp board-support/u-boot-2013.10-ti2013.12.01/tools/env/fw_printenv $WRKDIR/board/FT/TXT/rootfs/sbin/
+
 echo "======================="
 ls -alh ./bin
 echo "======================="
