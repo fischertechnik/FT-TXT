@@ -36,8 +36,8 @@ echo "============="
 sync
 sync
 #-- map partitions
-DRIVE1=/dev/mapper/`kpartx -s -l $IMAGEFILE | head -n 1| awk '{print $1}'`
-DRIVE2=/dev/mapper/`kpartx -s -l $IMAGEFILE | tail -n 2 | head -n 1| awk '{print $1}'`
+DRIVE1=/dev/mapper/`kpartx -s -l $IMAGEFILE | head -n +1| awk '{print $1}'`
+DRIVE2=/dev/mapper/`kpartx -s -l $IMAGEFILE | tail -n +2 | head -n +1| awk '{print $1}'`
 sleep 1
 echo ">>>>>>>>>>>>>>>>>>"
 echo $DRIVE1
