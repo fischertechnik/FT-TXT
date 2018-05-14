@@ -28,6 +28,9 @@ cp board-support/u-boot-2013.10-ti2013.12.01/u-boot.img ./bin
 
 cp board-support/u-boot-2013.10-ti2013.12.01/tools/env/fw_printenv $WRKDIR/board/FT/TXT/rootfs/sbin/
 
+cp board-support/u-boot-2013.10-ti2013.12.01/MLO $WRKDIR/board/FT/TXT/rootfs/lib/boot
+cp board-support/u-boot-2013.10-ti2013.12.01/u-boot.img $WRKDIR/board/FT/TXT/rootfs/lib/boot
+
 echo "======================="
 ls -alh ./bin
 echo "======================="

@@ -21,5 +21,8 @@ mkdir -p $TARGETDIR/usr/lib/fonts
 cp $TARGETDIR/usr/share/fonts/dejavu/* $TARGETDIR/usr/lib/fonts
 cp $TARGETDIR/usr/share/fonts/liberation/* $TARGETDIR/usr/lib/fonts
 #------------------------------------
+cp $BINARIES_DIR/uImage $TARGETDIR/lib/boot
+cp $BINARIES_DIR/am335x-kno_txt.dtb $TARGETDIR/lib/boot
+
 #------------------------------------
 echo "fischertechnik TXT Rel 2.0 Build $BUILD ($BUILDDATE)" > $TARGETDIR/etc/BUILD

@@ -1,2 +1,5 @@
 *~
 board/FT/TXT/rootfs/sbin/fw_printenv
+board/FT/TXT/rootfs/lib/boot/MLO
+board/FT/TXT/rootfs/lib/boot/u-boot.img
+

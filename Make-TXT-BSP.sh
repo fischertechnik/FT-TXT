@@ -9,6 +9,7 @@ patch -p1 < ../FT-TXT/patches/001-enable-kernel-external-dts-fix.patch
 patch -p1 < ../FT-TXT/patches/002-add-CrossCompile-Script.patch
 patch -p1 < ../FT-TXT/patches/003-psplash-for-fischertechnik-TXT.patch
 patch -p1 < ../FT-TXT/patches/004-sdl-robopro.patch
+patch -p1 < ../FT-TXT/patches/005-tslib-auf-alteversion-ROBOPRO.patch
 #
 chmod a+x *.sh
 cp ../FT-TXT/configs/* ./configs

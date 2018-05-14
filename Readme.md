@@ -59,7 +59,14 @@ Imageerstellung
  ```
  cd FT-TXT
  ```	
-6. Script Aufrufen
+6. Bootloader
+ ```
+ cd ../FT-TXT
+ ./Make-TXT-BOOTLOADER.sh
+ ```
+ erstellt die Bootloader Binaries in 
+ ../u-boot/bin
+7. Script Aufrufen
  ```
  ./Make-TXT-BSP.sh
  ```
@@ -74,13 +81,6 @@ Imageerstellung
  Die Ausgaben sind in 
  ./output/images
  zu finden.
-7. Bootloader
- ```
- cd ../FT-TXT
- ./Make-TXT-BOOTLOADER.sh
- ```
- erstellt die Bootloader Binaries in 
- ../u-boot/bin
 
 ## Zusatzscripte
 
