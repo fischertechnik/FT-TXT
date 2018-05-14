@@ -13,7 +13,11 @@ case "$1" in
  	  /etc/init.d/wlan_ap start
  	fi
 	dhcpd -s server -cf /etc/dhcp/dhcpd.conf -lf /tmp/dhcp_leases.list
-	;;
+        if [ -f /etc/init.d/wlan_cl_on ]
+          then
+ 	  /etc/init.d/wlan_cl_start
+ 	fi
+        ;;
   stop)
 	echo -n "Stopping dhcpd..."
 	killall dhcpd

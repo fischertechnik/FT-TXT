@@ -1,0 +1,4 @@
+#!/bin/sh
+#Boot first from SD, then from NAND
+fw_setenv bootcmd "run sdboot;run nandboot"
+

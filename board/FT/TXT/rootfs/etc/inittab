@@ -28,7 +28,7 @@ ttyO0::respawn:/sbin/getty -L  ttyO0 115200 linux # GENERIC_SERIAL
 #tty1::respawn:/sbin/getty -L  tty1 115200 linux # GENERIC_SERIAL
 tty2::respawn:/sbin/getty -L  tty2 115200 linux # GENERIC_SERIAL
 tty3::respawn:/sbin/getty -L  tty3 115200 linux # GENERIC_SERIAL
-##tty7::respawn:/opt/knobloch/run.sh
+#tty7::respawn:/opt/knobloch/run.sh
 # Stuff to do for the 3-finger salute
 ::ctrlaltdel:/sbin/reboot
 

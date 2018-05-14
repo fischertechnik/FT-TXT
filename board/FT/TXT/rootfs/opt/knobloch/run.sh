@@ -8,8 +8,6 @@ export SDL_MOUSEDRV=TSLIB
 export SDL_MOUSEDEV=$TSLIB_TSDEVICE
 
 cd /opt/knobloch
-
-cd /opt/knobloch
 while true; do
   ./TxtControlMain /dev/ttyO2 65000 1
   sleep 2
