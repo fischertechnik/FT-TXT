@@ -1,0 +1,144 @@
+diff -Naurp a/drivers/i2c/busses/i2c-omap.c b/drivers/i2c/busses/i2c-omap.c
+--- a/drivers/i2c/busses/i2c-omap.c	2014-08-15 23:29:26.000000000 +0200
++++ b/drivers/i2c/busses/i2c-omap.c	2015-07-06 00:32:49.000000000 +0200
+@@ -214,6 +214,15 @@ struct omap_i2c_dev {
+ 	u16			syscstate;
+ 	u16			westate;
+ 	u16			errata;
++
++    u16         u16Psc100;
++    u16         u16Scll100;
++    u16         u16Sclh100;
++
++    u16         u16Psc400;
++    u16         u16Scll400;
++    u16         u16Sclh400;
++
+ };
+ 
+ static const u8 reg_map_ip_v1[] = {
+@@ -445,6 +454,15 @@ static int omap_i2c_init(struct omap_i2c
+ 	dev->scllstate = scll;
+ 	dev->sclhstate = sclh;
+ 
++    dev->u16Psc100 = 0x0B;
++    dev->u16Scll100 = 0x0D;
++    dev->u16Sclh100 = 0x0F;
++
++    dev->u16Psc400 = 0x04;
++    dev->u16Scll400 = 0x09;
++    dev->u16Sclh400 = 0x03;
++
++
+ 	__omap_i2c_init(dev);
+ 
+ 	return 0;
+@@ -516,7 +534,12 @@ static int omap_i2c_xfer_msg(struct i2c_
+ {
+ 	struct omap_i2c_dev *dev = i2c_get_adapdata(adap);
+ 	unsigned long timeout;
+-	u16 w;
++	u16 w,
++        u16SetNewValues,
++        u16PreScale,
++        u16SclLow,
++        u16SclHigh;
++
+ 
+ 	dev_dbg(dev->dev, "addr: 0x%04x, len: %d, flags: 0x%x, stop: %d\n",
+ 		msg->addr, msg->len, msg->flags, stop);
+@@ -524,6 +547,47 @@ static int omap_i2c_xfer_msg(struct i2c_
+ 	if (msg->len == 0)
+ 		return -EINVAL;
+ 
++    // Check for speed
++    if ( ((uint32_t) (dev->base) & 0x00FFFF00) == 0x0002A000)
++    {
++	u16SetNewValues = 0;
++	
++	if (adap->iFreqNew != adap->iFreqNow)
++	{
++	    if (adap->iFreqNew == I2C_FUNC_100_KHZ)
++	    {
++	        u16PreScale = dev->u16Psc100;
++	        u16SclLow = dev->u16Scll100;
++	        u16SclHigh = dev->u16Sclh100;
++	        u16SetNewValues = 1;
++	    }
++	    else
++	    {
++	        if (adap->iFreqNew == I2C_FUNC_400_KHZ)
++	        {
++	            u16PreScale = dev->u16Psc400;
++	            u16SclLow = dev->u16Scll400;
++	            u16SclHigh = dev->u16Sclh400;
++	            u16SetNewValues = 1;
++	        }
++	    }
++	    
++	    if (u16SetNewValues)
++	    {
++	        /* Setup clock prescaler to obtain approx 12MHz I2C module clock: */
++	        omap_i2c_write_reg(dev, OMAP_I2C_PSC_REG, u16PreScale);
++
++	        /* SCL low and high time values */
++	        omap_i2c_write_reg(dev, OMAP_I2C_SCLL_REG, u16SclLow);
++	        omap_i2c_write_reg(dev, OMAP_I2C_SCLH_REG, u16SclHigh);
++	        adap->iFreqNow = adap->iFreqNew;
++	    }
++	}
++    }
++	    
++    
++
++
+ 	dev->receiver = !!(msg->flags & I2C_M_RD);
+ 	omap_i2c_resize_fifo(dev, msg->len, dev->receiver);
+ 
+diff -Naurp a/drivers/i2c/i2c-dev.c b/drivers/i2c/i2c-dev.c
+--- a/drivers/i2c/i2c-dev.c	2014-08-15 23:29:26.000000000 +0200
++++ b/drivers/i2c/i2c-dev.c	2015-07-06 00:04:36.000000000 +0200
+@@ -475,6 +475,18 @@ static long i2cdev_ioctl(struct file *fi
+ 		 */
+ 		client->adapter->timeout = msecs_to_jiffies(arg * 10);
+ 		break;
++
++    case I2C_FUNC_100_KHZ:      // 100kHz Speed
++		dev_dbg(&client->adapter->dev, "I2C 100kHz  Arg: arg=0x%02lx \n", arg);
++        client->adapter->iFreqNew = I2C_FUNC_100_KHZ;
++        break;
++
++    case I2C_FUNC_400_KHZ:     // 400kHz Speed
++		dev_dbg(&client->adapter->dev, "I2C 400kHz  Arg: arg=0x%02lx \n", arg);
++        client->adapter->iFreqNew = I2C_FUNC_400_KHZ;
++        break;
++
++
+ 	default:
+ 		/* NOTE:  returning a fault code here could cause trouble
+ 		 * in buggy userspace code.  Some old kernel bugs returned
+diff -Naurp a/include/linux/i2c.h b/include/linux/i2c.h
+--- a/include/linux/i2c.h	2014-08-15 23:29:29.000000000 +0200
++++ b/include/linux/i2c.h	2015-07-05 19:32:37.000000000 +0200
+@@ -435,6 +435,9 @@ struct i2c_adapter {
+ 	int retries;
+ 	struct device dev;		/* the adapter device */
+ 
++        int iFreqNew;                   // Frequency I2C_FUNC_100_KHZ / I2C_FUNC_400_KHZ
++	int iFreqNow;                   // Frequency is set
++
+ 	int nr;
+ 	char name[48];
+ 	struct completion dev_released;
+diff -Naurp a/include/uapi/linux/i2c.h b/include/uapi/linux/i2c.h
+--- a/include/uapi/linux/i2c.h	2014-08-15 23:29:29.000000000 +0200
++++ b/include/uapi/linux/i2c.h	2015-07-05 19:26:04.000000000 +0200
+@@ -87,6 +87,8 @@ struct i2c_msg {
+ #define I2C_FUNC_PROTOCOL_MANGLING	0x00000004 /* I2C_M_IGNORE_NAK etc. */
+ #define I2C_FUNC_SMBUS_PEC		0x00000008
+ #define I2C_FUNC_NOSTART		0x00000010 /* I2C_M_NOSTART */
++#define I2C_FUNC_100_KHZ        0x00000080     // 100 kHz
++#define I2C_FUNC_400_KHZ        0x00000100     // 400 kHz
+ #define I2C_FUNC_SMBUS_BLOCK_PROC_CALL	0x00008000 /* SMBus 2.0 */
+ #define I2C_FUNC_SMBUS_QUICK		0x00010000
+ #define I2C_FUNC_SMBUS_READ_BYTE	0x00020000
