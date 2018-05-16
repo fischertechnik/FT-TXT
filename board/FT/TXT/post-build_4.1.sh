@@ -10,6 +10,7 @@ BUILD=$((BUILD+1))
 echo $BUILD > ../FT-TXT/board/FT/TXT/BUILD
 
 chmod 600  ../FT-TXT/board/FT/TXT/rootfs/root/.ssh/id*
+rm -rf $TARGETDIR/etc/sudoers
 cp -a ../FT-TXT/board/FT/TXT/rootfs/* $TARGETDIR/
 cp -v output/staging/usr/bin/locale $TARGETDIR/usr/bin/
 mkdir -p $TARGETDIR/usr/share/i18n
