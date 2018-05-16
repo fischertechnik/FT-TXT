@@ -1,0 +1,17 @@
+diff --git a/package/openssh/0001-allow-root-login.patch b/package/openssh/0001-allow-root-login.patch
+new file mode 100644
+index 0000000..d6fcd67
+--- /dev/null
++++ b/package/openssh/0001-allow-root-login.patch
+@@ -0,0 +1,11 @@
++diff -Naup a/sshd_config b/sshd_config
++--- a/sshd_config	2018-05-16 14:11:25.321428731 +0200
+++++ b/sshd_config	2018-05-16 14:10:51.493553724 +0200
++@@ -31,6 +31,7 @@
++ 
++ #LoginGraceTime 2m
++ #PermitRootLogin prohibit-password
+++PermitRootLogin yes
++ #StrictModes yes
++ #MaxAuthTries 6
++ #MaxSessions 10
