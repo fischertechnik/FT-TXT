@@ -23,20 +23,16 @@ then
 fi
 
 #--- check and/or create rootpassword
-ROOTPWDFILE="/etc/rootpwd.enc"
+# The root password is random and is immedately forgotten after setting on first boot
+# So every TXT has a unique unknown root password after the first boot
+# A new user known root password can be set using /sbin/new_root_password.sh, which is sudo enabled for ROBOPro user
+
 ROOTPWDREDO="/etc/rootpwd.redo"
 if [ -f $ROOTPWDREDO ]
 then
-    NEWPASSWORD=`cat /dev/random | tr -dc 'A-HJ-NP-Z2-9' | fold -w 12 | head -n 1`
+    NEWPASSWORD=`cat /dev/random | tr -dc 'A-Z0-9' | fold -w 32 | head -n 1`
     # Do the password update chained with &&, so that the procedure aborts if one step fails
-    # Also kepp a .old and .new backup of the encrypted password file
-    /sbin/pwencrypt $NEWPASSWORD $ROOTPWDFILE.new &&
-    chmod a+r $ROOTPWDFILE.new && 
     { echo $NEWPASSWORD; echo $NEWPASSWORD; } | passwd &&
-    cp -f $ROOTPWDFILE $ROOTPWDFILE.old &&
-    chmod a+r $ROOTPWDFILE.old && 
-    cp -f $ROOTPWDFILE.new $ROOTPWDFILE &&
-    chmod a+r $ROOTPWDFILE && 
     rm $ROOTPWDREDO
 fi
 
