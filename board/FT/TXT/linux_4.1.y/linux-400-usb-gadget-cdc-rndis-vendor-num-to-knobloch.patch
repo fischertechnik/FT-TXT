@@ -1,0 +1,45 @@
+diff -Naurp a/drivers/usb/gadget/legacy/cdc2.c b/drivers/usb/gadget/legacy/cdc2.c
+--- a/drivers/usb/gadget/legacy/cdc2.c	2016-12-28 19:17:41.000000000 +0100
++++ b/drivers/usb/gadget/legacy/cdc2.c	2018-05-16 19:06:36.034245206 +0200
+@@ -30,7 +30,7 @@
+ /* Thanks to NetChip Technologies for donating this product ID.
+  * It's for devices with only this composite CDC configuration.
+  */
+-#define CDC_VENDOR_NUM		0x0525	/* NetChip */
++#define CDC_VENDOR_NUM		0x146a	/* Knobloch */
+ #define CDC_PRODUCT_NUM		0xa4aa	/* CDC Composite: ECM + ACM */
+ 
+ USB_GADGET_COMPOSITE_OPTIONS();
+diff -Naurp a/drivers/usb/gadget/legacy/ether.c b/drivers/usb/gadget/legacy/ether.c
+--- a/drivers/usb/gadget/legacy/ether.c	2016-12-28 19:17:41.000000000 +0100
++++ b/drivers/usb/gadget/legacy/ether.c	2018-05-16 19:09:38.661531368 +0200
+@@ -116,7 +116,7 @@ USB_ETHERNET_MODULE_PARAMETERS();
+ /* Thanks to NetChip Technologies for donating this product ID.
+  * It's for devices with only CDC Ethernet configurations.
+  */
+-#define CDC_VENDOR_NUM		0x0525	/* NetChip */
++#define CDC_VENDOR_NUM		0x146a	/* Knobloch */
+ #define CDC_PRODUCT_NUM		0xa4a1	/* Linux-USB Ethernet Gadget */
+ 
+ /* For hardware that can't talk CDC, we use the same vendor ID that
+@@ -138,7 +138,7 @@ USB_ETHERNET_MODULE_PARAMETERS();
+  * used with CDC Ethernet, Linux 2.4 hosts will need updates to choose
+  * the non-RNDIS configuration.
+  */
+-#define RNDIS_VENDOR_NUM	0x0525	/* NetChip */
++#define RNDIS_VENDOR_NUM	0x146a	/* Knobloch */
+ #define RNDIS_PRODUCT_NUM	0xa4a2	/* Ethernet/RNDIS Gadget */
+ 
+ /* For EEM gadgets */
+diff -Naurp a/drivers/usb/gadget/legacy/ncm.c b/drivers/usb/gadget/legacy/ncm.c
+--- a/drivers/usb/gadget/legacy/ncm.c	2016-12-28 19:17:41.000000000 +0100
++++ b/drivers/usb/gadget/legacy/ncm.c	2018-05-16 19:07:19.278076040 +0200
+@@ -37,7 +37,7 @@
+ /* Thanks to NetChip Technologies for donating this product ID.
+  * It's for devices with only CDC Ethernet configurations.
+  */
+-#define CDC_VENDOR_NUM		0x0525	/* NetChip */
++#define CDC_VENDOR_NUM		0x146a	/* Knobloch */
+ #define CDC_PRODUCT_NUM		0xa4a1	/* Linux-USB Ethernet Gadget */
+ 
+ /*-------------------------------------------------------------------------*/
