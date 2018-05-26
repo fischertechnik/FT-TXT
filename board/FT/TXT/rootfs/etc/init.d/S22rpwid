@@ -55,7 +55,7 @@ then
 
     # update Bluetooth config
     BTMAC=`hciconfig hci0 | grep BD\ Address\: | cut -d ' ' -f 3`
-    BTDIR=/usr/var/lib/bluetooth/$BTMAC
+    BTDIR=/var/lib/bluetooth/$BTMAC
     BTNAME=`cat /etc/init.d/bt_name`
     echo "$BTMAC $BTNAME $BTDIR"
     sed -i -e "s/Name =.*/Name = $BTNAME/" /etc/bluetooth/main.conf
@@ -104,7 +104,7 @@ if [ -f /etc/bluetooth/main.conf.redo ]
 then
    echo Recreating /etc/bluetooth/main.conf
    BTMAC=`hciconfig hci0 | grep BD\ Address\: | cut -d ' ' -f 3`
-   BTDIR=/usr/var/lib/bluetooth/$BTMAC
+   BTDIR=/var/lib/bluetooth/$BTMAC
    BTNAME=`cat /etc/init.d/bt_name`
    echo "$BTMAC $BTNAME $BTDIR"
    cp -f /etc/bluetooth/main.conf.redo /etc/bluetooth/main.conf

@@ -5,7 +5,6 @@
 ROOTPWDFILE="/etc/rootpwd.enc"
 ROOTPWDREDO="/etc/rootpwd.redo"
 NEWPASSWORD=`cat /dev/random | tr -dc 'A-HJ-NP-Z2-9' | fold -w 12 | head -n 1`
-NEWPASSWORD=root
 /sbin/pwencrypt $NEWPASSWORD $ROOTPWDFILE
 chmod a+r $ROOTPWDFILE
 { echo $NEWPASSWORD; echo $NEWPASSWORD; } | passwd

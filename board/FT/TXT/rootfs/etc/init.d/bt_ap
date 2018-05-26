@@ -10,7 +10,7 @@ case "$1" in
         then
  	    echo "Starting bluetooth NAP..."
 	    BTMAC=`hciconfig hci0 | grep BD\ Address\: | cut -d ' ' -f 3`
-	    BTDIR=/usr/var/lib/bluetooth/$BTMAC
+	    BTDIR=/var/lib/bluetooth/$BTMAC
  	    BTNAME=`cat /etc/init.d/bt_name`
  	    echo "$BTMAC $BTNAME $BTDIR"
  	
