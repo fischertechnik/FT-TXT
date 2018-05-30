@@ -11,6 +11,7 @@ patch -p1 < ../FT-TXT/patches/003-psplash-for-fischertechnik-TXT.patch
 patch -p1 < ../FT-TXT/patches/004-sdl-robopro.patch
 patch -p1 < ../FT-TXT/patches/005-tslib-auf-alteversion-ROBOPRO.patch
 patch -p1 < ../FT-TXT/patches/006-ssh-allow-rootlogin.patch
+patch -p1 < ../FT-TXT/patches/007-Crosscompile-password-expiration-time.patch
 #
 chmod a+x *.sh
 cp ../FT-TXT/configs/* ./configs

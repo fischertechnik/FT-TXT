@@ -1,45 +1,53 @@
-diff -Naurp a/drivers/usb/gadget/legacy/cdc2.c b/drivers/usb/gadget/legacy/cdc2.c
---- a/drivers/usb/gadget/legacy/cdc2.c	2016-12-28 19:17:41.000000000 +0100
-+++ b/drivers/usb/gadget/legacy/cdc2.c	2018-05-16 19:06:36.034245206 +0200
-@@ -30,7 +30,7 @@
- /* Thanks to NetChip Technologies for donating this product ID.
-  * It's for devices with only this composite CDC configuration.
+From ea16d42a90c8eaaa12049f372f9cc6868301dc9c Mon Sep 17 00:00:00 2001
+From: Reinhard Russinger <reinhard@russinger.at>
+Date: Wed, 30 May 2018 12:12:39 +0200
+Subject: [PATCH] FT gadget settings for FT/Knobloch windows driver
+
+---
+ drivers/usb/gadget/legacy/ether.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/usb/gadget/legacy/ether.c b/drivers/usb/gadget/legacy/ether.c
+index a3323dc..0bdc429 100644
+--- a/drivers/usb/gadget/legacy/ether.c
++++ b/drivers/usb/gadget/legacy/ether.c
+@@ -61,11 +61,11 @@
+  * needlessly complex.  They borrow more from CDC ACM than CDC ECM.
   */
--#define CDC_VENDOR_NUM		0x0525	/* NetChip */
-+#define CDC_VENDOR_NUM		0x146a	/* Knobloch */
- #define CDC_PRODUCT_NUM		0xa4aa	/* CDC Composite: ECM + ACM */
  
- USB_GADGET_COMPOSITE_OPTIONS();
-diff -Naurp a/drivers/usb/gadget/legacy/ether.c b/drivers/usb/gadget/legacy/ether.c
---- a/drivers/usb/gadget/legacy/ether.c	2016-12-28 19:17:41.000000000 +0100
-+++ b/drivers/usb/gadget/legacy/ether.c	2018-05-16 19:09:38.661531368 +0200
-@@ -116,7 +116,7 @@ USB_ETHERNET_MODULE_PARAMETERS();
+-#define DRIVER_DESC		"Ethernet Gadget"
+-#define DRIVER_VERSION		"Memorial Day 2008"
++#define DRIVER_DESC		"USB ROBOTICS TXT Controller" 
++#define DRIVER_VERSION	"ft-TXT Rel 0.2"
+ 
+ #ifdef USB_ETH_RNDIS
+-#define PREFIX			"RNDIS/"
++#define PREFIX			"fischertechnik "
+ #else
+ #define PREFIX			""
+ #endif
+@@ -116,8 +116,8 @@ USB_ETHERNET_MODULE_PARAMETERS();
  /* Thanks to NetChip Technologies for donating this product ID.
   * It's for devices with only CDC Ethernet configurations.
   */
 -#define CDC_VENDOR_NUM		0x0525	/* NetChip */
+-#define CDC_PRODUCT_NUM		0xa4a1	/* Linux-USB Ethernet Gadget */
 +#define CDC_VENDOR_NUM		0x146a	/* Knobloch */
- #define CDC_PRODUCT_NUM		0xa4a1	/* Linux-USB Ethernet Gadget */
++#define CDC_PRODUCT_NUM		0x0014	/* Linux-USB Ethernet Gadget */
  
  /* For hardware that can't talk CDC, we use the same vendor ID that
-@@ -138,7 +138,7 @@ USB_ETHERNET_MODULE_PARAMETERS();
+  * ARM Linux has used for ethernet-over-usb, both with sa1100 and
+@@ -138,8 +138,8 @@ USB_ETHERNET_MODULE_PARAMETERS();
   * used with CDC Ethernet, Linux 2.4 hosts will need updates to choose
   * the non-RNDIS configuration.
   */
 -#define RNDIS_VENDOR_NUM	0x0525	/* NetChip */
+-#define RNDIS_PRODUCT_NUM	0xa4a2	/* Ethernet/RNDIS Gadget */
 +#define RNDIS_VENDOR_NUM	0x146a	/* Knobloch */
- #define RNDIS_PRODUCT_NUM	0xa4a2	/* Ethernet/RNDIS Gadget */
++#define RNDIS_PRODUCT_NUM	0x0015	/* Ethernet/RNDIS Gadget */
  
  /* For EEM gadgets */
-diff -Naurp a/drivers/usb/gadget/legacy/ncm.c b/drivers/usb/gadget/legacy/ncm.c
---- a/drivers/usb/gadget/legacy/ncm.c	2016-12-28 19:17:41.000000000 +0100
-+++ b/drivers/usb/gadget/legacy/ncm.c	2018-05-16 19:07:19.278076040 +0200
-@@ -37,7 +37,7 @@
- /* Thanks to NetChip Technologies for donating this product ID.
-  * It's for devices with only CDC Ethernet configurations.
-  */
--#define CDC_VENDOR_NUM		0x0525	/* NetChip */
-+#define CDC_VENDOR_NUM		0x146a	/* Knobloch */
- #define CDC_PRODUCT_NUM		0xa4a1	/* Linux-USB Ethernet Gadget */
- 
- /*-------------------------------------------------------------------------*/
+ #define EEM_VENDOR_NUM		0x1d6b	/* Linux Foundation */
+-- 
+2.7.4
+
