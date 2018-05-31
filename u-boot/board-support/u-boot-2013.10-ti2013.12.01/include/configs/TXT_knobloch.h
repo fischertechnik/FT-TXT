@@ -426,7 +426,7 @@
 					      "1m(NAND.U-boot)," \
 					      "128k(NAND.U-boot-env)," \
 					      "128k(NAND.U-boot-env-backup)," \
-					      "6m(NAND.uImage)," \
+					      "5m(NAND.uImage)," \
 					      "256k(NAND.bootlogo)," \
 					      "-(NAND.rootfs)"
   #undef CONFIG_ENV_IS_NOWHERE
