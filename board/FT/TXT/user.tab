@@ -1,3 +1,2 @@
-ROBOPro -1 ROBOPro -1 =ROBOPro /opt/knobloch /bin/sh users,tty,video,dialout,input
 - -1 i2c -1
-
+ROBOPro -1 ROBOPro -1 =ROBOPro /opt/knobloch /bin/sh users,tty,video,dialout,input,i2c
