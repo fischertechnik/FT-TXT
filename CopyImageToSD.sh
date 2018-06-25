@@ -4,11 +4,9 @@ DRIVE=/dev/sdf
 
 # Check SD size
 
-SIZE=`fdisk -l $DRIVE | grep -E "Disk|Platte" | awk '{print $5}'`
-
-echo "Disk size = $SIZE bytes"
-
-case $SIZE in
+DRIVEBYTES=`blockdev --getsize64 $DRIVE`
+echo "Size of drive is $DRIVEBYTES bytes"
+case $DRIVEBYTES in
   7742685184) echo "Disk size OK" ;;
 
   *) echo "Unexpected SD card size - please double check and update script! => exit" ; exit 1 ;;

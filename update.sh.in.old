@@ -1,0 +1,208 @@
+#!/bin/sh
+
+set -e
+set -x
+
+# ========== kill all non required processes ==========
+
+# First stop some init.d processes
+
+/etc/init.d/bt_ap stop || true
+/etc/init.d/wlan_ap stop || true
+
+# /etc/init.d/S99_dhcpd stop || true
+# /etc/init.d/S98usb_g_ether stop || true
+/etc/init.d/S98_bt_nap stop || true
+/etc/init.d/S80dhcp-server stop || true
+/etc/init.d/S80dhcp-relay stop || true
+/etc/init.d/S60openvpn stop || true
+# /etc/init.d/S50sshd stop || true
+# /etc/init.d/S40network stop || true
+/etc/init.d/S30dbus stop || true
+/etc/init.d/S26gdk-pixbuf stop || true
+/etc/init.d/S25pango stop || true
+/etc/init.d/S21rngd stop || true
+/etc/init.d/S20urandom stop || true
+# /etc/init.d/S10udev stop || true
+# /etc/init.d/S03uim-sysfs.sh stop || true
+
+/etc/init.d/M99_vncserver stop || true
+/etc/init.d/M01logging stop || true
+
+# Then kill all processes which are not backed by the kernel image, with a few exceptions
+
+# Loop over all processes
+find /proc -type d -name "[0-9]*" -maxdepth 1 | while read -r proc
+do 
+  # See if the exe link is valid (process is not backed by kernel image)
+  if readlink $proc/exe > /dev/null
+  then
+    exefile=$(readlink -fn $proc/exe)
+    pid=$(basename $proc)
+    # Check if process is required or can be killed
+    case $exefile in
+      /bin/busybox) ;;
+      /usr/sbin/sshd) ;;
+      /usr/libexec/gesftpserver) ;;
+      /usr/sbin/dhcpd) ;;
+      /sbin/udevd) ;;
+      *)
+        # kill process
+        echo $proc is $exefile kill $pid
+        kill -9 $pid
+        ;;
+    esac
+  fi
+done
+
+# If these are kept:
+#  /bin/busybox) ;;
+#  /usr/sbin/sshd) ;;
+#  /usr/libexec/gesftpserver) ;;
+# The system still runs a while and relogin is possible, but connection is lost after a while
+# Keeping in addtion dhcpd and udevd seems to work
+
+# ========== TEST ==========
+
+# remount root fs as read only (to avoid messing it up)
+mount -r -o remount /
+
+lsof
+# except /dev, anon and pipe files : /tmp/dhcp_leases.list
+
+ls -l /proc/*/exe
+# /bin/busybox, /sbin/udevd, /usr/sbin/dhcpd, /usr/sbin/sshd
+
+mkdir /tmp/tmproot
+mount none /tmp/tmproot -t tmpfs
+mount
+
+mkdir /tmp/tmproot/oldroot
+mkdir /tmp/tmproot/proc
+mkdir /tmp/tmproot/sys
+mkdir /tmp/tmproot/etc
+mkdir /tmp/tmproot/bin
+mkdir /tmp/tmproot/sbin
+mkdir /tmp/tmproot/lib
+mkdir -p /tmp/tmproot/usr/sbin
+
+ls -l /tmp/tmproot/
+ls -l /
+
+# Copy everything of these:
+cp -a /dev /tmp/tmproot/dev
+
+# cp -dp doesn't work because we need to copy the symlink with the original name
+find /bin -type f -exec sh -c 'echo FILE {} $(dirname {}); mkdir -p /tmp/tmproot/$(dirname {}) ; cp -p {} /tmp/tmproot{}' \;
+find /bin -type l -exec sh -c 'echo LINK {} $(dirname {}); mkdir -p /tmp/tmproot/$(dirname {}) ; ln -s $(readlink -f {}) /tmp/tmproot{}' \;
+ls -l /tmp/tmproot/bin
+
+find /sbin -type f -exec sh -c 'echo FILE {} $(dirname {}); mkdir -p /tmp/tmproot/$(dirname {}) ; cp -p {} /tmp/tmproot{}' \;
+find /sbin -type l -exec sh -c 'echo LINK {} $(dirname {}); mkdir -p /tmp/tmproot/$(dirname {}) ; ln -s $(readlink -f {}) /tmp/tmproot{}' \;
+ls -l /tmp/tmproot/sbin
+
+find /etc -type f -exec sh -c 'echo FILE {} $(dirname {}); mkdir -p /tmp/tmproot/$(dirname {}) ; cp -p {} /tmp/tmproot{}' \;
+find /etc -type l -exec sh -c 'echo LINK {} $(dirname {}); mkdir -p /tmp/tmproot/$(dirname {}) ; ln -s $(readlink -f {}) /tmp/tmproot{}' \;
+ls -l /tmp/tmproot/etc
+
+find /lib -type f -maxdepth 1 -exec sh -c 'echo FILE {} $(dirname {}); mkdir -p /tmp/tmproot/$(dirname {}) ; cp -p {} /tmp/tmproot{}' \;
+find /lib -type l -maxdepth 1 -exec sh -c 'echo LINK {} $(dirname {}); mkdir -p /tmp/tmproot/$(dirname {}) ; ln -s $(readlink -f {}) /tmp/tmproot{}' \;
+ls -l /tmp/tmproot/lib
+
+# Copy only very specifc files from these
+cp -p /usr/sbin/sshd /tmp/tmproot/usr/sbin
+cp -p /usr/sbin/dhcpd /tmp/tmproot/usr/sbin
+mkdir -p /tmp/tmproot/usr/share/txt-utils
+cp -p /usr/share/txt-utils/power-off /tmp/tmproot/usr/share/txt-utils
+
+find bin -type l -exec sh -c "ln -s -f $(readlink -f {} | sed 's|/tmp/tmproot||') {}" \;
+
+# Switch root
+pivot_root /tmp/tmproot/ /tmp/tmproot/oldroot
+mount none /proc -t proc
+mount none /sys -t sysfs (this may fail on 2.4 systems)
+mount none /dev/pts -t devpts
+
+
+exit 0
+
+# ========== Get TAR payload start ==========
+
+match=$(grep -n -m 1 '^PAYLOAD:$' $0 | cut -d ':' -f 1)
+payload_start=$((match + 1))
+
+# ========== Create list of existing files ==========
+
+find /bin  -type f > ListOld.txt
+find /etc  -type f >> ListOld.txt
+find /lib  -type f >> ListOld.txt
+find /opt  -type f >> ListOld.txt
+find /root -type f >> ListOld.txt
+find /sbin -type f >> ListOld.txt
+find /usr  -type f >> ListOld.txt
+
+cat ListOld.txt
+chmod 666 ListOld.txt
+
+# ========== Create list of new files ==========
+
+tail -n +$payload_start $0 | tar -C / -tzf - | sed 's|^\./|/|' > ListNew.txt
+
+cat ListNew.txt
+chmod 666 ListNew.txt
+
+# ========== Delete existing files which are not in new syste tar ==========
+
+# uniq -u leaves only unique lines, but everything which is only in ListNew or in both is in there 2 or 3 times
+
+sort ListNew.txt ListNew.txt ListOld.txt | uniq -u > ListDelete.txt
+chmod 666 ListDelete.txt
+
+cat ListDelete.txt | while read -r file
+do
+  echo Removing old file $file
+  ls -l $file
+  # rm -f $file
+done
+
+# ========== Extract new files ==========
+
+tail -n +$payload_start $0 | tar -C / -xzvf -
+
+# ========== Firmware Update ==========
+
+/sbin/FwUpdTxt || { echo "Firmware update failed" 1>&2 ; exit 2 ; }
+
+# delete firmware update to save space
+rm /sbin/FwUpdTxt
+
+# ========== Bootloader Update ==========
+
+/lib/boot/UpdateBootloader.sh || { echo "Bootloader update failed" 1>&2 ; exit 2 ; }
+
+# delete bootloader to save space
+rm /lib/boot/am335x-kno_txt.dtb
+rm /lib/boot/MLO
+rm /lib/boot/u-boot.img
+rm /lib/boot/uImage
+rm /lib/boot/UpdateBootloader.sh
+
+# ========== write new system version ========== 
+
+#sync
+#echo "4.4.1.0" > /etc/sysversion
+#chmod go+r /etc/sysversion
+#sync
+#sync
+
+# ========== power off delayed in 10 seconds (give motor controller time to reboot) ========== 
+
+#nohup sh -c 'sleep 10 ; echo 1 > /sys/class/leds/off-uc/brightness' > /dev/null &
+
+# ========== return to caller ========== 
+
+exit 0
+
+# ========== data follows below ==========
+
+

@@ -14,6 +14,64 @@ Initial u-boot parameters and are set in :
 
 Initial u-boot environment variables are set in this file in **CONFIG_EXTRA_ENV_SETTINGS**
 
+### Flash environment variables / functions
+
+```
+flash_erase=nand erase.chip\0
+
+flash_all=run flash_erase; run flash_u-boot; run flash_spl; run flash_rootfs; run flash_dtb; run flash_uImage; run flash_bootlogo; setenv bootcmd run nandboot; setenv preboot run nandpreboot; saveenv\0
+
+flash_rootfs=mtdparts default;nand erase.part NAND.rootfs; fatload mmc 0:1 0x80200000 rootfs.ubi; nand write 0x80200000 NAND.rootfs 0x${filesize}\0
+
+flash_spl=mtdparts default; nand erase.part NAND.SPL1; nand erase.part NAND.SPL2; nand erase.part NAND.SPL3; nand erase.part NAND.SPL4; mw.b 0x80200000 0xff 0x200000; fatload mmc 0:1 0x80200000 MLO; nand write 0x80200000 NAND.SPL1 0x${filesize}; nand write 0x80200000 NAND.SPL2 0x${filesize}; nand write 0x80200000 NAND.SPL3 0x${filesize}; nand write 0x80200000 NAND.SPL4 0x${filesize}\0
+
+flash_u-boot=mtdparts default; nand erase.part NAND.U-boot; mw.b 0x80200000 0xff 0x100000; fatload mmc 0:1 0x80200000 u-boot.img; nand write 0x80200000 NAND.U-boot 0x${filesize}\0
+
+flash_dtb=mtdparts default; nand erase.part NAND.dtb; mw.b 0x80200000 0xff 0x40000; fatload mmc 0:1 0x80200000 am335x-kno_txt.dtb; nand write 0x80200000 NAND.dtb 0x${filesize}\0
+
+flash_uImage=mtdparts default; nand erase.part NAND.uImage; mw.b 0x80200000 0xff 0x500000; fatload mmc 0:1 0x80200000 uImage; nand write 0x80200000 NAND.uImage 0x${filesize}\0
+
+flash_bootlogo=mtdparts default; nand erase.part NAND.bootlogo; mw.b 0x80200000 0xff 0x40000; fatload mmc 0:1 0x80200000 bootlogo.bmp; nand write 0x80200000 NAND.bootlogo 0x${filesize}\0
+```
+
+### Boot control environment variables / functions
+
+Note: bootcmd is changed by flash_all tp nand_boot.
+
+```
+bootcmd=run sdboot\0
+
+nandboot=run reset_wl18xx; mtdparts default; mtdparts default; nand read 0x80200000 NAND.uImage; nand read 0x80F00000 NAND.dtb; fdt addr 0x80F00000; run opp;setenv bootargs fbtft_device.name=txt_ili9341 fbtft_device.fps=10 console=ttyO0,115200 ubi.mtd=10 root=ubi0:rootfs rootfstype=ubifs rootwait quiet; bootm 0x80200000 - 0x80F00000\0
+
+sdboot=run reset_wl18xx; fatload mmc 0 0x80200000 uImage; fatload mmc 0 0x80F00000 am335x-kno_txt.dtb; fdt addr 0x80F00000; run opp;setenv bootargs fbtft_device.name=txt_ili9341 fbtft_device.fps=10 console=ttyO0,115200 root=/dev/mmcblk0p2 rw rootwait quiet;bootm 0x80200000 - 0x80F00000\0
+
+ramboot=run reset_wl18xx; fatload mmc 0 0x80200000 uImage; fatload mmc 0 0x80F00000 am335x-kno_txt.dtb; fdt addr 0x80F00000; run opp;fatload mmc 0 0x81000000 initrd.gz; setenv initrdsize 0x${filesize}; setenv bootargs fbtft_device.name=txt_ili9341 fbtft_device.fps=10 console=ttyO0,115200 initrd=0x81000000,${initrdsize} root=/dev/ram0 rw init=/sbin/init; bootm 0x80200000 - 0x80F00000\0
+
+nandpreboot=mtdparts default; nand read 0x80200000 NAND.bootlogo; lcd l\0
+
+preboot=ext4load mmc 0:2 0x80200000 /etc/ft-logo.bmp; lcd l\0
+
+reset_wl18xx=gpio clear 97; gpio clear 98\0
+```
+
+### USB FLash commands
+
+```
+usbflash_all=run flash_erase; run usbflash_u-boot; run usbflash_spl; run usbflash_rootfs; run usbflash_dtb; run usbflash_uImage; run usbflash_bootlogo; setenv bootcmd run nandboot; setenv preboot run nandpreboot; saveenv\0
+
+usbflash_rootfs=mtdparts default;usb start;nand erase.part NAND.rootfs; fatload usb 0:1 0x80200000 rootfs.ubi; nand write 0x80200000 NAND.rootfs 0x${filesize}\0
+
+usbflash_spl=mtdparts default;usb start; nand erase.part NAND.SPL1; nand erase.part NAND.SPL2; nand erase.part NAND.SPL3; nand erase.part NAND.SPL4; mw.b 0x80200000 0xff 0x200000; fatload usb 0:1 0x80200000 MLO; nand write 0x80200000 NAND.SPL1 0x${filesize}; nand write 0x80200000 NAND.SPL2 0x${filesize}; nand write 0x80200000 NAND.SPL3 0x${filesize}; nand write 0x80200000 NAND.SPL4 0x${filesize}\0
+
+usbflash_u-boot=mtdparts default;usb start; nand erase.part NAND.U-boot; mw.b 0x80200000 0xff 0x100000; fatload usb 0:1 0x80200000 u-boot.img; nand write 0x80200000 NAND.U-boot 0x${filesize}\0
+
+usbflash_dtb=mtdparts default;usb start; nand erase.part NAND.dtb; mw.b 0x80200000 0xff 0x40000; fatload usb 0:1 0x80200000 am335x-kno_txt.dtb; nand write 0x80200000 NAND.dtb 0x${filesize}\0
+
+usbflash_uImage=mtdparts default;usb start; nand erase.part NAND.uImage; mw.b 0x80200000 0xff 0x500000; fatload usb 0:1 0x80200000 uImage; nand write 0x80200000 NAND.uImage 0x${filesize}\0
+
+usbflash_bootlogo=mtdparts default;usb start; nand erase.part NAND.bootlogo; mw.b 0x80200000 0xff 0x40000; fatload usb 0:1 0x80200000 bootlogo.bmp; nand write 0x80200000 NAND.bootlogo 0x${filesize}\0
+```
+
 ## How can u-boot parameters be shown or modified from the TXT-console?
 
 The TXT Linux contains two programs to print and modify u-boot parameters:
@@ -109,6 +167,73 @@ Then enter these commands one by one, checking the results:
     saveenv
     run flash_all
 
+# UBI-FS
+
+## Get information
+ 
+ From TXT ssh root console:
+
+    #/usr/sbin/ubinfo
+    UBI version:                    1
+    Count of UBI devices:           1
+    UBI control device major/minor: 10:59
+    Present UBI devices:            ubi0
+
+    # /usr/sbin/ubinfo -d 0
+    ubi0
+    Volumes count:                           1
+    Logical eraseblock size:                 129024 bytes, 126.0 KiB
+    Total amount of logical eraseblocks:     966 (124637184 bytes, 118.9 MiB)
+    Amount of available logical eraseblocks: 0 (0 bytes)
+    Maximum count of volumes                 128
+    Count of bad physical eraseblocks:       0
+    Count of reserved physical eraseblocks:  20
+    Current maximum erase counter value:     2
+    Minimum input/output unit size:          2048 bytes
+    Character device major/minor:            250:0
+    Present volumes:                         0
+
+    # ls -l /sys/devices/virtual/ubi/ubi0
+    total 0
+    -r--r--r--    1 root     root          4096 Jan  1 00:52 avail_eraseblocks
+    -r--r--r--    1 root     root          4096 Jan  1 00:52 bad_peb_count
+    -r--r--r--    1 root     root          4096 Jan  1 00:52 bgt_enabled
+    -r--r--r--    1 root     root          4096 Jan  1 00:52 dev
+    -r--r--r--    1 root     root          4096 Jan  1 00:52 eraseblock_size
+    -r--r--r--    1 root     root          4096 Jan  1 00:52 max_ec
+    -r--r--r--    1 root     root          4096 Jan  1 00:52 max_vol_count
+    -r--r--r--    1 root     root          4096 Jan  1 00:52 min_io_size
+    -r--r--r--    1 root     root          4096 Jan  1 00:52 mtd_num
+    drwxr-xr-x    2 root     root             0 Jan  1 00:52 power
+    -r--r--r--    1 root     root          4096 Jan  1 00:52 reserved_for_bad
+    lrwxrwxrwx    1 root     root             0 Jan  1 00:52 subsystem -> ../../../../class/ubi
+    -r--r--r--    1 root     root          4096 Jan  1 00:52 total_eraseblocks
+    drwxr-xr-x    3 root     root             0 Jan  1 00:52 ubi0_0
+    -rw-r--r--    1 root     root          4096 Jan  1 00:52 uevent
+    -r--r--r--    1 root     root          4096 Jan  1 00:52 volumes_count
+
+    # cat /sys/devices/virtual/ubi/ubi0/mtd_num 
+    10
+
+    # ls -l /sys/devices/virtual/ubi/ubi0/ubi0_0/
+    total 0
+    -r--r--r--    1 root     root          4096 Jan  1 00:52 alignment
+    -r--r--r--    1 root     root          4096 Jan  1 00:52 corrupted
+    -r--r--r--    1 root     root          4096 Jan  1 00:52 data_bytes
+    -r--r--r--    1 root     root          4096 Jan  1 00:52 dev
+    lrwxrwxrwx    1 root     root             0 Jan  1 00:52 device -> ../../ubi0
+    -r--r--r--    1 root     root          4096 Jan  1 00:52 name
+    drwxr-xr-x    2 root     root             0 Jan  1 00:52 power
+    -r--r--r--    1 root     root          4096 Jan  1 00:52 reserved_ebs
+    lrwxrwxrwx    1 root     root             0 Jan  1 00:52 subsystem -> ../../../../../class/ubi
+    -r--r--r--    1 root     root          4096 Jan  1 00:52 type
+    -rw-r--r--    1 root     root          4096 Jan  1 00:52 uevent
+    -r--r--r--    1 root     root          4096 Jan  1 00:52 upd_marker
+    -r--r--r--    1 root     root          4096 Jan  1 00:52 usable_eb_size
+
+    # cat /sys/devices/virtual/ubi/ubi0/ubi0_0/data_bytes 
+    121540608
+
 # ROOT access
 
 ## Root password
@@ -118,7 +243,12 @@ The root password is generated on first boot (and during major updates) and imme
 
 The ROBOPro user can at any time create a new random root password using the command:
 
-    sudo /usr/sbin/new_root_password.sh 90
+    sudo /usr/sbin/new_root_password.sh 60
+
+On old system, display of the root password in the TxtControlApp can be enabled via:
+
+    cd /opt/knobloch
+    echo "showroot=1" > .TxtAccess.ini
 
 The root password is shown on the display. The number is the number seconds the password is displayed. The script ensures, that only root has access to the display while the root password is shown.
 
@@ -159,3 +289,63 @@ The nand paritions metioned in **UpdateBootloader.bmp** are set on a regular TXT
     mtdparts=mtdparts=nand.0:128k(NAND.SPL1),128k(NAND.SPL2),128k(NAND.SPL3),128k(NAND.SPL4),256k(NAND.dtb),1m(NAND.U-boot),128k(NAND.U-boot-env),128k(NAND.U-boot-env-backup),5m(NAND.uImage),256k(NAND.bootlogo),-(NAND.rootfs)
 
 But this setting is not found in autoconf.mk - not sure where it comes from - maybe it is automatic
+
+# Toolchain fixes
+
+Modern Linux might use linker scripts in .so files. This means .so files can be text files which refer to one or multiple other .so files.
+
+For the TXT toolchain, in several files wrong absolute paths are given. The paths must be removed (just file name) in files:
+
+    /opt/FT/TXT/opt/ext-toolchain/arm-linux-gnueabihf/libc/usr/lib/libpthread.so
+    /opt/FT/TXT/arm-buildroot-linux-gnueabihf/sysroot/usr/lib/libpthread.so
+    /opt/FT/TXT/opt/ext-toolchain/arm-linux-gnueabihf/libc/usr/lib/libc.so
+    /opt/FT/TXT/arm-buildroot-linux-gnueabihf/sysroot/usr/lib/libc.so
+
+# Finding processes which are loaded from an executable in the file system vs kernel image
+
+```
+ls -l /proc/*/exe
+```
+
+/proc/pid/exe is a link to the executable of an image.
+
+/proc/pid/status contains the process name in case there is no executable
+
+# Some assorted TXT commands 
+
+Run update:
+
+    sudo /usr/sbin/exec_signed.sh update.sh *.sig
+
+Power Off TXT
+
+    sudo /usr/share/txt-utils/power-off
+
+Restart TXT (as root)
+
+    kill 1
+
+Disconnect a ssh session
+
+    ENTER ~ .
+
+Check library dependencies (example sshd)
+
+    export LD_DEBUG=all
+    /lib/ld-linux-armhf.so.3 --list /usr/sbin/sshd
+
+# Some assorted host commands
+
+Delete host key, supply password and login without asking for fingeprint authentication, ...
+
+    ssh-keygen -f "/home/michael/.ssh/known_hosts" -R 192.168.7.2 ; sshpass -p ROBOPro ssh -oStrictHostKeyChecking=no -l ROBOPro 192.168.7.2 
+    ssh-keygen -f "/home/michael/.ssh/known_hosts" -R 192.168.7.2 ; sshpass -p <PW> ssh -oStrictHostKeyChecking=no -l root 192.168.7.2 
+
+List the shared libraries used by busybox
+
+    cd buildroot/output/target
+    $ readelf -d bin/busybox | grep NEEDED
+    0x00000001 (NEEDED)                     Shared library: [libc.so.6]
+    $ readelf -d lib/libc.so.6 | grep NEEDED
+    0x00000001 (NEEDED)                     Shared library: [ld-linux-armhf.so.3]
+    $ readelf -d lib/ld-linux-armhf.so.3 | grep NEEDED
