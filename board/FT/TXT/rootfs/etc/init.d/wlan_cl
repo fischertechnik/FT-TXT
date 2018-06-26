@@ -1,51 +1,118 @@
 #!/bin/sh
 # wlan_main_setup
 
+VarIp=""
+ 
+function Check_Ip() 
+{
+  ip=$VarIp
+	if expr "$ip" : '[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*$' >/dev/null; then
+	  IFS=.
+	  set $ip
+	  for quad in 1 2 3 4; do
+	    if eval [ \$$quad -gt 255 ]; then
+#	      echo "falsch - [$ip]"
+	      return 1
+	    fi
+	  done
+#	  echo "ok [$ip]"
+	  return 0
+	else
+#	  echo "falsch [$ip]"
+	  return 1
+	fi
+  return 0;
+}
+
+
 case "$1" in
   start1)
-    # WPA2 and dhcp
+# WPA2 and dhcp
     sudo /sbin/ifconfig wlan0 up
     sudo /usr/sbin/iw dev wlan0 set power_save off
     sudo /usr/sbin/wpa_supplicant -B -iwlan0 -c/etc/init.d/wpa_cl
-    sudo /usr/sbin/dhcpcd wlan0
+    sudo /sbin/dhcpcd wlan0
     touch /etc/init.d/wlan_cl_on
   	;;
 
   start2)
-    # WPA2 and fixed IP
-    sudo /sbin/ifconfig wlan0 up
-    sudo /usr/sbin/iw dev wlan0 set power_save off
-    sudo /usr/sbin/wpa_supplicant -B -iwlan0 -c/etc/init.d/wpa_cl
-    sudo /sbin/ifconfig wlan0 "$2" "$3" "$4"
-    touch /etc/init.d/wlan_cl_on
+# WPA2 and fixed IP
+    VarIp=$2
+    if Check_Ip
+    then
+      echo "IP1 [$VarIp] OK"
+      VarIp=$4
+      if Check_Ip
+      then
+        echo "IP2 [$VarIp] OK"
+        VarIp=$5
+        if Check_Ip
+        then
+          echo "IP3 [$VarIp] OK"
+          VarIp=$6
+          if Check_Ip
+          then
+            echo "IP4 [$VarIp] OK - Now set WLAN IP:$2  Mask:$4  GW:$5  DNS:$6"
+            sudo /usr/share/txt-utils/set-dns.sh "$6"
+            sudo /sbin/ifconfig wlan0 up
+            sudo /usr/sbin/iw dev wlan0 set power_save off
+            sudo /usr/sbin/wpa_supplicant -B -iwlan0 -c/etc/init.d/wpa_cl
+            sudo /sbin/ifconfig wlan0 "$2" "$3" "$4"
+            sudo /sbin/route add default gw "$5" wlan0
+            touch /etc/init.d/wlan_cl_on
+          fi
+        fi
+      fi
+    fi
   	;;
 
   start3)
-    # no Key and dhcp
+# no Key and dhcp
     sudo /sbin/ifconfig wlan0 up
     sudo /usr/sbin/iw dev wlan0 set power_save off
-    sudo /usr/sbin/iw dev wlan0 connect "$2"
-    sudo /usr/sbin/dhcpcd wlan0
+    sudo /usr/sbin/iw dev wlan0 connect $2
+    sudo /sbin/dhcpcd wlan0
     touch /etc/init.d/wlan_cl_on
   	;;
   	
   start4)
-    # no Key and fixed IP
-    sudo /sbin/ifconfig wlan0 up
-    sudo /usr/sbin/iw dev wlan0 set power_save off
-    sudo /usr/sbin/iw dev wlan0 connect "$2"
-    sudo /sbin/ifconfig wlan0 "$3" "$4" "$5"
-    touch /etc/init.d/wlan_cl_on
+# no Key and fixed IP
+    VarIp=$2
+    if Check_Ip
+    then
+      echo "IP1 [$VarIp] OK"
+      VarIp=$4
+      if Check_Ip
+      then
+        echo "IP2 [$VarIp] OK"
+        VarIp=$5
+        if Check_Ip
+        then
+          echo "IP3 [$VarIp] OK"
+          VarIp=$6
+          if Check_Ip
+          then
+            echo "IP4 [$VarIp] OK - Now set WLAN"
+            sudo /usr/share/txt-utils/set-dns.sh "$6"
+            sudo /sbin/ifconfig wlan0 up
+            sudo /usr/sbin/iw dev wlan0 set power_save off
+            sudo /usr/sbin/iw dev wlan0 connect "$2"
+            sudo /sbin/ifconfig wlan0 "$3" "$4" "$5"
+            sudo /sbin/route add default gw "$6" wlan0
+            touch /etc/init.d/wlan_cl_on
+          fi
+        fi
+      fi
+    fi
   	;;
 
-  	
   stop)
     sudo /usr/bin/killall -q dhcpcd
     sudo /usr/bin/killall -q wpa_supplicant
     sudo /sbin/ifconfig wlan0 down
     sudo /sbin/ip addr flush dev wlan0
     rm /etc/init.d/wlan_cl_on
-    ;;
+        ;;
 
   scan)
     wlan0_status=`cat /sys/class/net/wlan0/flags`
@@ -62,6 +129,7 @@ case "$1" in
       sudo /sbin/ifconfig wlan0 down
     fi
     ;;
+ 
   	
   new)
     sudo /bin/touch /etc/init.d/wlan_main_setup
@@ -75,10 +143,10 @@ case "$1" in
     sudo /bin/touch /etc/init.d/wpa_cl
     sudo /bin/chown root:ROBOPro /etc/init.d/wpa_cl
     sudo /bin/chmod 660 /etc/init.d/wpa_cl
-    ;;
+        ;;
 
   *)
-       echo "Usage: $0 {start1..start4|stop|scan}"
+       echo "Usage: $0 {start1..start4|stop|scan|new}"
        exit 1
           
 esac

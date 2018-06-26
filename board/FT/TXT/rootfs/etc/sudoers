@@ -92,7 +92,6 @@ root ALL=(ALL) ALL
 # Allow user ROBOPro to run wlan and bluetooth access point scripts
 # Note: sudo is compiled with reasonable defaults to allow execution of shell scripts
 # see sudo -V
-# Note: Especially for scripts taking * arguments, make sure that arguments are only used with "" in the script
 ROBOPro ALL=(root) NOPASSWD: /etc/init.d/wlan_ap start
 ROBOPro ALL=(root) NOPASSWD: /etc/init.d/wlan_ap stop
 ROBOPro ALL=(root) NOPASSWD: /etc/init.d/bt_ap start
@@ -105,17 +104,30 @@ ROBOPro ALL=(root) NOPASSWD: /usr/share/txt-utils/set-date.sh [0-9][0-9][0-9][0-
 ROBOPro ALL=(root) NOPASSWD: /usr/share/txt-utils/set-date.sh [0-9][0-9]\:[0-9][0-9]
 ROBOPro ALL=(root) NOPASSWD: /usr/share/txt-utils/set-wlan-channel.sh [0-9][0-9]
 ROBOPro ALL=(root) NOPASSWD: /usr/share/txt-utils/remove-key.sh ""
+ROBOPro ALL=(root) NOPASSWD: /usr/share/txt-utils/set-dns.sh *
 ROBOPro ALL=(root) NOPASSWD: /sbin/hwclock -uw
 ROBOPro ALL=(root) NOPASSWD: /sbin/FwUpdTxt ""
 ROBOPro ALL=(root) NOPASSWD: /etc/init.d/wlan_cl start1 
-ROBOPro ALL=(root) NOPASSWD: /etc/init.d/wlan_cl start2 [0-9][0-9][0-9].[0-9][0-9][0-9].[0-9][0-9][0-9].[0-9][0-9][0-9] netmask [0-9][0-9][0-9].[0-9][0-9][0-9].[0-9][0-9][0-9].[0-9][0-9][0-9]
+ROBOPro ALL=(root) NOPASSWD: /etc/init.d/wlan_cl start2 * netmask * * *
 ROBOPro ALL=(root) NOPASSWD: /etc/init.d/wlan_cl start3 *
-ROBOPro ALL=(root) NOPASSWD: /etc/init.d/wlan_cl start4 * [0-9][0-9][0-9].[0-9][0-9][0-9].[0-9][0-9][0-9].[0-9][0-9][0-9] netmask [0-9][0-9][0-9].[0-9][0-9][0-9].[0-9][0-9][0-9].[0-9][0-9][0-9]
+ROBOPro ALL=(root) NOPASSWD: !/etc/init.d/wlan_cl start3 * * 
+ROBOPro ALL=(root) NOPASSWD: /etc/init.d/wlan_cl start4 * * netmask * * * 
+ROBOPro ALL=(root) NOPASSWD: !/etc/init.d/wlan_cl start4 * * * * * * *
 ROBOPro ALL=(root) NOPASSWD: /etc/init.d/wlan_cl stop
-ROBOPro ALL=(root) NOPASSWD: /etc/init.d/wlan_cl scan
+ROBOPro ALL=(root) NOPASSWD: /etc/init.d/wlan_cl scan *
+ROBOPro ALL=(root) NOPASSWD: /etc/init.d/wlan_cl scan -eSSID *
+ROBOPro ALL=(root) NOPASSWD: !/etc/init.d/wlan_cl scan * * 
 ROBOPro ALL=(root) NOPASSWD: /etc/init.d/wlan_cl new 
 ROBOPro ALL=(root) NOPASSWD: /usr/sbin/boot_nand ""
 ROBOPro ALL=(root) NOPASSWD: /usr/sbin/boot_sd_nand ""
 ROBOPro ALL=(root) NOPASSWD: /usr/sbin/exec_signed.sh * *
+ROBOPro ALL=(root) NOPASSWD: !/usr/sbin/exec_signed.sh * * *
 ROBOPro ALL=(root) NOPASSWD: /usr/sbin/new_root_password.sh [1-9]
 ROBOPro ALL=(root) NOPASSWD: /usr/sbin/new_root_password.sh [1-9][0-9]
+ROBOPro ALL=(root) NOPASSWD: /etc/init.d/sshd start
+ROBOPro ALL=(root) NOPASSWD: /etc/init.d/sshd stop
+ROBOPro ALL=(root) NOPASSWD: /etc/init.d/cloud new
+ROBOPro ALL=(root) NOPASSWD: /etc/init.d/mosquitto_txt_broker start
+ROBOPro ALL=(root) NOPASSWD: /etc/init.d/mosquitto_txt_broker stop
+ROBOPro ALL=(root) NOPASSWD: /etc/init.d/mosquitto_txt_cloud start
+ROBOPro ALL=(root) NOPASSWD: /etc/init.d/mosquitto_txt_cloud stop

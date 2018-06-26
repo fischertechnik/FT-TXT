@@ -329,7 +329,7 @@ System locales are just there to show Linux error messages in non English. I don
 
 # Some assorted TXT commands 
 
-Run update:
+Run signed update:
 
     sudo /usr/sbin/exec_signed.sh update.sh *.sig
 

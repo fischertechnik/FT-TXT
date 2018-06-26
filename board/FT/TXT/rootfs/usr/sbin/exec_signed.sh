@@ -51,9 +51,9 @@ do
 done
 
 # Do the same for the signature - changing teh signature shouldn't harm,
-# but who knows what openssl does if teh file is modified whilt it runs
+# but who knows what openssl does if the file is modified whilt it runs
 # Still be less paranoid
-for i in `seq 1 100`
+for i in `seq 1 10`
 do
   /usr/bin/fuser -k "$folder/signature" || true
 done
@@ -64,7 +64,7 @@ done
 # So rpeeat this as well
 for i in `seq 1 100`
 do
-  if [ /usr/bin/fuser "$folder/executable" ]
+  if /usr/bin/fuser "$folder/executable"
   then
     /bin/echo "File access check failed!"
     /bin/rm -f $folder/executable
@@ -74,10 +74,10 @@ do
   fi
 done
 
-# And again teh same for the signature
+# And again the same for the signature
 for i in `seq 1 10`
 do
-  if [ /usr/bin/fuser "$folder/signature" ]
+  if /usr/bin/fuser "$folder/signature"
   then
     /bin/echo "File access check failed!"
     /bin/rm -f $folder/executable
