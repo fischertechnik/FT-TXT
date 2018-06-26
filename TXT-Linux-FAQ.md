@@ -311,6 +311,22 @@ ls -l /proc/*/exe
 
 /proc/pid/status contains the process name in case there is no executable
 
+# TXT Initernationalization reduction
+
+## Time zones
+
+Time zones probabyl should be reduced to a few.
+Currently only the unused /usr/share/zoneinfo/right branch has been deleted
+
+    https://mm.icann.org/pipermail/tz/2015-February/022024.html
+    http://www.gtkdb.de/index_7_905.html
+
+This is done in FT-TXT/board/FT/TXT/post-build_4.1.sh
+
+## Locales
+
+System locales are just there to show Linux error messages in non English. I don't think anybody needs this, so I removed all locales.
+
 # Some assorted TXT commands 
 
 Run update:
@@ -349,3 +365,4 @@ List the shared libraries used by busybox
     $ readelf -d lib/libc.so.6 | grep NEEDED
     0x00000001 (NEEDED)                     Shared library: [ld-linux-armhf.so.3]
     $ readelf -d lib/ld-linux-armhf.so.3 | grep NEEDED
+
