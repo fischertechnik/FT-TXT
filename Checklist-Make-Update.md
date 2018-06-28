@@ -15,6 +15,22 @@ Or manually adjust
     Adjust version number in /data/transfer/ROBOPro/ftPro/Firmware/
     Adjust version number in C:\User\Michael\fischertechnik\ftPro\SetupWiX\ROBOPro.wxs
 
+In buildroot-2018/FT-TXT (Clean / initial buil donly)
+
+- Make-TXT-Buildroot-Clean.sh
+
+In Eclipse
+
+- Recompile all apps and libraries
+- Copy from transfer folder to FT-TXT/board/...
+
+In buildroot-2018/FT-TXT:
+
+- Make-TXT-Buildroot-Incremental.sh
+- Make-TXT-UpdateScripts.sh
+- Sign-TXT-UpdateScripts.sh 1
+- Sign-TXT-UpdateScripts.sh 2
+
 In Windows VM
 - F:\TX2\buildroot\MakeUpdate\CopyToProgAndSetup.bat
 - Make a ROBOPro Release build
