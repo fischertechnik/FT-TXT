@@ -1,0 +1,5 @@
+- Allow firmware updates only via USB
+- Sign current updates with primary key card
+- Regenerate keys for 5th card
+- Check keys from fischertechnik
+- (Progress bar)

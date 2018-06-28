@@ -3,7 +3,7 @@
 # Sign an update script
 
 set -e
-set -x
+set +x
 
 ##### ATTENTION #####
 
@@ -27,8 +27,9 @@ fi
 SCRIPTDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Update script
-UPDATEDIR="$(dirname "$SCRIPTDIR")/update/step$1"
-UPDATE="$UPDATEDIR/update.sh"
+UPDATEDIR="$(dirname "$SCRIPTDIR")/update"
+UPDATEBASE="$UPDATEDIR/update-$1"
+UPDATE="$UPDATEBASE.sh"
 
 # Signature history folder
 SIGNATUREROOTDIR="$(dirname "$SCRIPTDIR")/signature-history"
@@ -43,31 +44,54 @@ CARDSERIAL=$( pkcs15-tool --dump | grep "Serial number" | egrep -o '([0-9a-f]{12
 mkdir -p $SIGNATUREROOTDIR/$CARDSERIAL
 pkcs15-tool --read-public-key 1 > $SIGNATUREROOTDIR/$CARDSERIAL/$CARDSERIAL.pub
 
-##### BACKUP FILES #####
+##### Copy file to be signed #####
 
 SIGCOUNT=$(( SIGCOUNTPRE +1 ))
 SIGNATURDIR=$SIGNATUREROOTDIR/$CARDSERIAL/$SIGCOUNT
 mkdir -p $SIGNATURDIR
 cp $UPDATE $SIGNATURDIR/
+SIGNATURBASE=$SIGNATURDIR/update-$1
 
-##### hash and sign file #####
+##### hash file #####
 
-openssl dgst -sha512 -binary $UPDATE  > $SIGNATURDIR/update.dgst
-pkcs15-crypt --sign --input $SIGNATURDIR/update.dgst --output $SIGNATURDIR/update.$CARDSERIAL.sigbad --signature-format openssl --sha-512 --pkcs1 --key 1
+openssl dgst -sha512 -binary $UPDATE  > $SIGNATURBASE.dgst
 
-# fix sgnature
+##### check if file with this hash already exists
 
-SIZE=$( stat --printf="%s" $SIGNATURDIR/update.$CARDSERIAL.sigbad )
-PAD=$(( 512 - SIZE ))
-head -c $PAD /dev/zero | cat - $SIGNATURDIR/update.$CARDSERIAL.sigbad > $SIGNATURDIR/update.$CARDSERIAL.sig
+HASHDIR=$SIGNATUREROOTDIR/$CARDSERIAL/hashes
+mkdir -p $HASHDIR
+HASHCODE=$(hexdump -n 16 -e '16/1 "%02x" "\n"' $SIGNATURBASE.dgst)
 
-# copy signature
-
-cp $SIGNATURDIR/update.$CARDSERIAL.sig $UPDATEDIR/$CARDSERIAL.sig
+# Try creating a link from the hash directory to the current signature folder
+if [ ! -L $HASHDIR/$HASHCODE ]
+then
+    # Link did not exist => new signature
+    # sign file
+    pkcs15-crypt --sign --input $SIGNATURBASE.dgst --output $SIGNATURBASE-$CARDSERIAL.sigbad --signature-format openssl --sha-512 --pkcs1 --key 1
+    # fix sgnature
+    SIZE=$( stat --printf="%s" $SIGNATURBASE-$CARDSERIAL.sigbad )
+    PAD=$(( 512 - SIZE ))
+    head -c $PAD /dev/zero | cat - $SIGNATURBASE-$CARDSERIAL.sigbad > $SIGNATURBASE-$CARDSERIAL.sig
+    # copy signature
+    cp $SIGNATURBASE-$CARDSERIAL.sig $UPDATEBASE-$CARDSERIAL.sig
+    # Create hash link
+    ln -s $SIGNATURDIR $HASHDIR/$HASHCODE
+else
+    # Link did exist => existing signature
+    echo "===================================================================================================="
+    echo "Signature wit code $HASHCODE already exists in"
+    echo "$(readlink -f $HASHDIR/$HASHCODE)"
+    echo "Just copying signature"
+    echo "===================================================================================================="
+    # copy cached signature
+    cp $HASHDIR/$HASHCODE/*.sig $UPDATEBASE-$CARDSERIAL.sig
+    # remove signature folder
+    rm -rf $SIGNATURDIR
+fi
 
 ##### check signature #####
 
-openssl dgst -sha512 -binary -verify $SIGNATUREROOTDIR/$CARDSERIAL/$CARDSERIAL.pub -signature $SIGNATURDIR/update.$CARDSERIAL.sig $UPDATE
+openssl dgst -sha512 -binary -verify $SIGNATUREROOTDIR/$CARDSERIAL/$CARDSERIAL.pub -signature $UPDATEBASE-$CARDSERIAL.sig $UPDATE
 
 ##### card status #####
 
