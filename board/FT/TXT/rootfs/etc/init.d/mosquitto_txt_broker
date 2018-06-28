@@ -4,7 +4,7 @@ start() {
 	printf "Starting mosquitto: "
 	start-stop-daemon -S -q -m -b -p /var/run/mosquitto.pid \
 		--exec /usr/sbin/mosquitto \
-		-- -c /etc/mosquitto/mosquitto_txt_mqtt_broker.conf
+		-- -c /etc/mosquitto/ft-txt-mqtt-broker.conf
 	[ $? = 0 ] && echo "OK" || echo "FAIL"
 }
 stop() {

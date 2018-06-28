@@ -29,6 +29,14 @@ case "$1" in
     #sudo /bin/chmod 660 /etc/init.d/cloud_passwd.tmp
     ;;
 
+  delete)
+    sudo /bin/rm /etc/init.d/cloud_vid
+    sudo /bin/rm /etc/init.d/cloud_pair
+    sudo /bin/rm /etc/mosquitto/ft-txt-bridge-cloud.conf
+    #sudo /bin/rm /etc/init.d/cloud_passwd
+    #sudo /bin/rm /etc/init.d/cloud_passwd.tmp
+    ;;
+
   *)
        echo "Usage: $0 {new}"
        exit 1
@@ -36,4 +44,3 @@ case "$1" in
 esac
 
 exit $?
-
