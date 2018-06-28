@@ -1,6 +1,6 @@
 #!/bin/sh
 
-DRIVE=/dev/sdf
+DRIVE=$1
 
 # Check SD size
 
