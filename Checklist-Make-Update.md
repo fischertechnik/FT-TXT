@@ -26,13 +26,15 @@ In Eclipse
 
 In buildroot-2018/FT-TXT:
 
-- Make-TXT-Buildroot-Incremental.sh
-- Make-TXT-UpdateScripts.sh
-- Sign-TXT-UpdateScripts.sh 1
-- Sign-TXT-UpdateScripts.sh 2
+- ./Make-TXT-Buildroot-Incremental.sh
+- ./Make-TXT-UpdateScripts.sh
+- ./Sign-Connect-Reader.sh
+- ./Sign-TXT-UpdateScripts.sh 1
+- ./Sign-TXT-UpdateScripts.sh 2
+- sudo ./Make-TXT-Image.sh
 
 In Windows VM
-- F:\TX2\buildroot\MakeUpdate\CopyToProgAndSetup.bat
+- F:\TX2\buildroot-2018\FT-TXT\Copy-TXT-Update-ROBOPro.bat
 - Make a ROBOPro Release build
 - Do a FW Update
 - Check FW

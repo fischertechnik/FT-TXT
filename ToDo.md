@@ -1,6 +1,8 @@
-- Allow firmware updates only via USB
-- Sign current updates with primary key card
+- CHECK Allow firmware updates only via USB
+- CHECK Add firmware signature files to setup
+
 - Regenerate keys for 5th card
-- Check keys from fischertechnik
-- (Progress bar)
-- Add firmware signature files to update
+- Progress bar
+- exit function for shared library
+- Update for after 442
+- For update after 442 check various WLAN modes and dhcpd vs dhcpcd
