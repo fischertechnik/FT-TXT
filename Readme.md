@@ -168,3 +168,9 @@ zum Verlassen:
 exit
 ```
 
+### Split-TXT-UpdateScripts.sh
+
+Dieses Script extrahiert das in FT-TXT/../update/update-2.sh enthaltene tar.gz file des rootfs.
+Das ist hauptsächlich sinnvoll, wenn man sich nicht so ganz sicher ist, was in einem update-2.sh script enthalten ist.
+Das Script hat keine Parameter. Das Ergebnis wird nach FT-TXT/../update/update-2.tar.gz geschrieben.
+

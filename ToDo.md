@@ -3,3 +3,4 @@
 - Regenerate keys for 5th card
 - Check keys from fischertechnik
 - (Progress bar)
+- Add firmware signature files to update

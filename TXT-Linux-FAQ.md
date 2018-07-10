@@ -72,7 +72,20 @@ usbflash_uImage=mtdparts default;usb start; nand erase.part NAND.uImage; mw.b 0x
 usbflash_bootlogo=mtdparts default;usb start; nand erase.part NAND.bootlogo; mw.b 0x80200000 0xff 0x40000; fatload usb 0:1 0x80200000 bootlogo.bmp; nand write 0x80200000 NAND.bootlogo 0x${filesize}\0
 ```
 
-## How can u-boot parameters be shown or modified from the TXT-console?
+## How can u-boot parameters be shown or modified from the TXT serial boot console?
+
+For infor on how to connect a serial line to the TXT see below `Attach Serial USB Converter`
+
+The command for showing the environment is:
+
+    printenv
+
+The below example command creates a new command for flash and boot in one and saves the command to flash:
+
+    setenv flash_boot 'run flash_all; run nandboot'
+    saveenv
+
+## How can u-boot parameters be shown or modified from the TXT Linux console?
 
 The TXT Linux contains two programs to print and modify u-boot parameters:
 
