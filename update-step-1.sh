@@ -128,7 +128,6 @@ cp -p /usr/sbin/dhcpd /tmp/tmproot/usr/sbin
 cp -p /usr/sbin/ubi* /tmp/tmproot/usr/sbin
 cp -p /usr/sbin/flash_erase /tmp/tmproot/usr/sbin
 cp -p /usr/sbin/nandwrite /tmp/tmproot/usr/sbin
-cp -p /usr/sbin/exec_signed.sh /tmp/tmproot/usr/sbin
 
 # /usr/bin additional required files
 cp -p /usr/bin/ssh-keygen /tmp/tmproot/usr/bin
