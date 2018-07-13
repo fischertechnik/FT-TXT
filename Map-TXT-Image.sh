@@ -3,12 +3,18 @@
 SAVE_LC=$LC_ALL
 export LC_ALL=C
 
-BUILD=`cat board/FT/TXT/BUILD`
-IMAGEFILE=../ft-TXT_Build_$BUILD.img
+if [ -z "$1" ]
+then
+    BUILD=`cat board/FT/TXT/BUILD`
+    IMAGEFILE=../ft-TXT_Build_$BUILD.img
+else
+    IMAGEFILE=$1
+fi
+
 echo ">>> $IMAGEFILE <<<"
 #-- map partitions
-DRIVE1=/dev/mapper/`kpartx -s -l $IMAGEFILE | head -n +1 | awk '{print $1}'`
-DRIVE2=/dev/mapper/`kpartx -s -l $IMAGEFILE | tail -n +2 | head -n +1 | awk '{print $1}'`
+DRIVE1=/dev/mapper/$(kpartx -s -l "$IMAGEFILE" | head -n +1 | awk '{print $1}')
+DRIVE2=/dev/mapper/$(kpartx -s -l "$IMAGEFILE" | tail -n +2 | head -n +1 | awk '{print $1}')
 
 echo ">>>>>>>>>>>>>>>>>>"
 echo $DRIVE1
