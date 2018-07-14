@@ -1,5 +1,4 @@
 - CHECK Allow firmware updates only via USB
-- CHECK Add firmware signature files to setup
 
 - Regenerate keys for 5th card
 - Progress bar
