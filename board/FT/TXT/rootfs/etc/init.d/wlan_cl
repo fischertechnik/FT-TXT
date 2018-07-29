@@ -7,7 +7,7 @@ case "$1" in
     sudo /sbin/ifconfig wlan0 up
     sudo /usr/sbin/iw dev wlan0 set power_save off
     sudo /usr/sbin/wpa_supplicant -B -iwlan0 -c/etc/init.d/wpa_cl
-    sudo /sbin/dhcpcd wlan0
+    sudo /sbin/dhcpcd wlan0 -m 100
     touch /etc/init.d/wlan_cl_on
   	;;
 
@@ -25,7 +25,7 @@ case "$1" in
     sudo /sbin/ifconfig wlan0 up
     sudo /usr/sbin/iw dev wlan0 set power_save off
     sudo /usr/sbin/iw dev wlan0 connect "$2"
-    sudo /sbin/dhcpcd wlan0
+    sudo /sbin/dhcpcd wlan0 -m 100
     touch /etc/init.d/wlan_cl_on
   	;;
   	
