@@ -1,19 +1,8 @@
 # Adjust version numbers in files
 
-Run
+Run below command and edit the version number in all files and folders opened
 
     /data/transfer/TX2/buildroot/MakeUpdate/edit_version_files.sh
-
-Or manually adjust
-
-    Adjust version number in /data/transfer/TX2/ROBOProLib/ftProVersion.h
-    Adjust version number in /data/transfer/TX2/buildroot/ft-TXT/update/update.sh.in
-    Adjust version number in /data/transfer/TX2/buildroot/ft-TXT/board/knobloch/TXT/rootfs/etc/sysversion
-    Adjust version number in /data/transfer/TX2/buildroot/MakeUpdate/CopyToProgAndSetup.bat
-    Adjust firmware update source in gedit /data/transfer/TX2/buildroot/vm_put_binaries.sh
-    Adjust version number in /data/transfer/ROBOPro/ftPro/SetupWiX/Filenames
-    Adjust version number in /data/transfer/ROBOPro/ftPro/Firmware/
-    Adjust version number in C:\User\Michael\fischertechnik\ftPro\SetupWiX\ROBOPro.wxs
 
 In buildroot-2018/FT-TXT (Clean / initial buil donly)
 
@@ -23,6 +12,8 @@ In Eclipse
 
 - Recompile all apps and libraries
 - Copy from transfer folder to FT-TXT/board/...
+- ATTENTION: From 4.4.3 on, Michael Soegtrop builds ROBOProLib and MotorIOLib.
+  All other libs are provided binary by fischertechnik!
 
 In buildroot-2018/FT-TXT:
 
