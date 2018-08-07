@@ -41,3 +41,4 @@ echo "fischertechnik TXT Rel 2.0 Build $BUILD ($BUILDDATE)" > $TARGETDIR/etc/BUI
 
 # mkdir ROBOProFiles
 mkdir $TARGETDIR/opt/knobloch/ROBOProFiles
+chown 775 $TARGETDIR/opt/knobloch/ROBOProFiles
