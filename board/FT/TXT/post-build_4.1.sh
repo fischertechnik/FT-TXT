@@ -38,3 +38,6 @@ cp $BINARIES_DIR/am335x-kno_txt.dtb $TARGETDIR/lib/boot
 
 # Set buil dinfo
 echo "fischertechnik TXT Rel 2.0 Build $BUILD ($BUILDDATE)" > $TARGETDIR/etc/BUILD
+
+# mkdir ROBOProFiles
+mkdir $TARGETDIR/opt/knobloch/ROBOProFiles
