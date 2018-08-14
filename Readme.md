@@ -46,7 +46,7 @@ Imageerstellung
 
 3. Clone des Script und Konfigurationsverzeichnisses
   ```
-  git clone https://gogs.psg-bgh.de/fischertechnik/FT-TXT.git
+  git clone https://github.com/fischertechnikGmbH/FT-TXT.git
   ```
 
 4. Verzeichnis für Toolchain erstellen
