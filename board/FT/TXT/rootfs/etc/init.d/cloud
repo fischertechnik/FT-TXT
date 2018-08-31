@@ -16,25 +16,13 @@ case "$1" in
     sudo /bin/rm /etc/mosquitto/ft-txt-bridge-cloud.conf
     sudo /bin/touch /etc/mosquitto/ft-txt-bridge-cloud.conf
     sudo /bin/chown root:ROBOPro /etc/mosquitto/ft-txt-bridge-cloud.conf
-    sudo /bin/chmod 660 /etc/mosquitto/ft-txt-bridge-cloud.conf
-
-    #sudo /bin/rm /etc/init.d/cloud_passwd
-    #sudo /bin/touch /etc/init.d/cloud_passwd
-    #sudo /bin/chown root:ROBOPro /etc/init.d/cloud_passwd
-    #sudo /bin/chmod 660 /etc/init.d/cloud_passwd
-
-    #sudo /bin/rm /etc/init.d/cloud_passwd.tmp
-    #sudo /bin/touch /etc/init.d/cloud_passwd.tmp
-    #sudo /bin/chown root:ROBOPro /etc/init.d/cloud_passwd.tmp
-    #sudo /bin/chmod 660 /etc/init.d/cloud_passwd.tmp
+    sudo /bin/chmod 620 /etc/mosquitto/ft-txt-bridge-cloud.conf
     ;;
 
   delete)
     sudo /bin/rm /etc/init.d/cloud_vid
     sudo /bin/rm /etc/init.d/cloud_pair
     sudo /bin/rm /etc/mosquitto/ft-txt-bridge-cloud.conf
-    #sudo /bin/rm /etc/init.d/cloud_passwd
-    #sudo /bin/rm /etc/init.d/cloud_passwd.tmp
     ;;
 
   *)
