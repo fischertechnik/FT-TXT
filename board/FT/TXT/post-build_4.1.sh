@@ -41,7 +41,7 @@ mkdir $TARGETDIR/opt/knobloch/ROBOProFiles
 chmod 775 $TARGETDIR/opt/knobloch/ROBOProFiles
 
 # Rename S50sshd (start sshd manual)
-mv /etc/init.d/S50sshd /etc/init.d/mS50sshd
+mv $TARGETDIR/etc/init.d/S50sshd $TARGETDIR/etc/init.d/mS50sshd
 
 # Set build info
 echo "fischertechnik TXT Rel 2.0 Build $BUILD ($BUILDDATE)" > $TARGETDIR/etc/BUILD
