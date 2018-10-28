@@ -309,9 +309,10 @@ Modern Linux might use linker scripts in .so files. This means .so files can be 
 
 For the TXT toolchain, in several files wrong absolute paths are given. The paths must be removed (just file name) in files:
 
-    /opt/FT/TXT/opt/ext-toolchain/arm-linux-gnueabihf/libc/usr/lib/libpthread.so
-    /opt/FT/TXT/arm-buildroot-linux-gnueabihf/sysroot/usr/lib/libpthread.so
-    /opt/FT/TXT/opt/ext-toolchain/arm-linux-gnueabihf/libc/usr/lib/libc.so
+gedit \
+    /opt/FT/TXT/opt/ext-toolchain/arm-linux-gnueabihf/libc/usr/lib/libpthread.so \
+    /opt/FT/TXT/arm-buildroot-linux-gnueabihf/sysroot/usr/lib/libpthread.so \
+    /opt/FT/TXT/opt/ext-toolchain/arm-linux-gnueabihf/libc/usr/lib/libc.so \
     /opt/FT/TXT/arm-buildroot-linux-gnueabihf/sysroot/usr/lib/libc.so
 
 # Finding processes which are loaded from an executable in the file system vs kernel image

@@ -8,6 +8,18 @@ In buildroot-2018/FT-TXT (Clean / initial buil donly)
 
 - Make-TXT-Buildroot-Clean.sh
 
+Modern Linux might use linker scripts in .so files. This means .so files can be text files which refer to one or multiple other .so files.
+
+For the TXT toolchain, in several files wrong absolute paths are given. The paths must be removed (just file name) in files:
+
+```
+gedit \
+    /opt/FT/TXT/opt/ext-toolchain/arm-linux-gnueabihf/libc/usr/lib/libpthread.so \
+    /opt/FT/TXT/arm-buildroot-linux-gnueabihf/sysroot/usr/lib/libpthread.so \
+    /opt/FT/TXT/opt/ext-toolchain/arm-linux-gnueabihf/libc/usr/lib/libc.so \
+    /opt/FT/TXT/arm-buildroot-linux-gnueabihf/sysroot/usr/lib/libc.so
+```
+
 In Eclipse
 
 - Recompile all apps and libraries

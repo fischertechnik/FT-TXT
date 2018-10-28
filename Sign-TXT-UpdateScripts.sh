@@ -14,13 +14,6 @@ set +x
 # - plugin reader
 # - as soon as card is detected, press CTRL+C
 
-##### ARGUMENTS #####
-
-if [ "$1" = "" ] ; then
-    echo "expected step number as argument $1"
-    exit 1
-fi
-
 ##### PATHS #####
 
 # Directory in which this script is
@@ -28,7 +21,7 @@ SCRIPTDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Update script
 UPDATEDIR="$(dirname "$SCRIPTDIR")/update"
-UPDATEBASE="$UPDATEDIR/update-$1"
+UPDATEBASE="$UPDATEDIR/update"
 UPDATE="$UPDATEBASE.sh"
 
 # Signature history folder
@@ -50,7 +43,7 @@ SIGCOUNT=$(( SIGCOUNTPRE +1 ))
 SIGNATURDIR=$SIGNATUREROOTDIR/$CARDSERIAL/$SIGCOUNT
 mkdir -p $SIGNATURDIR
 cp $UPDATE $SIGNATURDIR/
-SIGNATURBASE=$SIGNATURDIR/update-$1
+SIGNATURBASE=$SIGNATURDIR/update
 
 ##### hash file #####
 

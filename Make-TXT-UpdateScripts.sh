@@ -16,11 +16,15 @@ UPDATE="$(dirname "$SCRIPTDIR")/update"
 
 ##### CREATE UPDATE #####
 
-# Copy step 1 script
-cp update-step-1.sh "$UPDATE/update-1.sh" 
-cp update-step-1-rp.sh "$UPDATE/update-1-rp.sh" 
+# Create updatescript
+cat update-in.sh > "$UPDATE/update.sh"
 
-# Create step 2 script
-cat update-step-2.sh > "$UPDATE/update-2.sh"
-echo "PAYLOAD:" >> "$UPDATE/update-2.sh"
-cat "$BUILDROOT/output/images/rootfs.tar.gz" >> "$UPDATE/update-2.sh"
+echo "" >> "$UPDATE/update.sh"
+echo "PAYLOADTOOLS:" >> "$UPDATE/update.sh"
+gzip -c "$UPDATE/ShowProgressOld" | base64 >> "$UPDATE/update.sh"
+
+echo "" >> "$UPDATE/update.sh"
+echo "PAYLOADTAR:" >> "$UPDATE/update.sh"
+cat "$BUILDROOT/output/images/rootfs.tar.gz" >> "$UPDATE/update.sh"
+
+chmod u+x "$UPDATE/update.sh"

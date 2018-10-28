@@ -13,14 +13,14 @@ SCRIPTDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # Update output
 UPDATE="$(dirname "$SCRIPTDIR")/update"
 
-# Update script 2
-UPDATE2="$UPDATE/update-2.sh"
+# Update script
+UPDATE2="$UPDATE/update.sh"
 
 # Update script 2 payload
-PAYLOAD2="$UPDATE/update-2.tar.gz"
+PAYLOAD2="$UPDATE/update.tar.gz"
 
 ##### Split update script #####
 
-match=$(grep -n -a -m 1 '^PAYLOAD:$' $UPDATE2 | cut -d ':' -f 1)
+match=$(grep -n -a -m 1 '^PAYLOADTAR:$' $UPDATE2 | cut -d ':' -f 1)
 payload_start=$((match + 1))
 tail -n +$payload_start $UPDATE2 > $PAYLOAD2
