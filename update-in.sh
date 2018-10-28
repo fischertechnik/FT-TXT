@@ -7,45 +7,49 @@
 # ============================================================================
 
 set -e
+
+# ========== Check if this is the first or I/O redirected start of the script ==========
+
+if [ $# = 0 ]
+then
+
+  # ========== kill ROBOPro app ==========
+
+  killall -9 run.sh || true
+
+  # ========== extract ShowProgress ==========
+
+  payloadtools_match=$(grep -n -m 1 '^PAYLOADTOOLS:$' $0 | cut -d ':' -f 1)
+  payloadtools_start=$((payloadtools_match + 1))
+  tail -n +$payloadtools_start $0 | base64 -d | gzip -d - >> ./ShowProgressOld || { echo "tar failed" 1>&2; sleep 300; exit 1; }
+  chmod u+x ShowProgressOld
+
+  # ========== Restart this script with I/O redirected to ShowProgress ==========
+
+  # screen -m -d -S <name> starts a detached deamon session with name <name>
+  
+  screen -m -d -S update /bin/sh -c "/bin/sh $0 restart 2>&1 | /tmp/ShowProgressOld"
+
+  # ========== Terminate shell which sharted this script ==========
+  
+  exit 0
+
+fi
+
+# ========== I/O redirected branch of the script ==========
+
 set -x
-
-# ========== kill ROBOPro app ==========
-
-killall -9 run.sh || true
-
-# ========== extract ShowProgress and redirect output ==========
-
-payloadtools_match=$(grep -n -m 1 '^PAYLOADTOOLS:$' $0 | cut -d ':' -f 1)
-payloadtools_start=$((payloadtools_match + 1))
-tail -n +$payloadtools_start $0 | base64 -d | gzip -d - >> ./ShowProgressOld || { echo "tar failed" 1>&2; sleep 300; exit 1; }
-chmod u+x ShowProgressOld
-
-# Redirect output of this script to ShowProgress
-# Busybox sh doesn't support process substitutaion
-# Manually create a named pipe
-FIFONAME="fifo_${RANDOM}_${RANDOM}_${RANDOM}_${RANDOM}"
-mkfifo $FIFONAME
-# Connect pipe to ShowProgressOld
-cat $FIFONAME | ./ShowProgressOld &
-# Redirect all output of this script to FIFO tempfifo
-exec > $FIFONAME 2>&1
 
 # Set number of steps in ShowProgress
 echo "!!C10"
 
-# ========== Wait before killing ssh ==========
+# ========== Wait for shell disconnect before killing ssh ==========
 
 # Set current step info in ShowProgress
 echo "!!S1"
 echo "!!TWait for disconnect"
 
-# ROBOPro waits 2 seconds after nohup to make sure everythign is fine.
-# Without the wait starting a nohup process with ssh does not work.
-# We wait here 1s longer
-# ATTENTION:
-# This must be done after the redirection with exec (otherwise nohup fails)
-# but before killing sshd!
-sleep 10
+sleep 2
 
 # ========== Stop services ==========
 
@@ -90,6 +94,7 @@ do
     # Check if process is required or can be killed
     case $exefile in
       /bin/busybox) ;;         # bash for the script to run
+      /usr/bin/screen) ;;      # screen used to make this script an IO detached deamon
       */ShowProgressOld) ;;    # show progress app
       *)                       # everythign else
         # kill process
@@ -125,7 +130,7 @@ mkdir /tmp/tmproot/sys
 # cp -a of /dev doesn't copy file contents but special files
 cp -a /dev /tmp/tmproot/dev
 
-# cp -dp or cp -a because these redirect tje symlinks to the destination folder, but we need them relative to root
+# cp -dp or cp -a doesn't work because these redirect the symlinks to the destination folder, but we need them relative to root
 find /bin -type f -exec sh -c 'echo FILE {}; mkdir -p /tmp/tmproot/$(dirname {}) ; cp -p {} /tmp/tmproot{}' \;
 find /bin -type l -exec sh -c 'echo LINK {}; mkdir -p /tmp/tmproot/$(dirname {}) ; ln -s $(readlink -f {}) /tmp/tmproot{}' \;
 
@@ -143,7 +148,6 @@ find /lib -type l -maxdepth 1 -exec sh -c 'echo LINK {}; mkdir -p /tmp/tmproot/$
 
 # In /usr/bin and /usr/sbin we copy only links to /bin/busybox
 find /usr/bin -type l -exec sh -c 'echo LINK {}; if [ "$(readlink -f {})"=="/bin/busybox" ] ; then mkdir -p /tmp/tmproot/$(dirname {}) ; ln -s $(readlink -f {}) /tmp/tmproot{} ; fi' \;
-
 find /usr/sbin -type l -exec sh -c 'echo LINK {}; if [ "$(readlink -f {})"=="/bin/busybox" ] ; then mkdir -p /tmp/tmproot/$(dirname {}) ; ln -s $(readlink -f {}) /tmp/tmproot{} ; fi' \;
 
 # In /var we exclude a few large folders
@@ -153,28 +157,14 @@ find /var $VAREX -type l -exec sh -c 'echo LINK {}; mkdir -p /tmp/tmproot/$(dirn
 # This special folder is required by sshd with exactly these rights
 mkdir -m 755 /tmp/tmproot/var/empty 
 
-# /usr/libexec contains just a few files, sudo, and sftp server
-find /usr/libexec -type f -exec sh -c 'echo FILE {}; mkdir -p /tmp/tmproot/$(dirname {}) ; cp -p {} /tmp/tmproot{}' \;
-find /usr/libexec -type l -exec sh -c 'echo LINK {}; mkdir -p /tmp/tmproot/$(dirname {}) ; ln -s $(readlink -f {}) /tmp/tmproot{}' \;
-
 # /usr/sbin additional required files
-cp -p /usr/sbin/sshd /tmp/tmproot/usr/sbin
-cp -p /usr/sbin/dhcpd /tmp/tmproot/usr/sbin
 cp -p /usr/sbin/ubi* /tmp/tmproot/usr/sbin
 cp -p /usr/sbin/flash_erase /tmp/tmproot/usr/sbin
 cp -p /usr/sbin/nandwrite /tmp/tmproot/usr/sbin
 
-# /usr/bin additional required files
-cp -p /usr/bin/ssh-keygen /tmp/tmproot/usr/bin
-cp -p /usr/bin/scp /tmp/tmproot/usr/bin
-cp -p /usr/bin/sudo /tmp/tmproot/usr/bin
-cp -p /usr/bin/openssl /tmp/tmproot/usr/bin
-
 # /usr/lib additional required files
 mkdir -p /tmp/tmproot/usr/lib
 ln -s /usr/lib /tmp/tmproot/usr/lib/arm-linux-gnueabihf
-cp -p /usr/lib/libcrypto.so.1.0.0 /tmp/tmproot/usr/lib/
-ln -s /usr/lib/libcrypto.so.1.0.0 /tmp/tmproot/usr/lib/libcrypto.so
 cp -p /usr/lib/libz.so.1.2.8 /tmp/tmproot/usr/lib/
 ln -s /usr/lib/libz.so.1.2.8 /tmp/tmproot/usr/lib/libz.so.1
 ln -s /usr/lib/libz.so.1.2.8 /tmp/tmproot/usr/lib/libz.so
@@ -229,7 +219,8 @@ mount --move /oldroot/tmp/ /tmp
 
 # Unmount remaining oldroot file systems
 # Note oldroot/tmp cannot be unmounted, because the current script is in it
-umount /oldroot/dev/pts
+# /dev/pts contains pseudo terminals used by screen, so it also cannot be unmounted (use -l=lazy option)
+umount -l /oldroot/dev/pts
 umount -l /oldroot/dev
 
 # ========== Delete old system ==========
