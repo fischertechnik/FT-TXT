@@ -20,8 +20,9 @@ UPDATE="$(dirname "$SCRIPTDIR")/update"
 cat update-in.sh > "$UPDATE/update.sh"
 
 echo "" >> "$UPDATE/update.sh"
-echo "PAYLOADTOOLS:" >> "$UPDATE/update.sh"
+echo "PAYLOADTOOLSBEG:" >> "$UPDATE/update.sh"
 gzip -c "$UPDATE/ShowProgressOld" | base64 >> "$UPDATE/update.sh"
+echo "PAYLOADTOOLSEND:" >> "$UPDATE/update.sh"
 
 echo "" >> "$UPDATE/update.sh"
 echo "PAYLOADTAR:" >> "$UPDATE/update.sh"

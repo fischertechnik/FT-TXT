@@ -6,6 +6,17 @@
 # (C) 2018 Michael Sögtrop - all rights reserved
 # ============================================================================
 
+# Usage
+# Copy update.sh and update-xxxx.sig to /tmp
+# Execute method 1
+#   su
+#   <enter root password>
+#   cd /tmp
+#   /tmp/update.sh  (attention, always give full path)
+#
+# Execute method 2
+#   sudo /usr/sbin/exec_signed.sh update.sh update_xxxx-sig
+
 set -e
 
 # ========== Check if this is the first or I/O redirected start of the script ==========
@@ -19,9 +30,11 @@ then
 
   # ========== extract ShowProgress ==========
 
-  payloadtools_match=$(grep -n -m 1 '^PAYLOADTOOLS:$' $0 | cut -d ':' -f 1)
-  payloadtools_start=$((payloadtools_match + 1))
-  tail -n +$payloadtools_start $0 | base64 -d | gzip -d - >> ./ShowProgressOld || { echo "tar failed" 1>&2; sleep 300; exit 1; }
+  payloadtoolsbeg_match=$(grep -n -m 1 '^PAYLOADTOOLSBEG:$' $0 | cut -d ':' -f 1)
+  payloadtoolsend_match=$(grep -n -m 1 '^PAYLOADTOOLSEND:$' $0 | cut -d ':' -f 1)
+  payloadtools_start=$((payloadtoolsbeg_match + 1))
+  payloadtools_length=$((payloadtoolsend_match - payloadtoolsbeg_match - 1))
+  tail -n +$payloadtools_start $0 | head -n $payloadtools_length | openssl enc -base64 -d | gzip -d - >> ./ShowProgressOld || { echo "tar failed" 1>&2; sleep 300; exit 1; }
   chmod u+x ShowProgressOld
 
   # ========== Restart this script with I/O redirected to ShowProgress ==========
@@ -165,11 +178,14 @@ cp -p /usr/sbin/nandwrite /tmp/tmproot/usr/sbin
 # /usr/lib additional required files
 mkdir -p /tmp/tmproot/usr/lib
 ln -s /usr/lib /tmp/tmproot/usr/lib/arm-linux-gnueabihf
-cp -p /usr/lib/libz.so.1.2.8 /tmp/tmproot/usr/lib/
-ln -s /usr/lib/libz.so.1.2.8 /tmp/tmproot/usr/lib/libz.so.1
-ln -s /usr/lib/libz.so.1.2.8 /tmp/tmproot/usr/lib/libz.so
-cp -p /usr/lib/libstdc++.so.6.0.20 /tmp/tmproot/usr/lib/
-ln -s /usr/lib/libstdc++.so.6.0.20 /tmp/tmproot/usr/lib/libstdc++.so.6
+# libz is required to untar zipped new system
+cp -p /usr/lib/libz.so.1.2.8 /tmp/tmproot/usr/lib/          || cp -p /usr/lib/libz.so.1.2.11 /tmp/tmproot/usr/lib/
+ln -s /usr/lib/libz.so.1.2.8 /tmp/tmproot/usr/lib/libz.so.1 || ln -s /usr/lib/libz.so.1.2.11 /tmp/tmproot/usr/lib/libz.so.1
+ln -s /usr/lib/libz.so.1.2.8 /tmp/tmproot/usr/lib/libz.so   || ln -s /usr/lib/libz.so.1.2.11 /tmp/tmproot/usr/lib/libz.so
+# libstdc++ is required for firmware update
+# in new system libstdc++.so.6 in in /lib and copied by default
+cp -p /usr/lib/libstdc++.so.6.0.20 /tmp/tmproot/usr/lib/               || ls /lib/libstdc++.so.6
+ln -s /usr/lib/libstdc++.so.6.0.20 /tmp/tmproot/usr/lib/libstdc++.so.6 || ls /lib/libstdc++.so.6
 
 # /usr/share additional required files
 mkdir -p /tmp/tmproot/usr/share/txt-utils
@@ -209,6 +225,8 @@ mount none /dev/pts -t devpts
 umount /oldroot/proc
 umount /oldroot/sys
 umount /oldroot/dev/shm
+# /run does not exist in old system
+umount /oldroot/run || true
 
 # Restart terminals
 killall getty
@@ -277,7 +295,6 @@ rm /oldroot/sbin/FwUpdTxt
 
 # The firmware update is really nasty - it terminate before it is finished
 # Poweroff after 10s delays fails
-# Poweroff after 15s delays fails
 sleep 15
 
 # ========== Shutdown ==========
