@@ -18,30 +18,61 @@
 #   sudo /usr/sbin/exec_signed.sh update.sh update_xxxx-sig
 
 set -e
+set -x
+
+# ========== Get absolute script name and path ==========
+
+# Absolute symlink free path of this script
+SCRIPTPATH="$(readlink -f "$0")"
+
+# Absolute symlink free folder of this script
+SCRIPTFLDR="$(dirname "$SCRIPTPATH")"
+
+# ATTENTION: this script expects that it is stored somewhere below /tmp
 
 # ========== Check if this is the first or I/O redirected start of the script ==========
 
 if [ $# = 0 ]
 then
 
-  # ========== kill ROBOPro app ==========
-
-  killall -9 run.sh || true
-
   # ========== extract ShowProgress ==========
 
-  payloadtoolsbeg_match=$(grep -n -m 1 '^PAYLOADTOOLSBEG:$' $0 | cut -d ':' -f 1)
-  payloadtoolsend_match=$(grep -n -m 1 '^PAYLOADTOOLSEND:$' $0 | cut -d ':' -f 1)
+  # Note: the version of ShowProgress compiled for the old system also works for the new system - no need to distinguish
+
+  payloadtoolsbeg_match=$(grep -n -m 1 '^PAYLOADTOOLSBEG:$' "$SCRIPTPATH" | cut -d ':' -f 1)
+  payloadtoolsend_match=$(grep -n -m 1 '^PAYLOADTOOLSEND:$' "$SCRIPTPATH" | cut -d ':' -f 1)
   payloadtools_start=$((payloadtoolsbeg_match + 1))
   payloadtools_length=$((payloadtoolsend_match - payloadtoolsbeg_match - 1))
-  tail -n +$payloadtools_start $0 | head -n $payloadtools_length | openssl enc -base64 -d | gzip -d - >> ./ShowProgressOld || { echo "tar failed" 1>&2; sleep 300; exit 1; }
-  chmod u+x ShowProgressOld
+  tail -n +$payloadtools_start "$SCRIPTPATH" | head -n $payloadtools_length | openssl enc -base64 -d | gzip -d - >> "$SCRIPTFLDR"/ShowProgressOld || { echo "tar failed" 1>&2; sleep 300; exit 1; }
+  chmod u+x "$SCRIPTFLDR"/ShowProgressOld
+
+  # ========== In case this is executed by exec_signed move everything to new folder ==========
+
+  # exec_signed deletes the executable as soon as the scrip terminates, but we still need the file
+
+  if [ "$(basename "$SCRIPTPATH")" = "executable" ]
+  then
+    # Set umask to exclusive root access
+    umask 077
+    # Create a new folder with unique name in /tmp
+    # Cause of umask setting, it will have access rights 700
+    EXECFLDR=$( mktemp -d -p /tmp )
+    # move files
+    mv "$SCRIPTFLDR"/executable "$EXECFLDR"/executable
+    mv "$SCRIPTFLDR"/signature "$EXECFLDR"/signature
+    mv "$SCRIPTFLDR"/ShowProgressOld "$EXECFLDR"/ShowProgressOld
+    # create dummy files (exec_signed wants to delete them)
+    touch "$SCRIPTFLDR"/executable
+    touch "$SCRIPTFLDR"/signature
+    SCRIPTFLDR="$EXECFLDR"
+    SCRIPTPATH="$EXECFLDR"/executable
+  fi
 
   # ========== Restart this script with I/O redirected to ShowProgress ==========
 
   # screen -m -d -S <name> starts a detached deamon session with name <name>
   
-  screen -m -d -S update /bin/sh -c "/bin/sh $0 restart 2>&1 | /tmp/ShowProgressOld"
+  screen -m -d -S update /bin/sh -c '/bin/sh '"$SCRIPTPATH"' restart 2>&1 | '"$SCRIPTFLDR"/ShowProgressOld
 
   # ========== Terminate shell which sharted this script ==========
   
@@ -54,7 +85,8 @@ fi
 set -x
 
 # Set number of steps in ShowProgress
-echo "!!C10"
+# Note: all lines starting with !! are control lines for ShowProgress
+echo "!!C11"
 
 # ========== Wait for shell disconnect before killing ssh ==========
 
@@ -64,10 +96,16 @@ echo "!!TWait for disconnect"
 
 sleep 2
 
+# ========== Stop ROBOPro app ==========
+echo "!!S2"
+echo "!!TStop ROBOPro App"
+
+killall -9 run.sh || true
+
 # ========== Stop services ==========
 
 # Set current step info in ShowProgress
-echo "!!S2"
+echo "!!S3"
 echo "!!TStop services"
 
 /etc/init.d/bt_ap stop || true
@@ -92,7 +130,7 @@ echo "!!TStop services"
 
 # ========== kill all non required processes ==========
 
-echo "!!S3"
+echo "!!S4"
 echo "!!TKill processes"
 
 # Loop over all processes
@@ -120,7 +158,7 @@ done
 
 # ========== Creare mini system in RAM ==========
 
-echo "!!S4"
+echo "!!S5"
 echo "!!TCreate RAM System"
 
 # remount root fs as read only (to avoid messing it up)
@@ -209,7 +247,7 @@ chmod 700 /tmp/tmproot/root
 
 # ========== Switch to RAM system ==========
 
-echo "!!S5"
+echo "!!S6"
 echo "!!TSwitch RAM System"
 
 # Switch root
@@ -232,7 +270,7 @@ umount /oldroot/run || true
 killall getty
 
 # Move mount /oldroot/tmp to /tmp
-# This way the filename of the script ($0) remains the same if it was in /tmp before
+# This way the filename of the script ("$SCRIPTPATH") remains the same if it was in /tmp before
 mount --move /oldroot/tmp/ /tmp
 
 # Unmount remaining oldroot file systems
@@ -243,7 +281,7 @@ umount -l /oldroot/dev
 
 # ========== Delete old system ==========
 
-echo "!!S6"
+echo "!!S7"
 echo "!!TDelete old system"
 
 mount -rw -o remount /oldroot
@@ -251,19 +289,19 @@ rm -rf /oldroot/*
 
 # ========== Install new system ==========
 
-echo "!!S7"
+echo "!!S8"
 echo "!!TInstall new system"
 
-payloadtar_match=$(grep -n -m 1 '^PAYLOADTAR:$' $0 | cut -d ':' -f 1)
+payloadtar_match=$(grep -n -m 1 '^PAYLOADTAR:$' "$SCRIPTPATH" | cut -d ':' -f 1)
 payloadtar_start=$((payloadtar_match + 1))
-tail -n +$payloadtar_start $0 | tar -C /oldroot/ -xzvf - || { echo "tar failed" 1>&2 ; sleep 300; exit 1; }
+tail -n +$payloadtar_start "$SCRIPTPATH" | tar -C /oldroot/ -xzvf - || { echo "tar failed" 1>&2 ; sleep 300; exit 1; }
 
 # sync here in case the power controller does something strange during the FW update
 sync
 
 # ========== Flash boot, kernel, ... ==========
 
-echo "!!S8"
+echo "!!S9"
 echo "!!TFlash boot loader"
 
 flash_erase /dev/mtd8 0 0
@@ -287,7 +325,7 @@ rm /oldroot/lib/boot/UpdateBootloader.sh
 
 # ========== Update IO firmware ==========
 
-echo "!!S9"
+echo "!!S10"
 echo "!!TUpdate IO firmware"
 
 /oldroot/sbin/FwUpdTxt || { echo "Firmware update failed" 1>&2 ; sleep 300; exit 2; }
@@ -299,7 +337,7 @@ sleep 15
 
 # ========== Shutdown ==========
 
-echo "!!S10"
+echo "!!S11"
 echo "!!TShutdown"
 
 sync

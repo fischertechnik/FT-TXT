@@ -2,7 +2,7 @@
 
 Run below command and edit the version number in all files and folders opened
 
-    /data/transfer/TX2/buildroot/MakeUpdate/edit_version_files.sh
+    /data/transfer/TX2/buildroot-2018/FT-TXT/Edit-Version-Files.sh
 
 In buildroot-2018/FT-TXT (Clean / initial buil donly)
 
@@ -32,8 +32,7 @@ In buildroot-2018/FT-TXT:
 - ./Make-TXT-Buildroot-Incremental.sh
 - ./Make-TXT-UpdateScripts.sh
 - ./Sign-Connect-Reader.sh
-- ./Sign-TXT-UpdateScripts.sh 1
-- ./Sign-TXT-UpdateScripts.sh 2
+- ./Sign-TXT-UpdateScripts.sh
 - sudo ./Make-TXT-Image.sh
 
 In Windows VM
