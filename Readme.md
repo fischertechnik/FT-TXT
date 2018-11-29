@@ -1,4 +1,4 @@
-> Wenn Sie Fragen haben, kontaktieren Sie uns: fischertechnik-technik@fischer.de
+> Kontakt: fischertechnik-technik@fischer.de
 
 # FT-TXT : 
 
@@ -175,3 +175,15 @@ Dieses Script extrahiert das in FT-TXT/../update/update-2.sh enthaltene tar.gz f
 Das ist hauptsächlich sinnvoll, wenn man sich nicht so ganz sicher ist, was in einem update-2.sh script enthalten ist.
 Das Script hat keine Parameter. Das Ergebnis wird nach FT-TXT/../update/update-2.tar.gz geschrieben.
 
+### Graphing in BUILDROOT
+
+Graphing the dependencies between packages
+Graphing the build duration
+Graphing the filesystem size contribution of packages
+```
+cd ../buildroot
+make graph-depends
+make graph-build
+make graph-size
+```
+You will find the generated graphs in output/graphs/.
