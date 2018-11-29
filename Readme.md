@@ -178,8 +178,11 @@ Das Script hat keine Parameter. Das Ergebnis wird nach FT-TXT/../update/update-2
 ### Graphing in BUILDROOT
 
 Graphing the dependencies between packages
+
 Graphing the build duration
+
 Graphing the filesystem size contribution of packages
+
 ```
 cd ../buildroot
 make graph-depends
