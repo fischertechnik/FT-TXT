@@ -175,6 +175,14 @@ Dieses Script extrahiert das in FT-TXT/../update/update-2.sh enthaltene tar.gz f
 Das ist hauptsächlich sinnvoll, wenn man sich nicht so ganz sicher ist, was in einem update-2.sh script enthalten ist.
 Das Script hat keine Parameter. Das Ergebnis wird nach FT-TXT/../update/update-2.tar.gz geschrieben.
 
+### Config Pakete in BUILDROOT
+```
+cd ../buildroot
+make menuconfig
+make savedefconfig
+```
+You will find the generated config in FT-TXT/configs/FT-TXT_4.1_defconfig.
+
 ### Graphing in BUILDROOT
 
 Graphing the dependencies between packages
