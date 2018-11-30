@@ -40,6 +40,10 @@ cp $BINARIES_DIR/am335x-kno_txt.dtb $TARGETDIR/lib/boot
 mkdir $TARGETDIR/opt/knobloch/ROBOProFiles
 chmod 775 $TARGETDIR/opt/knobloch/ROBOProFiles
 
+# Create DownloadFiles
+mkdir $TARGETDIR/opt/knobloch/DownloadFiles
+chmod 775 $TARGETDIR/opt/knobloch/DownloadFiles
+
 # Rename S50sshd (start sshd manual)
 mv $TARGETDIR/etc/init.d/S50sshd $TARGETDIR/etc/init.d/mS50sshd
 

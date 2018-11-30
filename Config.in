@@ -3,4 +3,6 @@ source "$BR2_EXTERNAL_FT_TXT_PATH/package/python-ufw/Config.in"
 source "$BR2_EXTERNAL_FT_TXT_PATH/package/libulfius/Config.in"
 source "$BR2_EXTERNAL_FT_TXT_PATH/package/libyder/Config.in"
 source "$BR2_EXTERNAL_FT_TXT_PATH/package/liborcania/Config.in"
+source "$BR2_EXTERNAL_FT_TXT_PATH/package/libnfc-git/Config.in"
+source "$BR2_EXTERNAL_FT_TXT_PATH/package/libfreefare-git/Config.in"
 
