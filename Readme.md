@@ -90,8 +90,7 @@ Imageerstellung
   ```
   ./Make-TXT-UpdateScripts.sh
   ./Sign-Connect-Reader.sh
-  ./Sign-TXT-UpdateScripts.sh 1
-  ./Sign-TXT-UpdateScripts.sh 2
+  ./Sign-TXT-UpdateScripts.sh
   ```
   The update scripts and signatures can be found in `FT-TXT/../update`.
 
