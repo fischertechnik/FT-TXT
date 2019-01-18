@@ -1,0 +1,26 @@
+#!/bin/sh
+
+KERNEL!="sda[0-9]", GOTO="exit"
+ACTION=="add", PROGRAM!="/sbin/blkid %N", GOTO="exit"
+
+# import some useful filesystem info as variables
+IMPORT{program}="/sbin/blkid -o udev -p %N"
+
+# get the label if present, otherwise assign one based on device/partition
+ENV{ID_FS_LABEL}!="", ENV{dir_name}="%E{ID_FS_LABEL}"
+ENV{ID_FS_LABEL}=="", ENV{dir_name}="usbhd-%k"
+
+# create the dir and symlink it to /mnt
+ACTION=="add", RUN+="/bin/mkdir -p '/opt/knobloch/ExternalStorage/%E{dir_name}'"
+
+# vfat specific mount options
+ACTION=="add", ENV{ID_FS_TYPE}=="vfat", RUN+="/bin/mount -t vfat -o rw,user,fmask=022,dmask=000,exec /dev/%k '/opt/knobloch/ExternalStorage/%E{dir_name}'"
+
+# ntfs specific mount options
+#ACTION=="add", ENV{ID_FS_TYPE}=="ntfs", RUN+="/bin/mount -t ntfs-3g -o rw,noauto,dmask=022,fmask=133,gid=ROBOPro,user /dev/%k '/opt/knobloch/ExternalStorage/%E{dir_name}'"
+
+# clean up after device removal #
+ACTION=="remove", ENV{dir_name}!="", RUN+="/bin/umount -l '/opt/knobloch/ExternalStorage/%E{dir_name}'", RUN+="/bin/rmdir '/opt/knobloch/ExternalStorage/%E{dir_name}'"
+
+# exit
+LABEL="exit"
