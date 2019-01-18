@@ -37,12 +37,20 @@ cp $BINARIES_DIR/uImage $TARGETDIR/lib/boot
 cp $BINARIES_DIR/am335x-kno_txt.dtb $TARGETDIR/lib/boot
 
 # Create ROBOProFiles
-mkdir $TARGETDIR/opt/knobloch/ROBOProFiles
-chmod 775 $TARGETDIR/opt/knobloch/ROBOProFiles
+mkdir $TARGETDIR/opt/knobloch/InternalStorage/ROBOProFiles
+chmod 775 $TARGETDIR/opt/knobloch/InternalStorage/ROBOProFiles
 
-# Create DownloadFiles
-mkdir $TARGETDIR/opt/knobloch/DownloadFiles
-chmod 775 $TARGETDIR/opt/knobloch/DownloadFiles
+# Create CProgFiles
+mkdir $TARGETDIR/opt/knobloch/InternalStorage/CDownloadFiles
+chmod 775 $TARGETDIR/opt/knobloch/InternalStorage/CDownloadFiles
+
+# Create PythonFiles
+mkdir $TARGETDIR/opt/knobloch/InternalStorage/PythonFiles
+chmod 775 $TARGETDIR/opt/knobloch/InternalStorage/PythonFiles
+
+# Create ScratchFiles
+mkdir $TARGETDIR/opt/knobloch/InternalStorage/ScratchFiles
+chmod 775 $TARGETDIR/opt/knobloch/InternalStorage/ScratchFiles
 
 # Rename S50sshd (start sshd manual)
 mv $TARGETDIR/etc/init.d/S50sshd $TARGETDIR/etc/init.d/mS50sshd
