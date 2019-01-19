@@ -43,7 +43,7 @@ build1:
 #    - echo "Do another parallel test here"
 #    - echo "For example run a lint test"
    
-deploy1:
-  stage: deploy
-  script:
-    - 
+#deploy1:
+#  stage: deploy
+#  script:
+#    - echo deploy
