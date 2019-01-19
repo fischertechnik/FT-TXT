@@ -6,7 +6,7 @@ image: debian:stable
 
 before_script:
   - cd /builds/fischertechnik/FT-TXT
-  - ./Linux-Pakete-Extra.sh
+  - apt-get -y install joe git gitk cvs
   - ./Linux-Pakete-Required.sh
 
 #after_script:
