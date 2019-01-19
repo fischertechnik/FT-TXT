@@ -19,7 +19,7 @@ build1:
   script:
     - ./Make-TXT-Bootloader.sh > Make-TXT-Bootloader.sh.log
     - ./Make-TXT-Buildroot-Clean.sh > Make-TXT-Buildroot-Clean.sh.log
-    - ./Make-TXT-UpdateScripts.sh > Make-TXT-UpdateScripts.sh.log
+    #- ./Make-TXT-UpdateScripts.sh > Make-TXT-UpdateScripts.sh.log : ./Make-TXT-UpdateScripts.sh: line 20: /builds/fischertechnik/update/update.sh: No such file or directory
     - ./Make-TXT-Image.sh
     - cd ../buildroot
     - make graph-depends
@@ -27,9 +27,9 @@ build1:
     - make graph-size
   artifacts:
     paths:
-      -  $IMAGEFILE.zip
-      - ../update
-      - ../buildroot/uildroot/output/graphs
+      - /builds/fischertechnik/$IMAGEFILE.zip
+      - /builds/fischertechnik/update
+      - /builds/fischertechnik/buildroot/uildroot/output/graphs
 
 #test1:
 #  stage: test
