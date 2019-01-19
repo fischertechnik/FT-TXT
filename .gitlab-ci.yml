@@ -5,31 +5,31 @@
 image: busybox:latest
 
 before_script:
-  - sudo ./Linux-Pakete-Required.sh
+  - Linux-Pakete-Required.sh
 
-after_script:
-  - echo "After script section"
-  - echo "For example you might do some cleanup here"
+#after_script:
+#  - echo "After script section"
+#  - echo "For example you might do some cleanup here"
    
 build1:
   stage: build
   script:
-    - ./Make-TXT-Bootloader.sh
-    - ./Make-TXT-Buildroot-Clean.sh
+    - Make-TXT-Bootloader.sh
+    - Make-TXT-Buildroot-Clean.sh
    
-test1:
-  stage: test
-  script: 
-    - echo "Do a test here"
-    - echo "For example run a test suite"
+#test1:
+#  stage: test
+#  script: 
+#    - echo "Do a test here"
+#    - echo "For example run a test suite"
    
-test2:
-  stage: test
-  script: 
-    - echo "Do another parallel test here"
-    - echo "For example run a lint test"
+#test2:
+#  stage: test
+#  script: 
+#    - echo "Do another parallel test here"
+#    - echo "For example run a lint test"
    
-deploy1:
-  stage: deploy
-  script:
-    - echo "Do your deploy here"
+#deploy1:
+#  stage: deploy
+#  script:
+#    - echo "Do your deploy here"
