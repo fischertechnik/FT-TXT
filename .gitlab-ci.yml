@@ -7,6 +7,7 @@ image: debian:stable
 before_script:
   - cd /builds/fischertechnik/FT-TXT
   - ./Linux-Pakete-Required.sh
+  - ./Linux-Pakete-Extra.sh
 
 #after_script:
 #  - echo "After script section"
@@ -16,8 +17,12 @@ build1:
   stage: build
   script:
     - ./Make-TXT-Bootloader.sh
+
+build2:
+  stage: build
+  script:
     - ./Make-TXT-Buildroot-Clean.sh
-   
+
 #test1:
 #  stage: test
 #  script: 
