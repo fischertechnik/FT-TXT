@@ -2,11 +2,11 @@
 # see https://docs.gitlab.com/ce/ci/yaml/README.html for all available options
 
 # you can delete this line if you're not using Docker
-image: busybox:latest
+image: ubuntu:stable
 
 before_script:
   - cd /builds/fischertechnik/FT-TXT
-  - ./Linux-Pakete-Required.sh
+  - sudo ./Linux-Pakete-Required.sh
 
 #after_script:
 #  - echo "After script section"
