@@ -29,7 +29,7 @@ build1:
     paths:
       - /builds/fischertechnik/$IMAGEFILE.zip
       - /builds/fischertechnik/update
-      - /builds/fischertechnik/buildroot/uildroot/output/graphs
+      - /builds/fischertechnik/buildroot/output/graphs
 
 #test1:
 #  stage: test
