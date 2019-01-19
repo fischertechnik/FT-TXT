@@ -17,8 +17,19 @@ before_script:
 build1:
   stage: build
   script:
-    - ./Make-TXT-Bootloader.sh
-    - ./Make-TXT-Buildroot-Clean.sh
+    - ./Make-TXT-Bootloader.sh > Make-TXT-Bootloader.sh.log
+    - ./Make-TXT-Buildroot-Clean.sh > Make-TXT-Buildroot-Clean.sh.log
+    - ./Make-TXT-UpdateScripts.sh > Make-TXT-UpdateScripts.sh.log
+    - ./Make-TXT-Image.sh
+    - cd ../buildroot
+    - make graph-depends
+    - make graph-build
+    - make graph-size
+  artifacts:
+    paths:
+      -  $IMAGEFILE.zip
+      - ../update
+      - ../buildroot/uildroot/output/graphs
 
 #test1:
 #  stage: test
@@ -32,7 +43,7 @@ build1:
 #    - echo "Do another parallel test here"
 #    - echo "For example run a lint test"
    
-#deploy1:
-#  stage: deploy
-#  script:
-#    - echo "Do your deploy here"
+deploy1:
+  stage: deploy
+  script:
+    - 
