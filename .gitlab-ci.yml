@@ -26,7 +26,7 @@ build1:
     #- make graph-build
     #- make graph-size
   artifacts:
-    cwd: "build"
+    name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME"
     paths:
       - /builds/fischertechnik/*.zip
       - /builds/fischertechnik/update/update.sh
