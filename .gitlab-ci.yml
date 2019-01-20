@@ -26,10 +26,12 @@ build1:
     #- make graph-build
     #- make graph-size
   artifacts:
+    cwd: "build"
     paths:
-      - /builds/fischertechnik/$IMAGEFILE.zip
-      - /builds/fischertechnik/update
-      - /builds/fischertechnik/buildroot/output/graphs
+      - *.*
+      #- /builds/fischertechnik/$IMAGEFILE.zip
+      #- /builds/fischertechnik/update/update.sh
+      #- /builds/fischertechnik/buildroot/output/graphs/*
 
 
 #test1:
