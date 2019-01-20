@@ -7,9 +7,10 @@ image: debian:stable
 before_script:
   - cd /builds/fischertechnik/FT-TXT
   - apt-get update -qq
+  - ./Linux-Pakete-Required.sh
+  - ./Linux-Pakete-Extra.sh
   - apt-get -y install joe git gitk cvs wget cpio
   - apt-get -y install graphviz python-matplotlib python-numpy # make graph-*
-  - ./Linux-Pakete-Required.sh
 
 #after_script:
 #  - echo "After script section"
