@@ -40,13 +40,21 @@ Make-TXT-UpdateScripts:
     - cd /builds/fischertechnik/FT-TXT
     - ./Make-TXT-UpdateScripts.sh
     - ls -la /builds/fischertechnik
-    
+  artifacts:
+    name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME-graph-update"
+    paths:
+      - /builds/fischertechnik/update/update.sh
+
 Make-TXT-Image:
   stage: build
   script:
     - cd /builds/fischertechnik/FT-TXT
     - ./Make-TXT-Image.sh
     - ls -la /builds/fischertechnik
+  artifacts:
+    name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME"
+    paths:
+      - /builds/fischertechnik/ft-TXT_Build_$BUILD.img.zip
 
 graph:
   stage: build
@@ -56,13 +64,10 @@ graph:
     - make graph-build
     - make graph-size
     - ls -la /builds/fischertechnik
-  
-artifacts:
-  name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME"
-  paths:
-    - /builds/
-    - /builds/fischertechnik/update/update.sh
-    - /builds/fischertechnik/buildroot/output/graphs/*.*
+  artifacts:
+    name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME-graph"
+    paths:
+      - /builds/fischertechnik/buildroot/output/graphs
 
 
 #test1:
