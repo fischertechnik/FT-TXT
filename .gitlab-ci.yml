@@ -15,26 +15,28 @@ before_script:
 #  - echo "After script section"
 
 stages:
-  - build
+  - build1
+  - build2
+  - build3
   - test
   - deploy
 
 Make-TXT-Bootloader:
-  stage: build
+  stage: build1
   script:
     - cd /builds/fischertechnik/FT-TXT
     - ./Make-TXT-Bootloader.sh > Make-TXT-Bootloader.sh.log
     - ls -la /builds/fischertechnik
     
 Make-TXT-Buildroot-Clean:
-  stage: build
+  stage: build2
   script:
     - cd /builds/fischertechnik/FT-TXT
     - ./Make-TXT-Buildroot-Clean.sh > Make-TXT-Buildroot-Clean.sh.log
     - ls -la /builds/fischertechnik
     
 Make-TXT-UpdateScripts:
-  stage: build
+  stage: build3
   script:
     - mkdir /builds/fischertechnik/update
     - cd /builds/fischertechnik/FT-TXT
@@ -46,7 +48,7 @@ Make-TXT-UpdateScripts:
       - /builds/fischertechnik/update/update.sh
 
 Make-TXT-Image:
-  stage: build
+  stage: build3
   script:
     - cd /builds/fischertechnik/FT-TXT
     - ./Make-TXT-Image.sh
@@ -57,7 +59,7 @@ Make-TXT-Image:
       - /builds/fischertechnik/ft-TXT_Build_$BUILD.img.zip
 
 graph:
-  stage: build
+  stage: build3
   script:
     - cd /builds/fischertechnik/buildroot
     - make graph-depends
