@@ -5,7 +5,7 @@
 image: debian:stable
 
 before_script:
-  - ENV DEBIAN_FRONTEND noninteractive
+  - DEBIAN_FRONTEND=noninteractive;
   - cd /builds/fischertechnik/FT-TXT
   - apt-get update -qq
   - ./Linux-Pakete-Required.sh
