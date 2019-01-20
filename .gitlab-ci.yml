@@ -28,10 +28,9 @@ build1:
   artifacts:
     cwd: "build"
     paths:
-      - *.*
-      #- /builds/fischertechnik/$IMAGEFILE.zip
-      #- /builds/fischertechnik/update/update.sh
-      #- /builds/fischertechnik/buildroot/output/graphs/*
+      - /builds/fischertechnik/*.zip
+      - /builds/fischertechnik/update/update.sh
+      - /builds/fischertechnik/buildroot/output/graphs/*.*
 
 
 #test1:
