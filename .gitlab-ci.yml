@@ -20,11 +20,11 @@ build1:
     - ./Make-TXT-Bootloader.sh > Make-TXT-Bootloader.sh.log
     - ./Make-TXT-Buildroot-Clean.sh > Make-TXT-Buildroot-Clean.sh.log
     #- ./Make-TXT-UpdateScripts.sh > Make-TXT-UpdateScripts.sh.log : ./Make-TXT-UpdateScripts.sh: line 20: /builds/fischertechnik/update/update.sh: No such file or directory
-    - ./Make-TXT-Image.sh
-    - cd ../buildroot
-    - make graph-depends
-    - make graph-build
-    - make graph-size
+    #- ./Make-TXT-Image.sh
+    #- cd ../buildroot
+    #- make graph-depends
+    #- make graph-build
+    #- make graph-size
   artifacts:
     paths:
       - /builds/fischertechnik/$IMAGEFILE.zip
