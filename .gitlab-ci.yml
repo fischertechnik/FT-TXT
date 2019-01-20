@@ -31,13 +31,6 @@ build1:
       - /builds/fischertechnik/update
       - /builds/fischertechnik/buildroot/output/graphs
 
-build2:
-  stage: build
-  script:
-    - cd ../buildroot
-    - make graph-depends
-    - make graph-build
-    - make graph-size
 
 #test1:
 #  stage: test
