@@ -59,8 +59,8 @@ Make-TXT-Image:
   artifacts:
     name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME"
     paths:
+      - BUILD=`cat /builds/fischertechnik/FT-TXT/board/FT/TXT/BUILD`
       - /builds/fischertechnik/ft-TXT_Build_$BUILD.img.zip
-      - /builds/fischertechnik/*.zip
 
 graph:
   stage: build3
