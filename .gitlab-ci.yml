@@ -28,14 +28,14 @@ Make-TXT-Bootloader:
     - mkdir /opt/FT
     - chmod a+rw /opt/FT
     - cd /builds/fischertechnik/FT-TXT
-    - ./Make-TXT-Bootloader.sh > Make-TXT-Bootloader.sh.log
+    - ./Make-TXT-Bootloader.sh #> Make-TXT-Bootloader.sh.log
     - ls -la /builds/fischertechnik/u-boot
     
 Make-TXT-Buildroot-Clean:
   stage: build2
   script:
     - cd /builds/fischertechnik/FT-TXT
-    - ./Make-TXT-Buildroot-Clean.sh > Make-TXT-Buildroot-Clean.sh.log
+    - ./Make-TXT-Buildroot-Clean.sh #> Make-TXT-Buildroot-Clean.sh.log
     - ls -la /builds/fischertechnik/buildroot
     
 Make-TXT-UpdateScripts:
