@@ -1,0 +1,94 @@
+# This file is a template, and might need editing before it works on your project.
+# see https://docs.gitlab.com/ce/ci/yaml/README.html for all available options
+
+# you can delete this line if you're not using Docker
+image: debian:stable
+
+before_script:
+  - cd /builds/fischertechnik/FT-TXT
+  - apt-get update -qq
+  - ./Linux-Pakete-Required.sh
+  - env DEBIAN_FRONTEND=noninteractive  ./Linux-Pakete-Extra.sh
+  - apt-get -y install joe git gitk cvs wget cpio
+  - apt-get -y install graphviz python-matplotlib python-numpy # make graph-*
+
+#after_script:
+#  - echo "After script section"
+
+stages:
+  - build1
+  - build2
+  - build3
+  - test
+  - deploy
+
+Make-TXT-Bootloader:
+  stage: build1
+  script:
+    - mkdir /opt/FT
+    - chmod a+rw /opt/FT
+    - cd /builds/fischertechnik/FT-TXT
+    - ./Make-TXT-Bootloader.sh #> Make-TXT-Bootloader.sh.log
+    - ls -la /builds/fischertechnik/u-boot
+    
+Make-TXT-Buildroot-Clean:
+  stage: build2
+  script:
+    - cd /builds/fischertechnik/FT-TXT
+    - ./Make-TXT-Buildroot-Clean.sh #> Make-TXT-Buildroot-Clean.sh.log
+    - ls -la /builds/fischertechnik/buildroot
+    
+Make-TXT-UpdateScripts:
+  stage: build3
+  script:
+    - mkdir /builds/fischertechnik/update
+    - cd /builds/fischertechnik/FT-TXT
+    - ./Make-TXT-UpdateScripts.sh
+    - ls -la /builds/fischertechnik/update
+  artifacts:
+    name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME"
+    paths:
+      - /builds/fischertechnik/update/update.sh
+
+Make-TXT-Image:
+  stage: build3
+  script:
+    - cd /builds/fischertechnik/FT-TXT
+    - ./Make-TXT-Image.sh
+    - ls -la /builds/fischertechnik
+  artifacts:
+    name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME"
+    paths:
+      - BUILD=`cat /builds/fischertechnik/FT-TXT/board/FT/TXT/BUILD`
+      - /builds/fischertechnik/ft-TXT_Build_$BUILD.img.zip
+
+graph:
+  stage: build3
+  script:
+    - cd /builds/fischertechnik/buildroot
+    - make graph-depends
+    - make graph-build
+    - make graph-size
+    - ls -la /builds/fischertechnik/buildroot/output/graphs
+  artifacts:
+    name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME"
+    paths:
+      - /builds/fischertechnik/buildroot/output/graphs/*
+
+
+#test1:
+#  stage: test
+#  script: 
+#    - echo "Do a test here"
+#    - echo "For example run a test suite"
+   
+#test2:
+#  stage: test
+#  script: 
+#    - echo "Do another parallel test here"
+#    - echo "For example run a lint test"
+   
+#deploy1:
+#  stage: deploy
+#  script:
+#    - echo deploy
