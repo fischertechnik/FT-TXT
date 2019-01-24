@@ -141,6 +141,5 @@ ROBOPro ALL=(root) NOPASSWD: /usr/bin/tee /etc/timezone
 ROBOPro ALL=(root) NOPASSWD: /usr/bin/unlink /etc/localtime 
 ROBOPro ALL=(root) NOPASSWD: /bin/ln -s /usr/share/zoneinfo/Etc/[GMT]* /etc/localtime
 ROBOPro ALL=(root) NOPASSWD: /usr/share/txt-utils/update-bootdev.sh ""
-ROBOPro ALL=(civetweb) NOPASSWD: /etc/init.d/civetweb_txt restart
-ROBOPro ALL=(civetweb) NOPASSWD: /etc/init.d/civetweb_txt stop
-
+ROBOPro ALL=(root) NOPASSWD: /etc/init.d/civetweb_txt restart
+ROBOPro ALL=(root) NOPASSWD: /etc/init.d/civetweb_txt stop
