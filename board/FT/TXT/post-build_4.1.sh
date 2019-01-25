@@ -56,8 +56,9 @@ chmod 775 $TARGETDIR/opt/knobloch/InternalStorage/ScratchFiles
 mv $TARGETDIR/etc/init.d/S50sshd $TARGETDIR/etc/init.d/mS50sshd
 
 # WEB server
-rm $TARGETDIR/var/www/civetweb_64x64.png
-chown -R civetweb:civetweb $TARGETDIR/var/www
+rm -rf $TARGETDIR/var/www/*
+chown -R www-data:ROBOPro $TARGETDIR/var/www
+chmod -R 775 $TARGETDIR/var/www
 
 # Set build info
 echo "fischertechnik TXT Rel 2.0 Build $BUILD ($BUILDDATE)" > $TARGETDIR/etc/BUILD
