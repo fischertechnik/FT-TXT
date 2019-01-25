@@ -14,10 +14,10 @@ ENV{ID_FS_LABEL}=="", ENV{dir_name}="sdcard-%k"
 ACTION=="add", RUN+="/bin/mkdir -p '/opt/knobloch/ExternalStorage/%E{dir_name}'"
 
 # vfat specific mount options
-ACTION=="add", ENV{ID_FS_TYPE}=="vfat", RUN+="/bin/mount -t vfat -o user,rw,exec,utf8,uid=1000,gid=1000,fmask=111,dmask=000 /dev/%k '/opt/knobloch/ExternalStorage/%E{dir_name}'"
+ACTION=="add", ENV{ID_FS_TYPE}=="vfat", RUN+="/bin/mount -t vfat -o user,rw,exec,utf8,uid=1001,gid=1001,fmask=111,dmask=000 /dev/%k '/opt/knobloch/ExternalStorage/%E{dir_name}'"
 
 # exfat specific mount options
-ACTION=="add", ENV{ID_FS_TYPE}=="exfat", RUN+="/bin/mount -t exfat -o user,rw,exec,utf8,uid=1000,gid=1000,fmask=111,dmask=000 /dev/%k '/opt/knobloch/ExternalStorage/%E{dir_name}'"
+ACTION=="add", ENV{ID_FS_TYPE}=="exfat", RUN+="/bin/mount -t exfat -o user,rw,exec,utf8,uid=1001,gid=1001,fmask=111,dmask=000 /dev/%k '/opt/knobloch/ExternalStorage/%E{dir_name}'"
 
 ACTION=="add", ENV{ID_FS_TYPE}=="ntfs", RUN+="/bin/mount -t ntfs-3g -o user,rw,exec,utf8 /dev/%k '/opt/knobloch/ExternalStorage/%E{dir_name}'"
 
