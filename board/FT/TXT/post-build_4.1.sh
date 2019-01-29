@@ -56,8 +56,7 @@ chmod 775 $TARGETDIR/opt/knobloch/InternalStorage/ScratchFiles
 mv $TARGETDIR/etc/init.d/S50sshd $TARGETDIR/etc/init.d/mS50sshd
 
 # WEB server
-rm -rf $TARGETDIR/var/www/*
-chown -R www-data:ROBOPro $TARGETDIR/var/www
+rm $TARGETDIR/var/www/civetweb_64x64.png
 chmod -R 775 $TARGETDIR/var/www
 
 # Set build info
