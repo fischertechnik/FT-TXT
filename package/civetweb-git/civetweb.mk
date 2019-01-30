@@ -4,8 +4,9 @@
 #
 ################################################################################
 
-CIVETWEB_GIT_VERSION = 1.11
-CIVETWEB_GIT_SITE = http://github.com/civetweb/civetweb/tarball/v$(CIVETWEB_GIT_VERSION)
+CIVETWEB_GIT_VERSION = master
+CIVETWEB_GIT_SITE = https://github.com/civetweb/civetweb.git
+CIVETWEB_GIT_SITE_METHOD = git
 CIVETWEB_GIT_LICENSE = MIT
 CIVETWEB_GIT_LICENSE_FILES = LICENSE.md
 
@@ -27,6 +28,7 @@ ifeq ($(BR2_CIVETWEB_GIT_WITH_LUA),y)
 	CIVETWEB_GIT_CONF_OPTS += WITH_LUA=1
 endif
 
+#ifneq ($(BR2_CIVETWEB_GIT_WITH_SSL),y)
 ifeq ($(BR2_CIVETWEB_GIT_WITH_SSL),y)
 	CIVETWEB_GIT_COPT += -DNO_SSL_DL -lcrypt -lssl
 	CIVETWEB_GIT_DEPENDENCIES += openssl

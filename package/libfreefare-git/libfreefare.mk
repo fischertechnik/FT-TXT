@@ -4,7 +4,7 @@
 #
 ################################################################################
 
-LIBFREEFARE_GIT_VERSION = c18f702
+LIBFREEFARE_GIT_VERSION = master
 LIBFREEFARE_GIT_SITE = https://github.com/nfc-tools/libfreefare.git
 LIBFREEFARE_GIT_SITE_METHOD = git
 LIBFREEFARE_GIT_DEPENDENCIES = libnfc-git openssl
