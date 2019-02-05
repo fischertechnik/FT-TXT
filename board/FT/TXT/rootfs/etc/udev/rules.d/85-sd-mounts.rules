@@ -10,6 +10,9 @@ IMPORT{program}="/sbin/blkid -o udev -p %N"
 ENV{ID_FS_LABEL}!="", ENV{dir_name}="%E{ID_FS_LABEL}"
 ENV{ID_FS_LABEL}=="", ENV{dir_name}="sdcard-%k"
 
+ENV{ID_FS_LABEL}=="BOOT", GOTO="exit"
+ENV{ID_FS_LABEL}=="ROOTF", GOTO="exit"
+
 # create the dir and symlink it to /mnt
 ACTION=="add", RUN+="/bin/mkdir -p '/opt/knobloch/ExternalStorage/%E{dir_name}'"
 
