@@ -4,23 +4,7 @@
 # you can delete this line if you're not using Docker
 image: debian:stable
 
-#before_script:
-#  - echo "Before script section"
-
-#after_script:
-#  - echo "After script section"
-
-stages:
-  - build0
-  - build1
-  - build2
-  - build3
-  - test
-  - deploy
-
-Setup-Linux:
-  stage: build0
-  script:
+before_script:
   - cd /builds/fischertechnik/FT-TXT
   - apt-get update -qq
   - ./Linux-Pakete-Required.sh
@@ -28,13 +12,28 @@ Setup-Linux:
   - apt-get -y install joe git gitk cvs wget cpio
   - apt-get -y install graphviz python-matplotlib python-numpy # make graph-*
 
+#after_script:
+#  - echo "After script section"
+
+stages:
+  - build1
+  - build2
+  - build3
+  - test
+  - deploy
+
 Make-TXT-Bootloader:
   stage: build1
   script:
     - mkdir /opt/FT
     - chmod a+rw /opt/FT
     - cd /builds/fischertechnik/FT-TXT
-    - ./Make-TXT-Bootloader.sh > Make-TXT-Bootloader.sh.log
+    - ./Make-TXT-Bootloader.sh #> Make-TXT-Bootloader.sh.log
+  cache:
+    key: build-boot
+    paths:
+    - /builds/fischertechnik/u-boot
+  after_script:
     - ls -la /builds/fischertechnik/u-boot
     
 Make-TXT-Buildroot-Clean:
@@ -42,6 +41,12 @@ Make-TXT-Buildroot-Clean:
   script:
     - cd /builds/fischertechnik/FT-TXT
     - ./Make-TXT-Buildroot-Clean.sh > Make-TXT-Buildroot-Clean.sh.log
+  cache:
+    key: build-boot
+    key: build-buildroot
+    paths:
+    - /builds/fischertechnik/buildroot
+  after_script:
     - ls -la /builds/fischertechnik/buildroot
     
 Make-TXT-UpdateScripts:
@@ -50,23 +55,31 @@ Make-TXT-UpdateScripts:
     - mkdir /builds/fischertechnik/update
     - cd /builds/fischertechnik/FT-TXT
     - ./Make-TXT-UpdateScripts.sh
-    - ls -la /builds/fischertechnik/update
+  cache:
+    key: build-boot
+    key: build-buildroot
   artifacts:
     name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME"
     paths:
       - /builds/fischertechnik/update/update.sh
+  after_script:
+    - ls -la /builds/fischertechnik/update
 
 Make-TXT-Image:
   stage: build3
   script:
     - cd /builds/fischertechnik/FT-TXT
     - ./Make-TXT-Image.sh
-    - ls -la /builds/fischertechnik
     - export BUILD='cat /builds/fischertechnik/FT-TXT/board/FT/TXT/BUILD'
+  cache:
+    key: build-boot
+    key: build-buildroot
   artifacts:
     name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME"
     paths:
       - /builds/fischertechnik/ft-TXT_Build_$BUILD.img.zip
+  after_script:
+    - ls -la /builds/fischertechnik
 
 graph:
   stage: build3
@@ -75,11 +88,15 @@ graph:
     - make graph-depends
     - make graph-build
     - make graph-size
-    - ls -la /builds/fischertechnik/buildroot/output/graphs
+  cache:
+    key: build-boot
+    key: build-buildroot
   artifacts:
     name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME"
     paths:
       - /builds/fischertechnik/buildroot/output/graphs/*
+  after_script:
+    - ls -la /builds/fischertechnik/buildroot/output/graphs
 
 
 #test1:
