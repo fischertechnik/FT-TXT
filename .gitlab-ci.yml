@@ -27,7 +27,6 @@ Make-TXT-Bootloader:
     - chmod a+rw /opt/FT
     - cd /builds/fischertechnik/FT-TXT
     - ./Make-TXT-Bootloader.sh > Make-TXT-Bootloader.sh.log
-  parallel: 8
   after_script:
     - ls -la /builds/fischertechnik/u-boot/*
     
@@ -36,7 +35,8 @@ Make-TXT-Buildroot-Clean:
   script:
     - cd /builds/fischertechnik/FT-TXT
     - ./Make-TXT-Buildroot-Clean.sh > Make-TXT-Buildroot-Clean.sh.log
-  parallel: 8
+  dependencies:
+    - Make-TXT-Bootloader
   after_script:
     - ls -la /builds/fischertechnik/buildroot/*
     
@@ -53,7 +53,7 @@ Make-TXT-Image:
     paths:
       - /builds/fischertechnik/ft-TXT_Build_$BUILD.img.zip
   after_script:
-    - ls -la /builds/fischertechnik
+    - ls -la /builds/fischertechnik/*
 
 Make-TXT-UpdateScripts:
   stage: build3
