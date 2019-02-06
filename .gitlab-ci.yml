@@ -29,13 +29,24 @@ Make-TXT-Bootloader:
     - chmod a+rw /opt/FT
     - cd /builds/fischertechnik/FT-TXT
     - ./Make-TXT-Bootloader.sh #> Make-TXT-Bootloader.sh.log
+  cache:
+    key: build-boot
+    paths:
+    - /builds/fischertechnik/u-boot
+  after_script:
     - ls -la /builds/fischertechnik/u-boot
     
 Make-TXT-Buildroot-Clean:
   stage: build2
   script:
     - cd /builds/fischertechnik/FT-TXT
-    - ./Make-TXT-Buildroot-Clean.sh #> Make-TXT-Buildroot-Clean.sh.log
+    - ./Make-TXT-Buildroot-Clean.sh > Make-TXT-Buildroot-Clean.sh.log
+  cache:
+    key: build-boot
+    key: build-buildroot
+    paths:
+    - /builds/fischertechnik/buildroot
+  after_script:
     - ls -la /builds/fischertechnik/buildroot
     
 Make-TXT-UpdateScripts:
@@ -44,23 +55,31 @@ Make-TXT-UpdateScripts:
     - mkdir /builds/fischertechnik/update
     - cd /builds/fischertechnik/FT-TXT
     - ./Make-TXT-UpdateScripts.sh
-    - ls -la /builds/fischertechnik/update
+  cache:
+    key: build-boot
+    key: build-buildroot
   artifacts:
     name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME"
     paths:
       - /builds/fischertechnik/update/update.sh
+  after_script:
+    - ls -la /builds/fischertechnik/update
 
 Make-TXT-Image:
   stage: build3
   script:
     - cd /builds/fischertechnik/FT-TXT
     - ./Make-TXT-Image.sh
-    - ls -la /builds/fischertechnik
+    - export BUILD='cat /builds/fischertechnik/FT-TXT/board/FT/TXT/BUILD'
+  cache:
+    key: build-boot
+    key: build-buildroot
   artifacts:
     name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME"
     paths:
-      - BUILD=`cat /builds/fischertechnik/FT-TXT/board/FT/TXT/BUILD`
       - /builds/fischertechnik/ft-TXT_Build_$BUILD.img.zip
+  after_script:
+    - ls -la /builds/fischertechnik
 
 graph:
   stage: build3
@@ -69,11 +88,15 @@ graph:
     - make graph-depends
     - make graph-build
     - make graph-size
-    - ls -la /builds/fischertechnik/buildroot/output/graphs
+  cache:
+    key: build-boot
+    key: build-buildroot
   artifacts:
     name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME"
     paths:
       - /builds/fischertechnik/buildroot/output/graphs/*
+  after_script:
+    - ls -la /builds/fischertechnik/buildroot/output/graphs
 
 
 #test1:

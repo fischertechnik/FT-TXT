@@ -45,7 +45,8 @@ then
     echo $NEWDEVICEID > $DEVICEIDFILE
     echo "ft-txt_$NEWDEVICEID" > /etc/init.d/wlan_ap_ssid
     echo "ROBOTICS TXT $NEWDEVICEID" > /etc/init.d/bt_name
-
+    echo "{\"devicename\":\"TXT-$NEWDEVICEID\"}" > /var/www/device.json #for WEB server
+    
     # update WLAN config
     sed -i -e "s/ssid=.*/ssid=ft-txt_$NEWDEVICEID/" /etc/hostapd.conf
 
