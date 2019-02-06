@@ -4,6 +4,11 @@
 # you can delete this line if you're not using Docker
 image: debian:stable
 
+stages:
+  - build1
+  - build2
+  - build3
+
 before_script:
   - apt-get update -qq
   - cd /builds/fischertechnik/FT-TXT
@@ -12,15 +17,8 @@ before_script:
   - apt-get -y install joe git gitk cvs wget cpio
   - apt-get -y install graphviz python-matplotlib python-numpy # make graph-*
 
-#after_script:
-#  - echo "After script section"
-
-stages:
-  - build1
-  - build2
-  - build3
-  - test
-  - deploy
+after_script:
+  - echo "After script section"
 
 Make-TXT-Bootloader:
   stage: build1
@@ -28,31 +26,20 @@ Make-TXT-Bootloader:
     - mkdir /opt/FT
     - chmod a+rw /opt/FT
     - cd /builds/fischertechnik/FT-TXT
-    - ./Make-TXT-Bootloader.sh #> Make-TXT-Bootloader.sh.log
+    - ./Make-TXT-Bootloader.sh > Make-TXT-Bootloader.sh.log
+  parallel: 8
   after_script:
-    - ls -la /builds/fischertechnik/u-boot
+    - ls -la /builds/fischertechnik/u-boot/*
     
 Make-TXT-Buildroot-Clean:
   stage: build2
   script:
     - cd /builds/fischertechnik/FT-TXT
-    - ./Make-TXT-Buildroot-Clean.sh #> Make-TXT-Buildroot-Clean.sh.log
+    - ./Make-TXT-Buildroot-Clean.sh > Make-TXT-Buildroot-Clean.sh.log
+  parallel: 8
   after_script:
-    - ls -la /builds/fischertechnik/buildroot
+    - ls -la /builds/fischertechnik/buildroot/*
     
-Make-TXT-UpdateScripts:
-  stage: build3
-  script:
-    - mkdir /builds/fischertechnik/update
-    - cd /builds/fischertechnik/FT-TXT
-    - ./Make-TXT-UpdateScripts.sh
-  artifacts:
-    name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME"
-    paths:
-      - /builds/fischertechnik/update/update.sh
-  after_script:
-    - ls -la /builds/fischertechnik/update
-
 Make-TXT-Image:
   stage: build3
   script:
@@ -66,37 +53,29 @@ Make-TXT-Image:
   after_script:
     - ls -la /builds/fischertechnik
 
-graph:
+Make-TXT-UpdateScripts:
+  stage: build3
+  script:
+    - mkdir /builds/fischertechnik/update
+    - cd /builds/fischertechnik/FT-TXT
+    - ./Make-TXT-UpdateScripts.sh
+  artifacts:
+    name: "update.sh"
+    paths:
+      - /builds/fischertechnik/update/update.sh
+  after_script:
+    - ls -la /builds/fischertechnik/update
+
+Make-TXT-Graphs:
   stage: build3
   script:
     - cd /builds/fischertechnik/buildroot
     - make graph-depends
     - make graph-build
     - make graph-size
-  cache:
-    key: build-boot
-    key: build-buildroot
   artifacts:
     name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME"
     paths:
       - /builds/fischertechnik/buildroot/output/graphs/*
   after_script:
-    - ls -la /builds/fischertechnik/buildroot/output/graphs
-
-
-#test1:
-#  stage: test
-#  script: 
-#    - echo "Do a test here"
-#    - echo "For example run a test suite"
-   
-#test2:
-#  stage: test
-#  script: 
-#    - echo "Do another parallel test here"
-#    - echo "For example run a lint test"
-   
-#deploy1:
-#  stage: deploy
-#  script:
-#    - echo deploy
+    - ls -la /builds/fischertechnik/buildroot/output/graphs/*
