@@ -4,7 +4,23 @@
 # you can delete this line if you're not using Docker
 image: debian:stable
 
-before_script:
+#before_script:
+#  - echo "Before script section"
+
+#after_script:
+#  - echo "After script section"
+
+stages:
+  - build0
+  - build1
+  - build2
+  - build3
+  - test
+  - deploy
+
+Setup-Linux:
+  stage: build0
+  script:
   - cd /builds/fischertechnik/FT-TXT
   - apt-get update -qq
   - ./Linux-Pakete-Required.sh
@@ -12,23 +28,13 @@ before_script:
   - apt-get -y install joe git gitk cvs wget cpio
   - apt-get -y install graphviz python-matplotlib python-numpy # make graph-*
 
-#after_script:
-#  - echo "After script section"
-
-stages:
-  - build1
-  - build2
-  - build3
-  - test
-  - deploy
-
 Make-TXT-Bootloader:
   stage: build1
   script:
     - mkdir /opt/FT
     - chmod a+rw /opt/FT
     - cd /builds/fischertechnik/FT-TXT
-    - ./Make-TXT-Bootloader.sh #> Make-TXT-Bootloader.sh.log
+    - ./Make-TXT-Bootloader.sh > Make-TXT-Bootloader.sh.log
     - ls -la /builds/fischertechnik/u-boot
     
 Make-TXT-Buildroot-Clean:
