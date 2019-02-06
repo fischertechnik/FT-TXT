@@ -37,20 +37,20 @@ cp $BINARIES_DIR/uImage $TARGETDIR/lib/boot
 cp $BINARIES_DIR/am335x-kno_txt.dtb $TARGETDIR/lib/boot
 
 # Create ROBOProFiles
-mkdir $TARGETDIR/opt/knobloch/InternalStorage/ROBOProFiles
-chmod 775 $TARGETDIR/opt/knobloch/InternalStorage/ROBOProFiles
+mkdir $TARGETDIR/opt/knobloch/InternalStorage/ROBOPro
+chmod 775 $TARGETDIR/opt/knobloch/InternalStorage/ROBOPro
 
 # Create CProgFiles
-mkdir $TARGETDIR/opt/knobloch/InternalStorage/CDownloadFiles
-chmod 775 $TARGETDIR/opt/knobloch/InternalStorage/CDownloadFiles
+mkdir $TARGETDIR/opt/knobloch/InternalStorage/CDownload
+chmod 775 $TARGETDIR/opt/knobloch/InternalStorage/CDownload
 
 # Create PythonFiles
-mkdir $TARGETDIR/opt/knobloch/InternalStorage/PythonFiles
-chmod 775 $TARGETDIR/opt/knobloch/InternalStorage/PythonFiles
+#mkdir $TARGETDIR/opt/knobloch/InternalStorage/Python
+#chmod 775 $TARGETDIR/opt/knobloch/InternalStorage/Python
 
 # Create ScratchFiles
-mkdir $TARGETDIR/opt/knobloch/InternalStorage/ScratchFiles
-chmod 775 $TARGETDIR/opt/knobloch/InternalStorage/ScratchFiles
+#mkdir $TARGETDIR/opt/knobloch/InternalStorage/Scratch
+#chmod 775 $TARGETDIR/opt/knobloch/InternalStorage/Scratch
 
 # Rename S50sshd (start sshd manual)
 mv $TARGETDIR/etc/init.d/S50sshd $TARGETDIR/etc/init.d/mS50sshd
