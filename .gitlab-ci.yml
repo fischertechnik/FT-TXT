@@ -19,7 +19,7 @@ before_script:
 after_script:
   - echo "END"
 
-Make-TXT-Bootloader:
+make:bootloader:
   stage: build1
   script:
     - mkdir /opt/FT
@@ -27,55 +27,62 @@ Make-TXT-Bootloader:
     - cd /builds/fischertechnik/FT-TXT
     - ./Make-TXT-Bootloader.sh > Make-TXT-Bootloader.sh.log
   artifacts:
+    name: "u-boot"
     paths:
-    - /builds/fischertechnik/u-boot
+    - /builds/fischertechnik/u-boot/
     expire_in: 1 week
   after_script:
-    - ls -la /builds/fischertechnik/u-boot
+    - ls -la /builds/fischertechnik/u-boot/
     
-Make-TXT-Buildroot-Clean:
+make:buildroot:
   stage: build2
   script:
     - cd /builds/fischertechnik/FT-TXT
     - ./Make-TXT-Buildroot-Clean.sh > Make-TXT-Buildroot-Clean.sh.log
   artifacts:
+    name: "buildroot"
     paths:
-    - /builds/fischertechnik/buildroot
+    - /builds/fischertechnik/buildroot/
     expire_in: 1 week
+  dependencies:
+    - make:bootloader
   after_script:
-    - ls -la /builds/fischertechnik/buildroot
+    - ls -la /builds/fischertechnik/buildroot/
     
-Make-TXT-Image:
+make:image:
   stage: build3
   script:
     - cd /builds/fischertechnik/FT-TXT
     - ./Make-TXT-Image.sh
   artifacts:
-    name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME"
+    name: "image"
     paths:
-    - /builds/fischertechnik
+    - /builds/fischertechnik/
     - /builds/fischertechnik/ft-TXT_Build_$BUILD.img.zip
     expire_in: 1 week
+  dependencies:
+    - make:buildroot
   after_script:
-    - ls -la /builds/fischertechnik
+    - ls -la /builds/fischertechnik/
     - export BUILD=`cat /builds/fischertechnik/FT-TXT/board/FT/TXT/BUILD`
 
-Make-TXT-UpdateScripts:
+make:update:
   stage: build3
   script:
     - mkdir /builds/fischertechnik/update
     - cd /builds/fischertechnik/FT-TXT
     - ./Make-TXT-UpdateScripts.sh
   artifacts:
-    name: "update.sh"
+    name: "update"
     paths:
-      - /builds/fischertechnik/update
-      - /builds/fischertechnik/update/update.sh
+      - /builds/fischertechnik/update/
     expire_in: 1 week
+  dependencies:
+    - make:buildroot
   after_script:
-    - ls -la /builds/fischertechnik/update
+    - ls -la /builds/fischertechnik/update/
 
-Make-TXT-Graphs:
+make:graphs:
   stage: build3
   before_script:
     - apt-get -y install graphviz python-matplotlib python-numpy -qq
@@ -84,9 +91,11 @@ Make-TXT-Graphs:
     - make graph-depends
     - make graph-build
     - make graph-size
+  dependencies:
+    - make:buildroot
   artifacts:
-    name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME"
+    name: "graphs"
     paths:
-      - /builds/fischertechnik/buildroot/output/graphs
+      - /builds/fischertechnik/buildroot/output/graphs/
   after_script:
-    - ls -la /builds/fischertechnik/buildroot/output/graphs
+    - ls -la /builds/fischertechnik/buildroot/output/graphs/
