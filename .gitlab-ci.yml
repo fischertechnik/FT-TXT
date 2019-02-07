@@ -14,7 +14,7 @@ before_script:
   - cd /builds/fischertechnik/FT-TXT
   - ./Linux-Pakete-Required.sh
   - env DEBIAN_FRONTEND=noninteractive  ./Linux-Pakete-Extra.sh
-  - apt-get -y install joe git gitk cvs wget cpio
+  - apt-get -y install joe git gitk cvs wget cpio -qq
 
 after_script:
   - echo "END"
@@ -78,7 +78,7 @@ Make-TXT-UpdateScripts:
 Make-TXT-Graphs:
   stage: build3
   before_script:
-    - apt-get -y install graphviz python-matplotlib python-numpy # make graph-*
+    - apt-get -y install graphviz python-matplotlib python-numpy -qq
   script:
     - cd /builds/fischertechnik/buildroot
     - make graph-depends
