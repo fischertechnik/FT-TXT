@@ -15,10 +15,9 @@ before_script:
   - ./Linux-Pakete-Required.sh
   - env DEBIAN_FRONTEND=noninteractive  ./Linux-Pakete-Extra.sh
   - apt-get -y install joe git gitk cvs wget cpio
-  - apt-get -y install graphviz python-matplotlib python-numpy # make graph-*
 
 after_script:
-  - echo "After script section"
+  - echo "END"
 
 Make-TXT-Bootloader:
   stage: build1
@@ -27,33 +26,39 @@ Make-TXT-Bootloader:
     - chmod a+rw /opt/FT
     - cd /builds/fischertechnik/FT-TXT
     - ./Make-TXT-Bootloader.sh > Make-TXT-Bootloader.sh.log
+  artifacts:
+    paths:
+    - /builds/fischertechnik/u-boot
+    expire_in: 1 week
   after_script:
-    - ls -la /builds/fischertechnik/u-boot/*
+    - ls -la /builds/fischertechnik/u-boot
     
 Make-TXT-Buildroot-Clean:
   stage: build2
   script:
     - cd /builds/fischertechnik/FT-TXT
     - ./Make-TXT-Buildroot-Clean.sh > Make-TXT-Buildroot-Clean.sh.log
-  dependencies:
-    - Make-TXT-Bootloader
+  artifacts:
+    paths:
+    - /builds/fischertechnik/buildroot
+    expire_in: 1 week
   after_script:
-    - ls -la /builds/fischertechnik/buildroot/*
+    - ls -la /builds/fischertechnik/buildroot
     
 Make-TXT-Image:
   stage: build3
   script:
     - cd /builds/fischertechnik/FT-TXT
     - ./Make-TXT-Image.sh
-    - export BUILD=`cat /builds/fischertechnik/FT-TXT/board/FT/TXT/BUILD`
-  dependencies:
-    - Make-TXT-Buildroot-Clean
   artifacts:
     name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME"
     paths:
-      - /builds/fischertechnik/ft-TXT_Build_$BUILD.img.zip
+    - /builds/fischertechnik
+    - /builds/fischertechnik/ft-TXT_Build_$BUILD.img.zip
+    expire_in: 1 week
   after_script:
-    - ls -la /builds/fischertechnik/*
+    - ls -la /builds/fischertechnik
+    - export BUILD=`cat /builds/fischertechnik/FT-TXT/board/FT/TXT/BUILD`
 
 Make-TXT-UpdateScripts:
   stage: build3
@@ -61,27 +66,27 @@ Make-TXT-UpdateScripts:
     - mkdir /builds/fischertechnik/update
     - cd /builds/fischertechnik/FT-TXT
     - ./Make-TXT-UpdateScripts.sh
-  dependencies:
-    - Make-TXT-Buildroot-Clean
   artifacts:
     name: "update.sh"
     paths:
+      - /builds/fischertechnik/update
       - /builds/fischertechnik/update/update.sh
+    expire_in: 1 week
   after_script:
     - ls -la /builds/fischertechnik/update
 
 Make-TXT-Graphs:
   stage: build3
+  before_script:
+    - apt-get -y install graphviz python-matplotlib python-numpy # make graph-*
   script:
     - cd /builds/fischertechnik/buildroot
     - make graph-depends
     - make graph-build
     - make graph-size
-  dependencies:
-    - Make-TXT-Buildroot-Clean
   artifacts:
     name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME"
     paths:
-      - /builds/fischertechnik/buildroot/output/graphs/*
+      - /builds/fischertechnik/buildroot/output/graphs
   after_script:
-    - ls -la /builds/fischertechnik/buildroot/output/graphs/*
+    - ls -la /builds/fischertechnik/buildroot/output/graphs
