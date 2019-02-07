@@ -26,45 +26,47 @@ make:bootloader:
     - chmod a+rw /opt/FT
     - cd /builds/fischertechnik/FT-TXT
     - ./Make-TXT-Bootloader.sh > Make-TXT-Bootloader.sh.log
+    - cp -R /builds/fischertechnik/u-boot/ "$CI_PROJECT_DIR/u-boot/"
   artifacts:
-    name: "u-boot"
+    name: "$CI_COMMIT_REF_NAME-bootloader"
     paths:
-    - /builds/fischertechnik/u-boot/
+    - "$CI_PROJECT_DIR/u-boot/"
     expire_in: 1 week
   after_script:
-    - ls -la /builds/fischertechnik/u-boot/
+    - ls -la "$CI_PROJECT_DIR/u-boot/"
     
 make:buildroot:
   stage: build2
   script:
     - cd /builds/fischertechnik/FT-TXT
     - ./Make-TXT-Buildroot-Clean.sh > Make-TXT-Buildroot-Clean.sh.log
+    - cp -R /builds/fischertechnik/buildroot/ "$CI_PROJECT_DIR/buildroot/"
   artifacts:
-    name: "buildroot"
+    name: "$CI_COMMIT_REF_NAME-buildroot"
     paths:
-    - /builds/fischertechnik/buildroot/
+    - "$CI_PROJECT_DIR/buildroot/"
     expire_in: 1 week
   dependencies:
     - make:bootloader
   after_script:
-    - ls -la /builds/fischertechnik/buildroot/
+    - ls -la "$CI_PROJECT_DIR/buildroot/"
     
 make:image:
   stage: build3
   script:
     - cd /builds/fischertechnik/FT-TXT
     - ./Make-TXT-Image.sh
+    - export BUILD=`cat /builds/fischertechnik/FT-TXT/board/FT/TXT/BUILD`
+    - cp "/builds/fischertechnik/ft-TXT_Build_$BUILD.img.zip" "$CI_PROJECT_DIR/ft-TXT_Build_$BUILD.img.zip"
   artifacts:
-    name: "image"
+    name: "$CI_COMMIT_REF_NAME-image"
     paths:
-    - /builds/fischertechnik/
-    - /builds/fischertechnik/ft-TXT_Build_$BUILD.img.zip
+    - "$CI_PROJECT_DIR/ft-TXT_Build_$BUILD.img.zip"
     expire_in: 1 week
   dependencies:
     - make:buildroot
   after_script:
-    - ls -la /builds/fischertechnik/
-    - export BUILD=`cat /builds/fischertechnik/FT-TXT/board/FT/TXT/BUILD`
+    - ls -la "$CI_PROJECT_DIR/ft-TXT_Build_$BUILD.img.zip"
 
 make:update:
   stage: build3
@@ -72,15 +74,16 @@ make:update:
     - mkdir /builds/fischertechnik/update
     - cd /builds/fischertechnik/FT-TXT
     - ./Make-TXT-UpdateScripts.sh
+    - cp -R /builds/fischertechnik/update/ "$CI_PROJECT_DIR/update/"
   artifacts:
-    name: "update"
+    name: "$CI_COMMIT_REF_NAME-update"
     paths:
-      - /builds/fischertechnik/update/
+      - "$CI_PROJECT_DIR/update/"
     expire_in: 1 week
   dependencies:
     - make:buildroot
   after_script:
-    - ls -la /builds/fischertechnik/update/
+    - ls -la "$CI_PROJECT_DIR/update/"
 
 make:graphs:
   stage: build3
@@ -91,11 +94,12 @@ make:graphs:
     - make graph-depends
     - make graph-build
     - make graph-size
+    - cp -R /builds/fischertechnik/buildroot/output/graphs/ "$CI_PROJECT_DIR/graphs/"
   dependencies:
     - make:buildroot
   artifacts:
-    name: "graphs"
+    name: "$CI_COMMIT_REF_NAME-graphs"
     paths:
-      - /builds/fischertechnik/buildroot/output/graphs/
+      - "$CI_PROJECT_DIR/graphs/"
   after_script:
-    - ls -la /builds/fischertechnik/buildroot/output/graphs/
+    - ls -la "$CI_PROJECT_DIR/graphs/"
