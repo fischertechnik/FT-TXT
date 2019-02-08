@@ -6,7 +6,9 @@ image: debian:stable
 
 stages:
   - build1
+  - copy1
   - build2
+  - copy2
   - build3
 
 before_script:
@@ -25,7 +27,11 @@ make:bootloader:
     - mkdir /opt/FT
     - chmod a+rw /opt/FT
     - cd /builds/fischertechnik/FT-TXT
-    - ./Make-TXT-Bootloader.sh > Make-TXT-Bootloader.sh.log
+    - ./Make-TXT-Bootloader.sh #> Make-TXT-Bootloader.sh.log
+
+copy:bootloader:
+  stage: copy1
+  script:
     - cp -R /builds/fischertechnik/u-boot/ "$CI_PROJECT_DIR/u-boot/"
   artifacts:
     name: "$CI_COMMIT_REF_NAME-bootloader"
@@ -40,17 +46,19 @@ make:buildroot:
   script:
     - cd /builds/fischertechnik/FT-TXT
     - ./Make-TXT-Buildroot-Clean.sh > Make-TXT-Buildroot-Clean.sh.log
+
+copy:bootloader:
+  stage: copy2
+  script:
     - cp -R /builds/fischertechnik/buildroot/ "$CI_PROJECT_DIR/buildroot/"
   artifacts:
     name: "$CI_COMMIT_REF_NAME-buildroot"
     paths:
     - "$CI_PROJECT_DIR/buildroot/"
     expire_in: 1 week
-  dependencies:
-    - make:bootloader
   after_script:
     - ls -la "$CI_PROJECT_DIR/buildroot/"
-    
+
 make:image:
   stage: build3
   script:
@@ -63,8 +71,6 @@ make:image:
     paths:
     - "$CI_PROJECT_DIR/ft-TXT_Build_$BUILD.img.zip"
     expire_in: 1 week
-  dependencies:
-    - make:buildroot
   after_script:
     - ls -la "$CI_PROJECT_DIR/ft-TXT_Build_$BUILD.img.zip"
 
@@ -80,8 +86,6 @@ make:update:
     paths:
       - "$CI_PROJECT_DIR/update/"
     expire_in: 1 week
-  dependencies:
-    - make:buildroot
   after_script:
     - ls -la "$CI_PROJECT_DIR/update/"
 
@@ -95,8 +99,6 @@ make:graphs:
     - make graph-build
     - make graph-size
     - cp -R /builds/fischertechnik/buildroot/output/graphs/ "$CI_PROJECT_DIR/graphs/"
-  dependencies:
-    - make:buildroot
   artifacts:
     name: "$CI_COMMIT_REF_NAME-graphs"
     paths:
