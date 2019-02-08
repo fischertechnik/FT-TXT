@@ -47,7 +47,7 @@ make:buildroot:
     - cd /builds/fischertechnik/FT-TXT
     - ./Make-TXT-Buildroot-Clean.sh > Make-TXT-Buildroot-Clean.sh.log
 
-copy:bootloader:
+copy:buildroot:
   stage: copy2
   script:
     - cp -R /builds/fischertechnik/buildroot/ "$CI_PROJECT_DIR/buildroot/"
