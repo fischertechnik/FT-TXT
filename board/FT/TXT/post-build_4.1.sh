@@ -41,8 +41,8 @@ mkdir $TARGETDIR/opt/knobloch/InternalFlash/ROBOPro
 chmod 775 $TARGETDIR/opt/knobloch/InternalFlash/ROBOPro
 
 # Create CProgFiles
-mkdir $TARGETDIR/opt/knobloch/InternalFlash/CDownload
-chmod 775 $TARGETDIR/opt/knobloch/InternalFlash/CDownload
+mkdir $TARGETDIR/opt/knobloch/InternalFlash/C-Program
+chmod 775 $TARGETDIR/opt/knobloch/InternalFlash/C-Program
 
 # Create PythonFiles
 #mkdir $TARGETDIR/opt/knobloch/InternalFlash/Python
