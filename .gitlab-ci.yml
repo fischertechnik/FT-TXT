@@ -4,6 +4,10 @@
 # you can delete this line if you're not using Docker
 image: debian:stable
 
+# https://blog.sparksuite.com/7-ways-to-speed-up-gitlab-ci-cd-times-29f60aab69f9
+variables:
+  DOCKER_DRIVER: overlay2
+  
 stages:
   - build1
   - build2
