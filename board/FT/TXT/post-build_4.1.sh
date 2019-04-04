@@ -52,9 +52,9 @@ chmod 775 $TARGETDIR/opt/knobloch/InternalFlash/C-Program
 #mkdir $TARGETDIR/opt/knobloch/InternalFlash/Scratch
 #chmod 775 $TARGETDIR/opt/knobloch/InternalFlash/Scratch
 
-# Create CalibFiles
-mkdir $TARGETDIR/opt/knobloch/CalibFiles
-chmod 775 $TARGETDIR/opt/knobloch/CalibFiles
+# Create DataFiles
+mkdir $TARGETDIR/opt/knobloch/DataFiles
+chmod 775 $TARGETDIR/opt/knobloch/DataFiles
 
 # Rename S50sshd (start sshd manual)
 mv $TARGETDIR/etc/init.d/S50sshd $TARGETDIR/etc/init.d/mS50sshd
