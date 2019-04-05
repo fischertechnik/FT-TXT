@@ -7,10 +7,6 @@ image: debian:stable
 # todo check
 # https://blog.sparksuite.com/7-ways-to-speed-up-gitlab-ci-cd-times-29f60aab69f9
 
-cache:
-  key: "$CI_BUILD_NAME"
-  untracked: true
-  
 stages:
   - install
   - build1
@@ -31,6 +27,10 @@ make:install:
   - ./Linux-Pakete-Required.sh
   - env DEBIAN_FRONTEND=noninteractive  ./Linux-Pakete-Extra.sh
   - apt-get -y install joe git gitk cvs wget cpio -qq
+  cache:
+    key: "$CI_BUILD_NAME"
+    untracked: true
+  
 
 make:bootloader:
   stage: build1
@@ -47,6 +47,9 @@ make:bootloader:
     expire_in: 1 week
   after_script:
     - ls -la "$CI_PROJECT_DIR/u-boot/"
+  cache:
+    key: "$CI_BUILD_NAME"
+    untracked: true
 
 make:buildroot:
   stage: build2
@@ -61,6 +64,9 @@ make:buildroot:
     expire_in: 1 week
   after_script:
     - ls -la "$CI_PROJECT_DIR/buildroot/"
+  cache:
+    key: "$CI_BUILD_NAME"
+    untracked: true
 
 make:image:
   stage: build3
@@ -77,6 +83,9 @@ make:image:
     expire_in: 1 week
   after_script:
     - ls -la "$CI_PROJECT_DIR/ft-TXT_Build_$BUILD.img.zip"
+  cache:
+    key: "$CI_BUILD_NAME"
+    untracked: true
 
 make:update:
   stage: build3
@@ -92,6 +101,9 @@ make:update:
     expire_in: 1 week
   after_script:
     - ls -la "$CI_PROJECT_DIR/update/"
+  cache:
+    key: "$CI_BUILD_NAME"
+    untracked: true
 
 make:graphs:
   stage: build3
@@ -109,3 +121,6 @@ make:graphs:
       - "$CI_PROJECT_DIR/buildroot/output/graphs/"
   after_script:
     - ls -la "$CI_PROJECT_DIR/buildroot/output/graphs/"
+  cache:
+    key: "$CI_BUILD_NAME"
+    untracked: true
