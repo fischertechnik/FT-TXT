@@ -9,10 +9,10 @@ image: debian:stable
 
 #Cache all Git untracked files and files in build
 cache:
-  #key: "$CI_BUILD_NAME"
+  key: "$CI_BUILD_NAME"
   untracked: true
   paths:
-    - /builds/fischertechnik/
+    - "$CI_BUILD_NAME"
 
 stages:
   - install
