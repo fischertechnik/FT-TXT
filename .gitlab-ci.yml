@@ -12,7 +12,7 @@ cache:
   #key: "$CI_BUILD_NAME"
   untracked: true
   paths:
-    - /builds/
+    - /builds/fischertechnik/
 
 stages:
   - install
@@ -42,7 +42,7 @@ make:bootloader:
     - chmod a+rw /opt/FT
     - cd /builds/fischertechnik/FT-TXT
     - ./Make-TXT-Bootloader.sh #> Make-TXT-Bootloader.sh.log
-    #- ln -sf /builds/fischertechnik/u-boot "$CI_PROJECT_DIR/u-boot"
+    - ln -sf /builds/fischertechnik/u-boot "$CI_PROJECT_DIR/u-boot"
   artifacts:
     name: "$CI_COMMIT_REF_NAME-bootloader"
     paths:
@@ -56,7 +56,7 @@ make:buildroot:
   script:
     - cd /builds/fischertechnik/FT-TXT
     - ./Make-TXT-Buildroot-Clean.sh #> Make-TXT-Buildroot-Clean.sh.log
-    #- ln -sf /builds/fischertechnik/buildroot "$CI_PROJECT_DIR/buildroot"
+    - ln -sf /builds/fischertechnik/buildroot "$CI_PROJECT_DIR/buildroot"
   artifacts:
     name: "$CI_COMMIT_REF_NAME-buildroot"
     paths:
@@ -72,7 +72,7 @@ make:image:
     - ./Make-TXT-Image.sh
     - export BUILD=`cat /builds/fischertechnik/FT-TXT/board/FT/TXT/BUILD`
     - echo $BUILD
-    #- ln -sf "/builds/fischertechnik/ft-TXT_Build_$BUILD.img.zip" "$CI_PROJECT_DIR/ft-TXT_Build_$BUILD.img.zip"
+    - ln -sf "/builds/fischertechnik/ft-TXT_Build_$BUILD.img.zip" "$CI_PROJECT_DIR/ft-TXT_Build_$BUILD.img.zip"
   artifacts:
     name: "$CI_COMMIT_REF_NAME-image"
     paths:
@@ -87,7 +87,7 @@ make:update:
     - mkdir /builds/fischertechnik/update
     - cd /builds/fischertechnik/FT-TXT
     - ./Make-TXT-UpdateScripts.sh
-    #- ln -sf /builds/fischertechnik/update "$CI_PROJECT_DIR/update"
+    - ln -sf /builds/fischertechnik/update "$CI_PROJECT_DIR/update"
   artifacts:
     name: "$CI_COMMIT_REF_NAME-update"
     paths:
@@ -105,7 +105,7 @@ make:graphs:
     - make graph-depends
     - make graph-build
     - make graph-size
-    #- ln -sf /builds/fischertechnik/buildroot/output/graphs "$CI_PROJECT_DIR/buildroot/output/graphs"
+    - ln -sf /builds/fischertechnik/buildroot/output/graphs "$CI_PROJECT_DIR/buildroot/output/graphs"
   artifacts:
     name: "$CI_COMMIT_REF_NAME-graphs"
     paths:
