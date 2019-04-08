@@ -57,6 +57,7 @@ then
     echo "$BTMAC $BTNAME $BTDIR"
     sed -i -e "s/Name =.*/Name = $BTNAME/" /etc/bluetooth/main.conf
     sed -i -e "s/name .*/name $BTNAME/" $BTDIR/config
+    civetweb -A /var/www/.htpasswd TXTController.local TXT $NEWDEVICEID
 fi
 
 #--- Adjust hostname, if it doesn't match
