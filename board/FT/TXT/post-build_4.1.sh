@@ -36,21 +36,21 @@ ln -s $TARGETDIR/usr/share/fonts/ $TARGETDIR/usr/lib/fonts
 cp $BINARIES_DIR/uImage $TARGETDIR/lib/boot
 cp $BINARIES_DIR/am335x-kno_txt.dtb $TARGETDIR/lib/boot
 
-# Create ROBOProFiles
-mkdir $TARGETDIR/opt/knobloch/InternalFlash/ROBOPro
-chmod 775 $TARGETDIR/opt/knobloch/InternalFlash/ROBOPro
+# Create ROBOPro
+mkdir $TARGETDIR/opt/knobloch/ROBOPro
+chmod 775 $TARGETDIR/opt/knobloch/ROBOPro
 
-# Create CProgFiles
-mkdir $TARGETDIR/opt/knobloch/InternalFlash/C-Program
-chmod 775 $TARGETDIR/opt/knobloch/InternalFlash/C-Program
+# Create C-Program
+mkdir $TARGETDIR/opt/knobloch/C-Program
+chmod 775 $TARGETDIR/opt/knobloch/C-Program
 
-# Create PythonFiles
-#mkdir $TARGETDIR/opt/knobloch/InternalFlash/Python
-#chmod 775 $TARGETDIR/opt/knobloch/InternalFlash/Python
+# Create Python
+#mkdir $TARGETDIR/opt/knobloch/Python
+#chmod 775 $TARGETDIR/opt/knobloch/Python
 
-# Create ScratchFiles
-#mkdir $TARGETDIR/opt/knobloch/InternalFlash/Scratch
-#chmod 775 $TARGETDIR/opt/knobloch/InternalFlash/Scratch
+# Create Scratch
+#mkdir $TARGETDIR/opt/knobloch/Scratch
+#chmod 775 $TARGETDIR/opt/knobloch/Scratch
 
 # Create Data
 mkdir $TARGETDIR/opt/knobloch/Data
