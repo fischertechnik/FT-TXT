@@ -44,6 +44,12 @@ chmod 775 $TARGETDIR/opt/knobloch/ROBOPro
 mkdir $TARGETDIR/opt/knobloch/C-Program
 chmod 775 $TARGETDIR/opt/knobloch/C-Program
 
+# Cloud
+chmod 544 $TARGETDIR/opt/knobloch/Cloud/TxtSmartHome.cloud
+
+# Sounds
+chmod 544 $TARGETDIR/opt/knobloch/Sounds/
+
 # Create Python
 #mkdir $TARGETDIR/opt/knobloch/Python
 #chmod 775 $TARGETDIR/opt/knobloch/Python
