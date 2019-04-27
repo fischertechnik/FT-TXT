@@ -33,11 +33,11 @@ make:bootloader:
     - cd /builds/fischertechnik/FT-TXT
     - ./Make-TXT-Bootloader.sh #> Make-TXT-Bootloader.sh.log
     - ln -sf /builds/fischertechnik/u-boot "$CI_PROJECT_DIR/u-boot"
-  #artifacts:
-    #name: "$CI_COMMIT_REF_NAME-bootloader"
-    #paths:
-    #- "$CI_PROJECT_DIR/u-boot/"
-    #expire_in: 1 week
+  artifacts:
+    name: "$CI_COMMIT_REF_NAME-bootloader"
+    paths:
+    - "$CI_PROJECT_DIR/u-boot/"
+    expire_in: 1 week
   after_script:
     - ls -la "$CI_PROJECT_DIR/u-boot/"
 
