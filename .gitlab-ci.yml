@@ -15,16 +15,17 @@ stages:
   - build3
 
 before_script:
-  - apt-get update -qq
+  #- apt-get update -qq
   - cd /builds/fischertechnik/FT-TXT
   - ./Linux-Pakete-Required.sh
-  - env DEBIAN_FRONTEND=noninteractive  ./Linux-Pakete-Extra.sh
-  - apt-get -y install joe git gitk cvs wget cpio -qq
 
 after_script:
   - echo "END"
 
 make:bootloader:
+  before_script:
+    - env DEBIAN_FRONTEND=noninteractive  ./Linux-Pakete-Extra.sh
+    - apt-get -y install joe git gitk cvs wget cpio -qq
   stage: build1
   script:
     - mkdir /opt/FT
@@ -32,11 +33,11 @@ make:bootloader:
     - cd /builds/fischertechnik/FT-TXT
     - ./Make-TXT-Bootloader.sh #> Make-TXT-Bootloader.sh.log
     - ln -sf /builds/fischertechnik/u-boot "$CI_PROJECT_DIR/u-boot"
-  artifacts:
-    name: "$CI_COMMIT_REF_NAME-bootloader"
-    paths:
-    - "$CI_PROJECT_DIR/u-boot/"
-    expire_in: 1 week
+  #artifacts:
+    #name: "$CI_COMMIT_REF_NAME-bootloader"
+    #paths:
+    #- "$CI_PROJECT_DIR/u-boot/"
+    #expire_in: 1 week
   after_script:
     - ls -la "$CI_PROJECT_DIR/u-boot/"
 
@@ -44,7 +45,7 @@ make:buildroot:
   stage: build2
   script:
     - cd /builds/fischertechnik/FT-TXT
-    - ./Make-TXT-Buildroot-Clean.sh > Make-TXT-Buildroot-Clean.sh.log
+    - ./Make-TXT-Buildroot-Clean.sh #> Make-TXT-Buildroot-Clean.sh.log
     - ln -sf /builds/fischertechnik/buildroot "$CI_PROJECT_DIR/buildroot"
   artifacts:
     name: "$CI_COMMIT_REF_NAME-buildroot"
