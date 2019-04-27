@@ -5,7 +5,9 @@
 # https://blog.sparksuite.com/7-ways-to-speed-up-gitlab-ci-cd-times-29f60aab69f9
 
 # you can delete this line if you're not using Docker
-image: debian:stable
+#image: debian:stable
+image: ubuntu:xenial #16.04
+#see https://hub.docker.com/search?category=base&source=verified&type=image
 
 stages:
   - build1
@@ -16,7 +18,7 @@ before_script:
   - apt-get update -qq
   - cd /builds/fischertechnik/FT-TXT
   - ./Linux-Pakete-Required.sh
-  #- env DEBIAN_FRONTEND=noninteractive  ./Linux-Pakete-Extra.sh
+  - env DEBIAN_FRONTEND=noninteractive  ./Linux-Pakete-Extra.sh
   - apt-get -y install joe git gitk cvs wget cpio -qq
 
 after_script:
