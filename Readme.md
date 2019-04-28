@@ -200,3 +200,8 @@ make graph-build
 make graph-size
 ```
 You will find the generated graphs in output/graphs/.
+
+Requirements
+```
+sudo apt install python-matplotlib python-numpy
+```
