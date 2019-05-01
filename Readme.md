@@ -1,4 +1,5 @@
 # FT-TXT
+This repository contains the firmware for the TXT controller based on BUILDROOT.
 > fischertechnik-technik@fischer.de
 
 ## Rootfs / Kernel / Apps
@@ -162,9 +163,7 @@ Dieses Script extrahiert das in `FT-TXT/../update/update-2.sh` enthaltene tar.gz
 Das ist hauptsächlich sinnvoll, wenn man sich nicht so ganz sicher ist, was in einem `update-2.sh` script enthalten ist.
 Das Script hat keine Parameter. Das Ergebnis wird nach `FT-TXT/../update/update-2.tar.gz` geschrieben.
 
-## BUILDROOT
-
-### Config Pakete in BUILDROOT
+### Test Build Packages in BUILDROOT
 ```
 cd ../buildroot
 make menuconfig
@@ -172,13 +171,11 @@ make savedefconfig
 ```
 You will find the generated config in `FT-TXT/configs/FT-TXT_4.1_defconfig`.
 
-### Graphing in BUILDROOT
+### Generate Graphing in BUILDROOT
 
-Graphing the dependencies between packages, build duration and filesystem size contribution of packages.
+Graphing the dependencies between packages, build duration and filesystem size contribution of packages. Required packages: `sudo apt install python-matplotlib python-numpy`
 
 ```
-./Map-TXT-Graphs.sh
+./Make-TXT-Graphs.sh
 ```
 You will find the generated graphs in `FT-TXT/../buildroot/output/graphs/`.
-
-Requirements `sudo apt install python-matplotlib python-numpy`
