@@ -1,6 +1,6 @@
 > Kontakt: fischertechnik-technik@fischer.de
 
-# FT-TXT : 
+# FT-TXT
 
 ## Rootfs / Kernel / Apps
 
@@ -12,8 +12,8 @@ Sie benötigen zum Erstellen des BSB und des Bootlodaers ein Linux System mit En
 
 Das BSP wurde unter ubuntu mate 16.04 erstellt und getestet:
 
-im Script ./Linux-Pakete-Required.sh sind alle notwendigen Pakete (von MSoegtrop getestet) enthalten.
-im Script ./Linux-Pakete-Extra.sh sind einige zusätzliche Pakete (von RRussinger empfohlen) enthalten.
+im Script `./Linux-Pakete-Required.sh` sind alle notwendigen Pakete (von MSoegtrop getestet) enthalten.
+im Script `./Linux-Pakete-Extra.sh` sind einige zusätzliche Pakete (von RRussinger empfohlen) enthalten.
 
 [Download ubuntu mate 16.04](http://cdimage.ubuntu.com/ubuntu-mate/releases/16.04.4/release/ubuntu-mate-16.04.4-desktop-amd64.iso) 
 
@@ -49,7 +49,7 @@ Imageerstellung
   ```
   git clone https://github.com/fischertechnik/FT-TXT.git bzw.
   git clone https://gitlab.com/fischertechnik/FT-TXT.git
-```
+  ```
 
 4. Verzeichnis für Toolchain erstellen
   ```
@@ -66,7 +66,7 @@ Imageerstellung
   ```
   ./Make-TXT-Bootloader.sh
   ```
-  erstellt die Bootloader Binaries in ../u-boot/bin
+  erstellt die Bootloader Binaries in `../u-boot/bin`
 
 7. Buildroot klonen, konfigurieren und bauen
   ```
@@ -171,9 +171,9 @@ exit
 
 ### Split-TXT-UpdateScripts.sh
 
-Dieses Script extrahiert das in FT-TXT/../update/update-2.sh enthaltene tar.gz file des rootfs.
+Dieses Script extrahiert das in `FT-TXT/../update/update-2.sh` enthaltene tar.gz file des rootfs.
 Das ist hauptsächlich sinnvoll, wenn man sich nicht so ganz sicher ist, was in einem update-2.sh script enthalten ist.
-Das Script hat keine Parameter. Das Ergebnis wird nach FT-TXT/../update/update-2.tar.gz geschrieben.
+Das Script hat keine Parameter. Das Ergebnis wird nach `FT-TXT/../update/update-2.tar.gz` geschrieben.
 
 ## BUILDROOT
 
@@ -183,25 +183,18 @@ cd ../buildroot
 make menuconfig
 make savedefconfig
 ```
-You will find the generated config in FT-TXT/configs/FT-TXT_4.1_defconfig.
+You will find the generated config in `FT-TXT/configs/FT-TXT_4.1_defconfig`.
 
 ### Graphing in BUILDROOT
 
-Graphing the dependencies between packages
-
-Graphing the build duration
-
-Graphing the filesystem size contribution of packages
+Graphing the dependencies between packages, build duration and filesystem size contribution of packages.
 
 ```
-cd ../buildroot
-make graph-depends
-make graph-build
-make graph-size
+./Map-TXT-Graphs.sh
 ```
-You will find the generated graphs in output/graphs/.
+You will find the generated graphs in `FT-TXT/../buildroot/output/graphs/`.
 
-Requirements
+#### Requirements
 ```
 sudo apt install python-matplotlib python-numpy
 ```
