@@ -1,12 +1,19 @@
 # FT-TXT
-This repository contains the firmware for the TXT controller based on BUILDROOT.
-> fischertechnik-technik@fischer.de
+This repository contains the firmware for the TXT controller based on BUILDROOT ([BuildrootManual](https://buildroot.org/downloads/manual/manual.pdf)).
+fischertechnik-technik@fischer.de
+
+## Quick Start
+  ```
+  cd ./FT-TXT
+  git pull
+  ./Make-TXT-Bootloader.sh
+  ./Make-TXT-Buildroot-Clean.sh
+  sudo ./Make-TXT-Image.sh
+  ```
 
 ## Setup Build Environment
 To build the *BSB* and the *Bootloader* you will need a linux system with a development environment.
-
 The making of BSP was tested with [Ubuntu Mate 16.04](http://cdimage.ubuntu.com/ubuntu-mate/releases/16.04.4/release/ubuntu-mate-16.04.4-desktop-amd64.iso):
-
 Install the linux packages first:
   ```
   cd ./FT-TXT
@@ -14,46 +21,38 @@ Install the linux packages first:
   (sudo ./Linux-Pakete-Extra.sh)
   ```
 
-### Links
-- Rootfilesystem [BuildrootManual](https://buildroot.org/downloads/manual/manual.pdf) 
-- Imageerstellung [kpartx](https://robert.penz.name/73/kpartx-a-tool-for-mounting-partitions-within-an-image-file/) 
-
 ## Making of Rootfs, Bootloader and Kernel
-
-1. Erstellen eines Arbeitsverzeichnisses z.B 
+### Once
+1. Create working directory and change to the directory
   ```
   mkdir FT
-  ```
-
-2. Wechseln in das Verzeichnis
-  ```
   cd FT
   ```
 
-3. Clone des Script und Konfigurationsverzeichnisses
+2. Clone the FT-TXT repository
   ```
-  git clone https://github.com/fischertechnik/FT-TXT.git (Github)
-  git clone https://gitlab.com/fischertechnik/FT-TXT.git (Gitlab)
+  git clone https://github.com/fischertechnik/FT-TXT.git
+  (git clone https://gitlab.com/fischertechnik/FT-TXT.git)
   ```
 
-4. Verzeichnis für Toolchain erstellen
+3. Create directory for the toolchain
   ```
   sudo mkdir /opt/FT
   sudo chmod a+rw /opt/FT
   ```
-
-5. In Verzeichnis wechseln
+### Frequently
+4. Change to the directory
   ```
   cd FT-TXT
   ```	
 
-6. Bootloader bauen
+5. Build Bootloader
   ```
   ./Make-TXT-Bootloader.sh
   ```
   erstellt die Bootloader Binaries in `../u-boot/bin`
 
-7. Buildroot klonen, konfigurieren und bauen
+7. Clone, configure and build Buildroot
   ```
   ./Make-TXT-Buildroot-Clean.sh
   ```
@@ -66,7 +65,7 @@ Install the linux packages first:
   ./Make-TXT-Buildroot-Incremental.sh
   ```
 
-8. Update scripts erzeugen
+8. Create Update scripts
   Update scripts can be used to update the OS on a TXT without using a flash card.
   ```
   ./Make-TXT-UpdateScripts.sh
@@ -75,11 +74,13 @@ Install the linux packages first:
   ```
   The update scripts and signatures can be found in `FT-TXT/../update`.
 
-## Zusatzscripte
+## Scripts
 
 ### Make-TXT-Image.sh
 
 Erstellt ein SD Kartenimage mit Bootsektion und Rootfilesystem
+
+Imageerstellung [kpartx](https://robert.penz.name/73/kpartx-a-tool-for-mounting-partitions-within-an-image-file/)
 
 im Verzeichnis ./FT-TXT
 ```
