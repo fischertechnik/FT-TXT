@@ -2,30 +2,23 @@
 This repository contains the firmware for the TXT controller based on BUILDROOT.
 > fischertechnik-technik@fischer.de
 
-## Rootfs / Kernel / Apps
+## Setup Build Environment
+To build the *BSB* and the *Bootloader* you will need a linux system with a development environment.
 
-Erstellung mit Buildroot, Bootloader "Das U-Boot"
+The making of BSP was tested with [Ubuntu Mate 16.04](http://cdimage.ubuntu.com/ubuntu-mate/releases/16.04.4/release/ubuntu-mate-16.04.4-desktop-amd64.iso):
 
-Voraussetzungen:
-
-Sie benötigen zum Erstellen des BSB und des Bootlodaers ein Linux System mit Entwicklungsumgebung.
-
-Das BSP wurde unter [Ubuntu Mate 16.04](http://cdimage.ubuntu.com/ubuntu-mate/releases/16.04.4/release/ubuntu-mate-16.04.4-desktop-amd64.iso) erstellt und getestet:
-- im Script `./Linux-Pakete-Required.sh` sind alle notwendigen Pakete (von MSoegtrop getestet) enthalten.
-- im Script `./Linux-Pakete-Extra.sh` sind einige zusätzliche Pakete (von RRussinger empfohlen) enthalten.
-
-zum Installieren der Zusatzpakete:
+Install the linux packages first:
   ```
   cd ./FT-TXT
   sudo ./Linux-Pakete-Required.sh
+  (sudo ./Linux-Pakete-Extra.sh)
   ```
-durchführen. Danach sollten Sie ein System zur Verfügung haben mit dem das BSP und der Bootloader wie angegeben übersetzt/erstellt werden kann.
 
 ### Links
 - Rootfilesystem [BuildrootManual](https://buildroot.org/downloads/manual/manual.pdf) 
 - Imageerstellung [kpartx](https://robert.penz.name/73/kpartx-a-tool-for-mounting-partitions-within-an-image-file/) 
 
-## Erstellen des Rootfs, Bootloader und Kernel
+## Making of Rootfs, Bootloader and Kernel
 
 1. Erstellen eines Arbeitsverzeichnisses z.B 
   ```
