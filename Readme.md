@@ -4,7 +4,7 @@ This repository contains the firmware for the TXT controller based on BUILDROOT 
 If you have any questions regarding the software, please contact `fischertechnik-technik@fischer.de`.
 
 ## Quick Start
-If the development environment already exists, you can use these commands to make an firmware image for the TXT controller.
+If the development environment already exists, you can use these commands to create a firmware image for the TXT controller.
   ```
   cd ./FT-TXT
   git pull
@@ -12,7 +12,7 @@ If the development environment already exists, you can use these commands to mak
   ./Make-TXT-Buildroot-Clean.sh
   sudo ./Make-TXT-Image.sh
   ```
-The image you can find in `../ft-TXT_Build_XXX.img.zip`
+The compressed generated image you can find in `../ft-TXT_Build_XXX.img.zip`
 
 ## Setup Build Environment
 To build the *BSB* and the *Bootloader* you will need a linux system with a development environment.
