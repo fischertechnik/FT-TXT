@@ -1,6 +1,5 @@
-> Kontakt: fischertechnik-technik@fischer.de
-
 # FT-TXT
+> fischertechnik-technik@fischer.de
 
 ## Rootfs / Kernel / Apps
 
@@ -8,14 +7,11 @@ Erstellung mit Buildroot, Bootloader "Das U-Boot"
 
 Voraussetzungen:
 
-Sie benötigen zum Erstellen des BSB und des Bootlodaers ein Linux System mit Entwicklungsumgebung. (mit einem Intelk i7 und 16 GB Ram dauert das Übersetzen ca. eine Stunde !)
+Sie benötigen zum Erstellen des BSB und des Bootlodaers ein Linux System mit Entwicklungsumgebung.
 
-Das BSP wurde unter ubuntu mate 16.04 erstellt und getestet:
-
-im Script `./Linux-Pakete-Required.sh` sind alle notwendigen Pakete (von MSoegtrop getestet) enthalten.
-im Script `./Linux-Pakete-Extra.sh` sind einige zusätzliche Pakete (von RRussinger empfohlen) enthalten.
-
-[Download ubuntu mate 16.04](http://cdimage.ubuntu.com/ubuntu-mate/releases/16.04.4/release/ubuntu-mate-16.04.4-desktop-amd64.iso) 
+Das BSP wurde unter [Ubuntu Mate 16.04](http://cdimage.ubuntu.com/ubuntu-mate/releases/16.04.4/release/ubuntu-mate-16.04.4-desktop-amd64.iso) erstellt und getestet:
+- im Script `./Linux-Pakete-Required.sh` sind alle notwendigen Pakete (von MSoegtrop getestet) enthalten.
+- im Script `./Linux-Pakete-Extra.sh` sind einige zusätzliche Pakete (von RRussinger empfohlen) enthalten.
 
 zum Installieren der Zusatzpakete:
   ```
@@ -24,18 +20,13 @@ zum Installieren der Zusatzpakete:
   ```
 durchführen. Danach sollten Sie ein System zur Verfügung haben mit dem das BSP und der Bootloader wie angegeben übersetzt/erstellt werden kann.
 
-Rootfilesystem
-[BuildrootManual](https://buildroot.org/downloads/manual/manual.pdf) 
-
-Allgemeines
-
-Imageerstellung
-[kpartx](https://robert.penz.name/73/kpartx-a-tool-for-mounting-partitions-within-an-image-file/) 
+### Links
+- Rootfilesystem [BuildrootManual](https://buildroot.org/downloads/manual/manual.pdf) 
+- Imageerstellung [kpartx](https://robert.penz.name/73/kpartx-a-tool-for-mounting-partitions-within-an-image-file/) 
 
 ## Erstellen des Rootfs, Bootloader und Kernel
 
-1. Erstellen eines Arbeitsverzeichnisses
-  z.B 
+1. Erstellen eines Arbeitsverzeichnisses z.B 
   ```
   mkdir FT
   ```
@@ -47,8 +38,8 @@ Imageerstellung
 
 3. Clone des Script und Konfigurationsverzeichnisses
   ```
-  git clone https://github.com/fischertechnik/FT-TXT.git bzw.
-  git clone https://gitlab.com/fischertechnik/FT-TXT.git
+  git clone https://github.com/fischertechnik/FT-TXT.git (Github)
+  git clone https://gitlab.com/fischertechnik/FT-TXT.git (Gitlab)
   ```
 
 4. Verzeichnis für Toolchain erstellen
@@ -72,13 +63,9 @@ Imageerstellung
   ```
   ./Make-TXT-Buildroot-Clean.sh
   ```
-  Damit wird *buildroot* gecloned und der richtige commit eingestellt,
-  Patches eingespielt und Hilfsscripte kopiert.
-  Anschließend wird buildroot gebaut.
+  Damit wird *buildroot* gecloned und der richtige commit eingestellt, Patches eingespielt und Hilfsscripte kopiert. Anschließend wird *buildroot* gebaut.
   
-  Die Ausgaben sind in 
-  `FT-TXT/../buildroot/output/images`
-  zu finden.
+  Die Ausgaben sind in `FT-TXT/../buildroot/output/images` zu finden.
 
   Eine inkrementelle rekonfiguration mit inkrementellen bauen kann über das Script
   ```
@@ -172,7 +159,7 @@ exit
 ### Split-TXT-UpdateScripts.sh
 
 Dieses Script extrahiert das in `FT-TXT/../update/update-2.sh` enthaltene tar.gz file des rootfs.
-Das ist hauptsächlich sinnvoll, wenn man sich nicht so ganz sicher ist, was in einem update-2.sh script enthalten ist.
+Das ist hauptsächlich sinnvoll, wenn man sich nicht so ganz sicher ist, was in einem `update-2.sh` script enthalten ist.
 Das Script hat keine Parameter. Das Ergebnis wird nach `FT-TXT/../update/update-2.tar.gz` geschrieben.
 
 ## BUILDROOT
@@ -194,7 +181,4 @@ Graphing the dependencies between packages, build duration and filesystem size c
 ```
 You will find the generated graphs in `FT-TXT/../buildroot/output/graphs/`.
 
-#### Requirements
-```
-sudo apt install python-matplotlib python-numpy
-```
+Requirements `sudo apt install python-matplotlib python-numpy`
