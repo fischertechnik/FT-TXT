@@ -1,8 +1,10 @@
 # FT-TXT
-This repository contains the firmware for the TXT controller based on BUILDROOT ([BuildrootManual](https://buildroot.org/downloads/manual/manual.pdf)).
-fischertechnik-technik@fischer.de
+This repository contains the firmware for the TXT controller based on BUILDROOT (see [BuildrootManual](https://buildroot.org/downloads/manual/manual.pdf)).
+
+If you have any questions regarding the software, please contact `fischertechnik-technik@fischer.de`.
 
 ## Quick Start
+If the development environment already exists, you can use these commands to make an firmware image for the TXT controller.
   ```
   cd ./FT-TXT
   git pull
@@ -10,11 +12,12 @@ fischertechnik-technik@fischer.de
   ./Make-TXT-Buildroot-Clean.sh
   sudo ./Make-TXT-Image.sh
   ```
+The image you can find in `../ft-TXT_Build_XXX.img.zip`
 
 ## Setup Build Environment
 To build the *BSB* and the *Bootloader* you will need a linux system with a development environment.
-The making of BSP was tested with [Ubuntu Mate 16.04](http://cdimage.ubuntu.com/ubuntu-mate/releases/16.04.4/release/ubuntu-mate-16.04.4-desktop-amd64.iso):
-Install the linux packages first:
+The making of *BSP* was tested with [Ubuntu Mate 16.04](http://cdimage.ubuntu.com/ubuntu-mate/releases/16.04.4/release/ubuntu-mate-16.04.4-desktop-amd64.iso):
+Install the following linux packages first:
   ```
   cd ./FT-TXT
   sudo ./Linux-Pakete-Required.sh
@@ -52,7 +55,7 @@ Install the linux packages first:
   ```
   erstellt die Bootloader Binaries in `../u-boot/bin`
 
-7. Clone, configure and build Buildroot
+6. Clone, configure and build Buildroot
   ```
   ./Make-TXT-Buildroot-Clean.sh
   ```
@@ -65,14 +68,22 @@ Install the linux packages first:
   ./Make-TXT-Buildroot-Incremental.sh
   ```
 
-8. Create Update scripts
-  Update scripts can be used to update the OS on a TXT without using a flash card.
+7. Create Update scripts
   ```
   ./Make-TXT-UpdateScripts.sh
   ./Sign-Connect-Reader.sh
   ./Sign-TXT-UpdateScripts.sh
   ```
+  Update scripts can be used to update the OS on a TXT without using a flash card.
   The update scripts and signatures can be found in `FT-TXT/../update`.
+
+8. Create Graphs
+```
+./Make-TXT-Graphs.sh
+```
+
+Graphing the dependencies between packages, build duration and filesystem size contribution of packages. Required packages: `sudo apt install python-matplotlib python-numpy`
+You will find the generated graphs in `FT-TXT/../buildroot/output/graphs/`.
 
 ## Scripts
 
@@ -164,12 +175,3 @@ make menuconfig
 make savedefconfig
 ```
 You will find the generated config in `FT-TXT/configs/FT-TXT_4.1_defconfig`.
-
-### Generate Graphing in BUILDROOT
-
-Graphing the dependencies between packages, build duration and filesystem size contribution of packages. Required packages: `sudo apt install python-matplotlib python-numpy`
-
-```
-./Make-TXT-Graphs.sh
-```
-You will find the generated graphs in `FT-TXT/../buildroot/output/graphs/`.
