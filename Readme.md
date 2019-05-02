@@ -88,4 +88,4 @@ Install the following linux packages first.
   You will find the generated graphs in `FT-TXT/../buildroot/output/graphs/`.
 
 ## Additional Scripts
-For description of additional scripts read [Additional-Scripts.md][].
+For description of additional scripts read [Additional-Scripts.md](/Additional-Scripts.md).
