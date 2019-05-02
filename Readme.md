@@ -1,10 +1,10 @@
 # FT-TXT
-This repository contains the firmware for the TXT controller based on BUILDROOT (see [BuildrootManual](https://buildroot.org/downloads/manual/manual.pdf)).
+This repository contains the firmware for the TXT controller based on [BUILDROOT](https://buildroot.org/downloads/manual/manual.pdf).
 
-If you have any questions regarding the software, please contact `fischertechnik-technik@fischer.de`.
+For questions about the software, please contact *fischertechnik-technik@fischer.de*.
 
 ## Quick Start
-If the development environment already exists, you can use these commands to create a firmware image for the TXT controller.
+If the development environment (see *Setup Build Environment*) already exists, you can use the following commands to create a firmware image for the TXT controller.
   ```
   cd ./FT-TXT
   git pull
@@ -12,12 +12,12 @@ If the development environment already exists, you can use these commands to cre
   ./Make-TXT-Buildroot-Clean.sh
   sudo ./Make-TXT-Image.sh
   ```
-The compressed generated image you can find in `../ft-TXT_Build_XXX.img.zip`
+The compressed generated image file you can find in `../ft-TXT_Build_XXX.img.zip`
 
 ## Setup Build Environment
 To build the *BSB* and the *Bootloader* you will need a linux system with a development environment.
-The making of *BSP* was tested with [Ubuntu Mate 16.04](http://cdimage.ubuntu.com/ubuntu-mate/releases/16.04.4/release/ubuntu-mate-16.04.4-desktop-amd64.iso):
-Install the following linux packages first:
+The making of *BSP* was tested with [Ubuntu Mate 16.04](http://cdimage.ubuntu.com/ubuntu-mate/releases/16.04.4/release/ubuntu-mate-16.04.4-desktop-amd64.iso).
+Install the following linux packages first.
   ```
   cd ./FT-TXT
   sudo ./Linux-Pakete-Required.sh
@@ -25,7 +25,7 @@ Install the following linux packages first:
   ```
 
 ## Making of Rootfs, Bootloader and Kernel
-### Once
+### Initial
 1. Create working directory and change to the directory
   ```
   mkdir FT
@@ -53,37 +53,39 @@ Install the following linux packages first:
   ```
   ./Make-TXT-Bootloader.sh
   ```
-  erstellt die Bootloader Binaries in `../u-boot/bin`
+  The generated bootloader binaries can be found in `../u-boot/bin`
 
 6. Clone, configure and build Buildroot
   ```
   ./Make-TXT-Buildroot-Clean.sh
   ```
-  Damit wird *buildroot* gecloned und der richtige commit eingestellt, Patches eingespielt und Hilfsscripte kopiert. Anschließend wird *buildroot* gebaut.
+  This script clones *Buildroot*, setup the right commit, patch and copy auxiliary scripts. Afterwards the *Buildroot* will be built.
   
-  Die Ausgaben sind in `FT-TXT/../buildroot/output/images` zu finden.
+  The output can be found in `FT-TXT/../buildroot/output/images`.
 
-  Eine inkrementelle rekonfiguration mit inkrementellen bauen kann über das Script
+  An incremental reconfiguration with incremental build can be started via the script:
   ```
   ./Make-TXT-Buildroot-Incremental.sh
   ```
 
+### Optional
 7. Create Update scripts
   ```
   ./Make-TXT-UpdateScripts.sh
   ./Sign-Connect-Reader.sh
   ./Sign-TXT-UpdateScripts.sh
   ```
-  Update scripts can be used to update the OS on a TXT without using a flash card.
+  Update scripts can be used to update the firmware on a TXT without using a flash card.
   The update scripts and signatures can be found in `FT-TXT/../update`.
 
 8. Create Graphs
-```
-./Make-TXT-Graphs.sh
-```
+  ```
+  ./Make-TXT-Graphs.sh
+  ```
 
-Graphing the dependencies between packages, build duration and filesystem size contribution of packages. Required packages: `sudo apt install python-matplotlib python-numpy`
-You will find the generated graphs in `FT-TXT/../buildroot/output/graphs/`.
+  Graphing the dependencies between packages, build duration and filesystem size contribution of packages.
+  Required packages: `sudo apt install python-matplotlib python-numpy`
+  You will find the generated graphs in `FT-TXT/../buildroot/output/graphs/`.
 
 ## Scripts
 
