@@ -87,7 +87,7 @@ Install the following linux packages first.
   Required packages: `sudo apt install python-matplotlib python-numpy`
   You will find the generated graphs in `FT-TXT/../buildroot/output/graphs/`.
 
-## Scripts
+## Additional Scripts
 
 ### Make-TXT-Image.sh
 
