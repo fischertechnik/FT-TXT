@@ -1,6 +1,6 @@
-## Additional Scripts
+# Additional Scripts
 
-### Make-TXT-Image.sh
+## Make-TXT-Image.sh
 
 Erstellt ein SD Kartenimage mit Bootsektion und Rootfilesystem
 
@@ -28,7 +28,7 @@ sudo ./Copy-TXT-Image-to-SD.sh /dev/sdX
 ```
 verwenden. Dieses Script prüft ob das Zielgerät eine für SD Karten übliche Größe hat (die exakte größe muss ggf. in das Script eingetragen werden). Dadurch wird vermieden, dass man durch einen Tippfehler die Systemplatte löscht.
 
-### Map-TXT-Image.sh
+## Map-TXT-Image.sh
 
 mittels MapImage.sh kann das erstellte Image "gemapped" werden.
 
@@ -75,13 +75,13 @@ zum Verlassen:
 exit
 ```
 
-### Split-TXT-UpdateScripts.sh
+## Split-TXT-UpdateScripts.sh
 
 Dieses Script extrahiert das in `FT-TXT/../update/update-2.sh` enthaltene tar.gz file des rootfs.
 Das ist hauptsächlich sinnvoll, wenn man sich nicht so ganz sicher ist, was in einem `update-2.sh` script enthalten ist.
 Das Script hat keine Parameter. Das Ergebnis wird nach `FT-TXT/../update/update-2.tar.gz` geschrieben.
 
-### Test Build Packages in BUILDROOT
+## Test Build Packages in BUILDROOT
 ```
 cd ../buildroot
 make menuconfig
