@@ -1,5 +1,3 @@
-TOC
-
 # FT-TXT
 This repository contains the firmware for the TXT controller based on [BUILDROOT](https://buildroot.org/downloads/manual/manual.pdf).
 For questions about the software, please contact *fischertechnik-technik@fischer.de*.
