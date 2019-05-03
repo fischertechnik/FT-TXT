@@ -60,12 +60,11 @@ Install the following linux packages first.
   ```
   This script clones *Buildroot*, setup the right commit, patch and copy auxiliary scripts. Afterwards the *Buildroot* will be built.
   
-  The output can be found in `FT-TXT/../buildroot/output/images`.
-
   An incremental reconfiguration with incremental build can be started via the script:
   ```
   ./Make-TXT-Buildroot-Incremental.sh
   ```
+  The output can be found in `FT-TXT/../buildroot/output/images`.
 
 ### Optional
 **7. Create Update scripts**
