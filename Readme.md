@@ -1,3 +1,5 @@
+TOC
+
 # FT-TXT
 This repository contains the firmware for the TXT controller based on [BUILDROOT](https://buildroot.org/downloads/manual/manual.pdf).
 For questions about the software, please contact *fischertechnik-technik@fischer.de*.
@@ -87,9 +89,9 @@ Install the following linux packages first.
 ## Additional Scripts
 Description of additional scripts can be found in [Additional-Scripts.md](/Additional-Scripts.md).
 
-## Links
+## Internal Links
   - [TXT-Linux-FAQ.md](/TXT-Linux-FAQ.md)
   - [Info-diskspace-during-update.md](/Info-diskspace-during-update.md)
   - [ProcessInfo.md](/ProcessInfo.md)
-  - [Checklist-Make-Update.md](/Checklist-Make-Update.md)
-  - [ToDo.md](/ToDo.md)
+  - [Checklist-Make-Update.md](/Checklist-Make-Update.md) (outdated)
+  - [ToDo.md](/ToDo.md) (outdated)
