@@ -55,8 +55,8 @@ chmod 544 $TARGETDIR/opt/knobloch/Sounds/
 #chmod 775 $TARGETDIR/opt/knobloch/Python
 
 # Create Scratch
-#mkdir $TARGETDIR/opt/knobloch/Scratch
-#chmod 775 $TARGETDIR/opt/knobloch/Scratch
+mkdir $TARGETDIR/opt/knobloch/Scratch
+chmod 775 $TARGETDIR/opt/knobloch/Scratch
 
 # Create Data
 mkdir $TARGETDIR/opt/knobloch/Data
