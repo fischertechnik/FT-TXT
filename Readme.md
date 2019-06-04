@@ -15,7 +15,7 @@ The compressed generated image file you can find in `../ft-TXT_Build_XXX.img.zip
 
 ## Setup Build Environment
 To build the *BSB* and the *Bootloader* you will need a linux system with a development environment.
-The making of *BSP* was tested with [Ubuntu Mate 16.04](http://cdimage.ubuntu.com/ubuntu-mate/releases/16.04.4/release/ubuntu-mate-16.04.4-desktop-amd64.iso).
+The making of *BSP* was tested with [Ubuntu Mate 16.04](http://cdimage.ubuntu.com/ubuntu-mate/releases/16.04.4/release/ubuntu-mate-16.04.4-desktop-amd64.iso) and [Ubuntu 18.04](http://releases.ubuntu.com/18.04.2/ubuntu-18.04.2-desktop-amd64.iso).
 Install the following linux packages first.
   ```
   cd ./FT-TXT
@@ -66,8 +66,14 @@ Install the following linux packages first.
   ```
   The output can be found in `FT-TXT/../buildroot/output/images`.
 
+**7. Bundle build result into image file**
+  ```
+  sudo ./Make-TXT-Image.sh
+  ```
+  The output can be found in `FT-TXT/..`.
+
 ### Optional
-**7. Create Update scripts**
+**8. Create Update scripts**
   ```
   ./Make-TXT-UpdateScripts.sh
   ./Sign-Connect-Reader.sh
@@ -76,7 +82,7 @@ Install the following linux packages first.
   Update scripts can be used to update the firmware on a TXT without using a flash card.
   The update scripts and signatures can be found in `FT-TXT/../update`.
 
-**8. Create Graphs**
+**9. Create Graphs**
   ```
   ./Make-TXT-Graphs.sh
   ```
