@@ -6,4 +6,6 @@ source "$BR2_EXTERNAL_FT_TXT_PATH/package/liborcania/Config.in"
 source "$BR2_EXTERNAL_FT_TXT_PATH/package/libnfc-git/Config.in"
 source "$BR2_EXTERNAL_FT_TXT_PATH/package/libfreefare-git/Config.in"
 source "$BR2_EXTERNAL_FT_TXT_PATH/package/civetweb-git/Config.in"
+source "$BR2_EXTERNAL_FT_TXT_PATH/package/python-mod_wsgi/Config.in"
+source "$BR2_EXTERNAL_FT_TXT_PATH/package/python-ftrobopy/Config.in"
 
