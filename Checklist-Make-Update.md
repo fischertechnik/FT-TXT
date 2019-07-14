@@ -2,7 +2,7 @@
 
 Run below command and edit the version number in all files and folders opened
 
-    /data/transfer/TX2/buildroot-2018/FT-TXT/Edit-Version-Files.sh
+    /lindata/transfer/TX2/buildroot-2018/FT-TXT/Edit-Version-Files.sh
 
 In buildroot-2018/FT-TXT (Clean / initial buil donly)
 
@@ -23,7 +23,7 @@ gedit \
 In Eclipse
 
 - Recompile all apps and libraries
-- Copy from transfer folder to FT-TXT/board/...
+- Copy from transfer folder to /lindata/transfer/TX2/buildroot-2018/FT-TXT/board/FT/TXT/rootfs/usr/lib
 - ATTENTION: From 4.4.3 on, Michael Soegtrop builds ROBOProLib and MotorIOLib.
   All other libs are provided binary by fischertechnik!
 
