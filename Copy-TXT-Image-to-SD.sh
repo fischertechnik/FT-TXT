@@ -1,6 +1,7 @@
 #!/bin/sh
 
 DRIVE=$1
+BUILD=$2
 
 # Check SD size
 
@@ -20,7 +21,6 @@ umount ${DRIVE}3
 
 # Check image file
 
-BUILD=`cat board/FT/TXT/BUILD`
 IMAGEFILE=../ft-TXT_Build_$BUILD.img
 
 echo "Build number = $BUILD"
