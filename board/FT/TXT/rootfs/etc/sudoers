@@ -146,3 +146,4 @@ ROBOPro ALL=(root) NOPASSWD: /bin/ln -s /usr/share/zoneinfo/Etc/[GMT]* /etc/loca
 ROBOPro ALL=(root) NOPASSWD: /usr/share/txt-utils/update-bootdev.sh ""
 ROBOPro ALL=(root) NOPASSWD: /etc/init.d/civetweb_txt restart
 ROBOPro ALL=(root) NOPASSWD: /etc/init.d/civetweb_txt stop
+ROBOPro ALL=(root) NOPASSWD: /usr/bin/ntpdate * *
