@@ -44,36 +44,36 @@ chmod 775 $TARGETDIR/opt/knobloch/ROBOPro
 mkdir $TARGETDIR/opt/knobloch/C-Program
 chmod 775 $TARGETDIR/opt/knobloch/C-Program
 touch $TARGETDIR/opt/knobloch/.protected
-chmod 000 $TARGETDIR/opt/knobloch/.protected
+chmod 544 $TARGETDIR/opt/knobloch/.protected
 
 # Cloud
 chmod 544 $TARGETDIR/opt/knobloch/Cloud/TxtSmartHome.cloud
 touch $TARGETDIR/opt/knobloch/Cloud/.protected
-chmod 000 $TARGETDIR/opt/knobloch/Cloud/.protected
+chmod 544 $TARGETDIR/opt/knobloch/Cloud/.protected
 
 # Sounds
 chmod 544 $TARGETDIR/opt/knobloch/Sounds/
 touch $TARGETDIR/opt/knobloch/Sounds/.protected
-chmod 000 $TARGETDIR/opt/knobloch/Sounds/.protected
+chmod 544 $TARGETDIR/opt/knobloch/Sounds/.protected
 
 # libs
 chmod 544 $TARGETDIR/opt/knobloch/libs/
 chmod 544 $TARGETDIR/opt/knobloch/libs/libBME680.so
 chmod 544 $TARGETDIR/opt/knobloch/libs/libExampleSLI.so
 touch $TARGETDIR/opt/knobloch/libs/.protected
-chmod 000 $TARGETDIR/opt/knobloch/libs/.protected
+chmod 544 $TARGETDIR/opt/knobloch/libs/.protected
 
 # Create Python
 #mkdir $TARGETDIR/opt/knobloch/Python
 #chmod 775 $TARGETDIR/opt/knobloch/Python
 #touch $TARGETDIR/opt/knobloch/Python/.protected
-#chmod 000 $TARGETDIR/opt/knobloch/Python/.protected
+#chmod 544 $TARGETDIR/opt/knobloch/Python/.protected
 
 # Create Scratch
 mkdir $TARGETDIR/opt/knobloch/Scratch
 chmod 775 $TARGETDIR/opt/knobloch/Scratch
 touch $TARGETDIR/opt/knobloch/Scratch/.protected
-chmod 000 $TARGETDIR/opt/knobloch/Scratch/.protected
+chmod 544 $TARGETDIR/opt/knobloch/Scratch/.protected
 
 # Create Data
 mkdir $TARGETDIR/opt/knobloch/Data
