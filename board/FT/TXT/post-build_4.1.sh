@@ -43,31 +43,31 @@ chmod 775 $TARGETDIR/opt/knobloch/ROBOPro
 # Create C-Program
 mkdir $TARGETDIR/opt/knobloch/C-Program
 chmod 775 $TARGETDIR/opt/knobloch/C-Program
-touch .protected
+touch $TARGETDIR/opt/knobloch/.protected
 
 # Cloud
 chmod 544 $TARGETDIR/opt/knobloch/Cloud/TxtSmartHome.cloud
-touch .protected
+touch $TARGETDIR/opt/knobloch/Cloud/.protected
 
 # Sounds
 chmod 544 $TARGETDIR/opt/knobloch/Sounds/
-touch .protected
+touch $TARGETDIR/opt/knobloch/Sounds/.protected
 
 # libs
 chmod 544 $TARGETDIR/opt/knobloch/libs/
 chmod 544 $TARGETDIR/opt/knobloch/libs/libBME680.so
 chmod 544 $TARGETDIR/opt/knobloch/libs/libExampleSLI.so
-touch .protected
+touch $TARGETDIR/opt/knobloch/libs/.protected
 
 # Create Python
 #mkdir $TARGETDIR/opt/knobloch/Python
 #chmod 775 $TARGETDIR/opt/knobloch/Python
-#touch .protected
+#touch $TARGETDIR/opt/knobloch/Python.protected
 
 # Create Scratch
 mkdir $TARGETDIR/opt/knobloch/Scratch
 chmod 775 $TARGETDIR/opt/knobloch/Scratch
-touch .protected
+touch $TARGETDIR/opt/knobloch/Scratch.protected
 
 # Create Data
 mkdir $TARGETDIR/opt/knobloch/Data
