@@ -49,8 +49,8 @@ chmod 544 $TARGETDIR/opt/knobloch/Cloud/TxtSmartHome.cloud
 #touch $TARGETDIR/opt/knobloch/Cloud/.protected
 #chmod 444 $TARGETDIR/opt/knobloch/Cloud/.protected
 
-# Sounds
-chmod 544 $TARGETDIR/opt/knobloch/Sounds/
+# SoundFiles
+chmod 544 $TARGETDIR/opt/knobloch/SoundFiles/
 #touch $TARGETDIR/opt/knobloch/Sounds/.protected
 #chmod 444 $TARGETDIR/opt/knobloch/Sounds/.protected
 
