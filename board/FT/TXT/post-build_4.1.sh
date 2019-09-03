@@ -62,12 +62,12 @@ touch $TARGETDIR/opt/knobloch/libs/.protected
 # Create Python
 #mkdir $TARGETDIR/opt/knobloch/Python
 #chmod 775 $TARGETDIR/opt/knobloch/Python
-#touch $TARGETDIR/opt/knobloch/Python.protected
+#touch $TARGETDIR/opt/knobloch/Python/.protected
 
 # Create Scratch
 mkdir $TARGETDIR/opt/knobloch/Scratch
 chmod 775 $TARGETDIR/opt/knobloch/Scratch
-touch $TARGETDIR/opt/knobloch/Scratch.protected
+touch $TARGETDIR/opt/knobloch/Scratch/.protected
 
 # Create Data
 mkdir $TARGETDIR/opt/knobloch/Data
