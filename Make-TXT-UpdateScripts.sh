@@ -17,7 +17,7 @@ UPDATE="$(dirname "$SCRIPTDIR")/update"
 ##### CREATE UPDATE #####
 
 # Create updatescript
-cat update-in.sh > "$UPDATE/update.sh"
+cat "$SCRIPTDIR/update-in.sh" > "$UPDATE/update.sh"
 
 echo "" >> "$UPDATE/update.sh"
 echo "PAYLOADTOOLSBEG:" >> "$UPDATE/update.sh"
