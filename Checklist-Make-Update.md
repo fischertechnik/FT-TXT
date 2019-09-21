@@ -1,12 +1,14 @@
-# Adjust version numbers in files
+# Adjust version numbers in files in Ubuntu VM
 
 Run below command and edit the version number in all files and folders opened
 
-    /lindata/transfer/TX2/buildroot-2018/FT-TXT/Edit-Version-Files.sh
+    ~/FT-TXT/Edit-Version-Files-Linux.sh
+    ~/FT-TXT/Edit-Version-Files-Windows.sh
 
-In buildroot-2018/FT-TXT (Clean / initial buil donly)
+In ~/FT-TXT (Clean / initial buil donly)
 
-- Make-TXT-Buildroot-Clean.sh
+- ./Make-TXT-Bootloader.sh 
+- ./Make-TXT-Buildroot-Clean.sh
 
 Modern Linux might use linker scripts in .so files. This means .so files can be text files which refer to one or multiple other .so files.
 
@@ -20,23 +22,29 @@ gedit \
     /opt/FT/TXT/arm-buildroot-linux-gnueabihf/sysroot/usr/lib/libc.so
 ```
 
-In Eclipse
+In Eclipse (eclipse-cpp-2019-06-R-linux-gtk-x86_64, workspace ~/eclipse)
 
 - Recompile all apps and libraries
-- Copy from transfer folder to /lindata/transfer/TX2/buildroot-2018/FT-TXT/board/FT/TXT/rootfs/usr/lib
-- ATTENTION: From 4.4.3 on, Michael Soegtrop builds ROBOProLib and MotorIOLib.
+  - Select all projects and right click / Build Configurations / Clean App
+  - Select TxtControlMain and right click / Build Configurations / Build All
+- Check build dates of files in ~/Transfer
+- Copy from ~/Transfer to ~/FT-TXT/board/FT/TXT/rootfs/usr/lib
+  - run ~/Transfer/copy_there_release.sh
+- Check file date of libROBOProLib.so in ~/FT-TXT/board/FT/TXT/rootfs/usr/lib
+- ATTENTION: From 4.4.3 on, Michael Soegtrop builds ROBOProLib.
   All other libs are provided binary by fischertechnik!
 
-In buildroot-2018/FT-TXT:
+In ~/FT-TXT:
 
 - ./Make-TXT-Buildroot-Incremental.sh
 - ./Make-TXT-UpdateScripts.sh
 - ./Sign-Connect-Reader.sh
 - ./Sign-TXT-UpdateScripts.sh
 - sudo ./Make-TXT-Image.sh
+- ./Copy-TXT-Update-To-Windows.sh
 
-In Windows VM
-- F:\TX2\buildroot-2018\FT-TXT\Copy-TXT-Update-ROBOPro.bat
+In Windows
+- D:\fischertechnik\Update\Copy-TXT-Update-ROBOPro.bat
 - Make a ROBOPro Release build
 - Do a FW Update
 - Check FW
