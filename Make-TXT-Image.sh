@@ -1,4 +1,6 @@
-#!/bin/sh
+#!/bin/bash
+if [[ $(id -u) -ne 0 ]] ; then echo "Please run as root" ; exit 1 ; fi
+#---
 BUILD=`cat board/FT/TXT/BUILD`
 IMAGEFILE=../ft-TXT_Build_$BUILD.img
 ROOTFSMNT=/tmp/XXXRootFs
