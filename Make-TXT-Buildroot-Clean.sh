@@ -11,7 +11,7 @@ git clone git://git.buildroot.net/buildroot ./buildroot
 cd buildroot
 
 #----- get fresh copy from git and patch
-git checkout 2018.02 -b FT-TXTwrk
+git checkout 2018.02.12 -b FT-TXTwrk
 patch -p1 < '../FT-TXT/patches/001-enable-kernel-external-dts-fix.patch'
 patch -p1 < '../FT-TXT/patches/002-add-CrossCompile-Script.patch'
 patch -p1 < '../FT-TXT/patches/003-psplash-for-fischertechnik-TXT.patch'
