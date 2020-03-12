@@ -160,12 +160,12 @@ diff -ruN linux-ti-linux-4.1.y/drivers/staging/fbtft/fb_ili9341_txt.c linux-ti-l
 -    *pLcdData = 0x0000;
 -
 -    *pLcdCmd = 0x0011;                          // 25.  Sleep Out
--    mdelay(5);                               //      Wait 5msek
+-    mdelay(5);                                  //      Wait 5msek
 -    *pLcdCmd = 0x0029;                          // 26.  Display On
 -
 +    *pLcdCmd = 0x0000;                          // 001
 +    *pLcdCmd = 0x0001;                          // 
-+    udelay(180000);                             // 
++    mdelay(180);                                // 
 +    *pLcdCmd = 0x0000;                          // 
 +    *pLcdCmd = 0x0028;                          // 005
 +    *pLcdCmd = 0x00CF;                          // 
@@ -265,7 +265,7 @@ diff -ruN linux-ti-linux-4.1.y/drivers/staging/fbtft/fb_ili9341_txt.c linux-ti-l
 +    *pLcdData = 0x0027;                         // 100
 +    *pLcdData = 0x0000;                         //
 +    *pLcdCmd = 0x0011;                          //
-+    udelay(40000);                              //
++    mdelay(40);                                 //
 +    *pLcdCmd = 0x0029;                          // 104
 +    *pLcdCmd = 0x0000;                          //
  
