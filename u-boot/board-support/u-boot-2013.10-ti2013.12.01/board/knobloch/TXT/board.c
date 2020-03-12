@@ -58,16 +58,16 @@ static int read_eeprom(struct am335x_baseboard_id *header)
 {
 	/* Check if baseboard eeprom is available */
 	if (i2c_probe(CONFIG_SYS_I2C_EEPROM_ADDR)) {
-		puts("Could not probe the EEPROM; something fundamentally "
-			"wrong on the I2C bus.\n");
+		// puts("Could not probe the EEPROM; something fundamentally "
+		//	"wrong on the I2C bus.\n");
 		return -ENODEV;
 	}
 
 	/* read the eeprom using i2c */
 	if (i2c_read(CONFIG_SYS_I2C_EEPROM_ADDR, 0, CONFIG_SYS_I2C_EEPROM_ADDR_LEN, (uchar *)header,
 		     sizeof(struct am335x_baseboard_id))) {
-		puts("Could not read the EEPROM; something fundamentally"
-			" wrong on the I2C bus.\n");
+		// puts("Could not read the EEPROM; something fundamentally"
+		// 	" wrong on the I2C bus.\n");
 		return -EIO;
 	}
 
@@ -78,8 +78,8 @@ static int read_eeprom(struct am335x_baseboard_id *header)
 		 */
 		if (i2c_read(CONFIG_SYS_I2C_EEPROM_ADDR, 0, CONFIG_SYS_I2C_EEPROM_ADDR_LEN, (uchar *)header,
 			     sizeof(struct am335x_baseboard_id))) {
-			puts("Could not read the EEPROM; something "
-				"fundamentally wrong on the I2C bus.>>\n");
+			// puts("Could not read the EEPROM; something "
+			// 	"fundamentally wrong on the I2C bus.>>\n");
 			return -EIO;
 		}
 
@@ -210,11 +210,11 @@ void am33xx_spl_board_init(void)
 	int sil_rev;
 	extern void LcdInit();
 
-	puts(">>>TEST LCD-1\n");
+	// puts(">>>TEST LCD-1\n");
 	LcdInit();
 
-	if (read_eeprom(&header) < 0)
-		puts("Could not get board ID.\n");
+	// if (read_eeprom(&header) < 0)
+	//    puts("Could not get board ID.\n");
 
 	/* Get the frequency */
 	dpll_mpu_opp100.m = am335x_get_efuse_mpu_max_freq(cdev);
@@ -262,8 +262,8 @@ const struct dpll_params *get_dpll_ddr_params(void)
 
 	enable_i2c0_pin_mux();
 	i2c_init(CONFIG_SYS_I2C_SPEED, CONFIG_SYS_I2C_SLAVE);
-	if (read_eeprom(&header) < 0)
-		puts("Could not get board ID.\n");
+	// if (read_eeprom(&header) < 0)
+	// 	puts("Could not get board ID.\n");
 
 	return &dpll_ddr_txt;
 }
@@ -294,8 +294,8 @@ void set_mux_conf_regs(void)
 {
 	__maybe_unused struct am335x_baseboard_id header;
 
-	if (read_eeprom(&header) < 0)
-		puts("Could not get board ID.\n");
+	// if (read_eeprom(&header) < 0)
+	// 	puts("Could not get board ID.\n");
 
 	enable_board_pin_mux(&header);
 }
@@ -304,8 +304,8 @@ void sdram_init(void)
 {
 	__maybe_unused struct am335x_baseboard_id header;
 
-	if (read_eeprom(&header) < 0)
-		puts("Could not get board ID.\n");
+	// if (read_eeprom(&header) < 0)
+	// 	puts("Could not get board ID.\n");
 			
 	/*
 	 * Turn on LCD Backlight for Test purposes
@@ -359,8 +359,8 @@ int board_late_init(void)
 	char safe_string[HDR_NAME_LEN + 1];
 	struct am335x_baseboard_id header;
 
-	if (read_eeprom(&header) < 0)
-		puts("Could not get board ID.\n");
+	// if (read_eeprom(&header) < 0)
+	// 	puts("Could not get board ID.\n");
 
 	/* Now set variables based on the header. */
 	strncpy(safe_string, (char *)header.name, sizeof(header.name));
@@ -501,8 +501,8 @@ int board_eth_init(bd_t *bis)
 			eth_setenv_enetaddr("eth1addr", mac_addr);
 	}
 
-	if (read_eeprom(&header) < 0)
-		puts("Could not get board ID.\n");
+	// if (read_eeprom(&header) < 0)
+	// 	puts("Could not get board ID.\n");
 
 	if (board_is_bone(&header) || board_is_bone_lt(&header) ||
 	    board_is_idk(&header)) {

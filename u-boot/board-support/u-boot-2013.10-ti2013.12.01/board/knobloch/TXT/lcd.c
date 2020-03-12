@@ -3,7 +3,8 @@
  *
  * LCD functions for TI AM335X 
  *
- * Copyright (C) 2014, Knobloch GmbH http://www.knobloch-gmbh.de
+ * Copyright (C) 2014,2020  Knobloch GmbH http://www.knobloch-gmbh.de
+ *                          V 1.1d
  *
  */
 
@@ -15,12 +16,10 @@
 void ClearWindowRGB(u32 u32ColStart, u32 u32RowStart, u32 u32ColEnd, u32 u32RowEnd, u32 u32ColorRGB);
 void SetWindowSize(u32 u32ColStart, u32 u32RowStart, u32 u32ColEnd, u32 u32RowEnd);
 
-
     static volatile struct cm_per_pll       *psCmPerReg = (struct cm_per_pll *) CM_PER;
     static volatile struct cm_wkup_pll      *psCmWkupReg = (struct cm_wkup_pll *) CM_WKUP;
     static volatile struct cm_dpll          *psCmDpllReg = (struct cm_dpll *) CM_DPLL;
     static volatile struct LCD_REGISTERS    *psLcdReg = (struct LCD_REGISTERS *) LCD_CNTL_BASE;
-    
     
 #define  x_offset 0
 #define  y_offset 0
@@ -42,11 +41,20 @@ void SetWindowSize(u32 u32ColStart, u32 u32RowStart, u32 u32ColEnd, u32 u32RowEn
 // -> 01011100 01010111
 #define FTBLUE 0x5C57
 
+
+
 void LcdInit(void)
 {
     u32 u32Dummy;
     unsigned short volatile  *pLcdCmd;
     unsigned short volatile  *pLcdData;
+    
+    unsigned short  u16Data0,
+                    u16Data1,
+                    u16Data2,
+                    u16Data3,
+                    u16Data4;
+    
 
     // First Set PLL 
     psCmWkupReg->clkmod_dpll_disp = (psCmWkupReg->clkmod_dpll_disp & 0x0007) | 0x00000004;    // set Bypass Mode
@@ -55,7 +63,7 @@ void LcdInit(void)
     do 
     {
         u32Dummy++;
-    } while (!(psCmWkupReg->idlest_dpll_disp & 0x00000100));           // wait for BYPASS Mode
+    } while (!(psCmWkupReg->idlest_dpll_disp & 0x00000100));        // wait for BYPASS Mode
 
     psCmWkupReg->clksel_dpll_disp = 0x00006417;                     // set PLL Values
     psCmWkupReg->div_m2_dpll_disp = 0x00000301;                     // set PLL Values
@@ -73,151 +81,147 @@ void LcdInit(void)
     psCmDpllReg->clksel_lcdc_pixel_clk = 0x00000000;                // set to use Display PLL
     psCmPerReg->lcdc_clkctrl = 0x00000002;                          // Enable LCD Module
     
-    // now Init LCD-Module
-    psLcdReg->ctrl = 0x00000000;                // set LIDD Mode
-    psLcdReg->lidd_ctrl = 0x00000003;           // MPU80 Mode
-    psLcdReg->lidd_cs0_conf = 0x1064394F;       // 0001 0000 0110 0100 0011 1001 0100 1111 = 0x1064 394F
-    psLcdReg->clkc_enable = 0x00000002;         // LIDD Clock enable
+    psLcdReg->ctrl = 0x00000000;                
+    psLcdReg->lidd_ctrl = 0x00000003;           
+    psLcdReg->lidd_cs0_conf = 0x1064394F;       
 
-    // Zeiger setzen
-    pLcdCmd = (unsigned short *)  &psLcdReg->lidd_cs0_addr;
-    pLcdData = (unsigned short *) &psLcdReg->lidd_cs0_data;
+    printf("LCD-V1.1d \n");
     
-    // Display initialisieren
-    *pLcdCmd = 0x0001;                          // 1.   Software Reset schreiben
-    udelay(120000);                             //      Wait 120msek
+    psLcdReg->clkc_enable = 0x00000002;      
 
-    *pLcdCmd = 0x0028;                          // 2.   Display off
+    pLcdCmd = (unsigned short *)  &psLcdReg->lidd_cs0_addr;     
+    pLcdData = (unsigned short *) &psLcdReg->lidd_cs0_data;     
 
-    *pLcdCmd = 0x00CF;                          // 3.	Power Control B
-    *pLcdData = 0x0000;
-    *pLcdData = 0x0081;
-    *pLcdData = 0x0030;
-    
-    *pLcdCmd = 0x00ED;                          // 4.	Power On Sequence Control
-    *pLcdData = 0x0003;
-    *pLcdData = 0x0012;
-    *pLcdData = 0x0081;
+    *pLcdCmd = 0x0000;                          // 001
+    *pLcdCmd = 0x0001;                          // 
+    udelay(180000);                             // 
+    *pLcdCmd = 0x0000;                          // 
+    *pLcdCmd = 0x0028;                          // 005
+    *pLcdCmd = 0x00CF;                          // 
+    *pLcdData = 0x0000;                         // 
+    *pLcdData = 0x0081;                         //
+    *pLcdData = 0x0030;                         //
+    *pLcdCmd = 0x00ED;                          // 010
+    *pLcdData = 0x0064;                         //
+    *pLcdData = 0x0003;                         //
+    *pLcdData = 0x0012;                         //
+    *pLcdData = 0x0081;                         //
+    *pLcdCmd = 0x00E8;                          // 015 
+    *pLcdData = 0x0085;                         //
+    *pLcdData = 0x0001;                         //
+    *pLcdData = 0x0079;                         //
+    *pLcdCmd = 0x00CB;                          // 
+    *pLcdData = 0x0039;                         // 020
+    *pLcdData = 0x002C;                         //
+    *pLcdData = 0x0000;                         //
+    *pLcdData = 0x0034;                         //
+    *pLcdData = 0x0002;                         //
+    *pLcdCmd = 0x00F7;                          // 025 
+    *pLcdData = 0x0020;                         //
+    *pLcdCmd = 0x00EA;                          // 
+    *pLcdData = 0x0000;                         //
+    *pLcdData = 0x0000;                         //
+    *pLcdCmd = 0x00C0;                          // 030
+    *pLcdData = 0x0026;                         //
+    *pLcdCmd = 0x00C1;                          // 
+    *pLcdData = 0x0011;                         //
+    *pLcdCmd = 0x00C5;                          // 
+    *pLcdData = 0x0035;                         // 035
+    *pLcdData = 0x003E;                         //
+    *pLcdCmd = 0x00C7;                          // 
+    *pLcdData = 0x00BE;                         //
+    *pLcdCmd = 0x0036;                          // 
+    *pLcdData = 0x0048;                         // 040
+    *pLcdCmd = 0x003A;                          // 
+    *pLcdData = 0x0055;                         //
+    *pLcdCmd = 0x00B1;                          // 
+    *pLcdData = 0x0000;                         //
+    *pLcdData = 0x001B;                         // 045
+    *pLcdCmd = 0x0000;                          // 
+    *pLcdCmd = 0x00B4;                          //
+    *pLcdData = 0x0000;                         //
+    *pLcdCmd = 0x00F2;                          // 
+    *pLcdData = 0x0002;                         // 050
+    *pLcdCmd = 0x0026;                          // 
+    *pLcdData = 0x0001;                         //
+    *pLcdCmd = 0x00E0;                          // 
+    *pLcdData = 0x001F;                         //
+    *pLcdData = 0x001A;                         // 055
+    *pLcdData = 0x0018;                         //
+    *pLcdData = 0x000A;                         //
+    *pLcdData = 0x000F;                         //
+    *pLcdData = 0x0006;                         //
+    *pLcdData = 0x0045;                         // 060
+    *pLcdData = 0x0087;                         //
+    *pLcdData = 0x0032;                         //
+    *pLcdData = 0x000A;                         //
+    *pLcdData = 0x0007;                         //
+    *pLcdData = 0x0002;                         // 065
+    *pLcdData = 0x0007;                         //
+    *pLcdData = 0x0005;                         //
+    *pLcdData = 0x0000;                         //
+    *pLcdCmd = 0x00E1;                          //
+    *pLcdData = 0x0000;                         // 070
+    *pLcdData = 0x0025;                         //
+    *pLcdData = 0x0027;                         //
+    *pLcdData = 0x0005;                         //
+    *pLcdData = 0x0010;                         //
+    *pLcdData = 0x0009;                         // 075
+    *pLcdData = 0x003A;                         //
+    *pLcdData = 0x0078;                         //
+    *pLcdData = 0x004D;                         //
+    *pLcdData = 0x0005;                         //
+    *pLcdData = 0x0018;                         // 080
+    *pLcdData = 0x000D;                         //
+    *pLcdData = 0x0038;                         //
+    *pLcdData = 0x003A;                         //
+    *pLcdData = 0x001F;                         //
+    *pLcdCmd = 0x002A;                          // 085
+    *pLcdData = 0x0000;                         //
+    *pLcdData = 0x0000;                         //
+    *pLcdData = 0x0000;                         //
+    *pLcdData = 0x00EF;                         //
+    *pLcdCmd = 0x002B;                          // 090
+    *pLcdData = 0x0000;                         //
+    *pLcdData = 0x0000;                         //
+    *pLcdData = 0x0001;                         //
+    *pLcdData = 0x003F;                         //
+    *pLcdCmd = 0x00B7;                          // 095
+    *pLcdData = 0x0007;                         //
+    *pLcdCmd = 0x00B6;                          //
+    *pLcdData = 0x000A;                         //
+    *pLcdData = 0x0082;                         //
+    *pLcdData = 0x0027;                         // 100
+    *pLcdData = 0x0000;                         //
+    *pLcdCmd = 0x0011;                          //
+    udelay(40000);                              //
+    *pLcdCmd = 0x0029;                          // 104
+//    ClearWindowRGB(       0,        0,    240, 320, TEST_COLOR);
+    *pLcdCmd = 0x0000;                          //
+    *pLcdCmd = 0x0009;                          //
+    u16Data0 = *pLcdData;   
+    u16Data1 = *pLcdData;   
+    u16Data2 = *pLcdData;   
+    u16Data3 = *pLcdData;   
+    u16Data4 = *pLcdData;   
+    if ((u16Data1 != 0x00A4) || (u16Data2 != 0x0053) || (u16Data3 != 0x0004) || (u16Data4 != 0x0000))
+    {
+        printf("Info: LCD-Read-09  (0 A4 53 4 0):  %2X %2X %2X %2X %2X \n", u16Data0, u16Data1, u16Data2, u16Data3, u16Data4);
+    }
 
-    *pLcdCmd = 0x00E8;                          // 5.	Driver Timing
-    *pLcdData = 0x0085;
-    *pLcdData = 0x0001;
-    *pLcdData = 0x0079;
-    
-    *pLcdCmd = 0x00CB;                          // 6.   Driver Timing
-    *pLcdData = 0x0039;
-    *pLcdData = 0x002C;
-    *pLcdData = 0x0000;
-    *pLcdData = 0x0034;
-    *pLcdData = 0x0002;
-    
-    *pLcdCmd = 0x00F7;                          // 7.	Pump ratio control
-    *pLcdData = 0x0020;
-
-    *pLcdCmd = 0x00EA;                          // 8.   Driver Timing Control B
-    *pLcdData = 0x0000;
-    *pLcdData = 0x0000;
-
-    *pLcdCmd = 0x00C0;                          // 9.	Power Control
-    *pLcdData = 0x0026;
-
-    *pLcdCmd = 0x00C1;                          // 10.	Power Control 2
-    *pLcdData = 0x0011;
-
-    *pLcdCmd = 0x00C5;                          // 11.	VCOM Control
-    *pLcdData = 0x0035;
-    *pLcdData = 0x003E;
-
-    *pLcdCmd = 0x00C7;                          // 12.	VCOM Control 2
-    *pLcdData = 0x00BE;
-
-    *pLcdCmd = 0x0036;                          // 13.	Memory Access Control
-    *pLcdData = 0x0048;                         //      0100 0000 --> an X spiegeln, ferner statt RGB, BGR verwenden
-
-    *pLcdCmd = 0x003A;                          // 14.	Pixel Format
-    *pLcdData = 0x0055;
-
-    *pLcdCmd = 0x00B1;                          // 15.	Frame Rate
-    *pLcdData = 0x0000;
-    *pLcdData = 0x001B;
-
-    *pLcdCmd = 0x00B4;                          // 16.	Display Inversion Control
-    *pLcdData = 0x0000;
-
-    *pLcdCmd = 0x00F2;                          // 17.	Enable 3G
-    *pLcdData = 0x0002;
-
-    *pLcdCmd = 0x0026;                          // 18.	Gamma Set
-    *pLcdData = 0x0001;
-
-    *pLcdCmd = 0x00E0;                          // 19.	Positive Gamma Correction
-    *pLcdData = 0x001F;
-    *pLcdData = 0x001A;
-    *pLcdData = 0x0018;
-    *pLcdData = 0x000A;
-    *pLcdData = 0x000F;
-    *pLcdData = 0x0006;
-    *pLcdData = 0x0045;
-    *pLcdData = 0x0087;
-    *pLcdData = 0x0032;
-    *pLcdData = 0x000A;
-    *pLcdData = 0x0007;
-    *pLcdData = 0x0002;
-    *pLcdData = 0x0007;
-    *pLcdData = 0x0005;
-    *pLcdData = 0x0000;
-
-    *pLcdCmd = 0x00E1;                          // 20.	Negative Gamma Correction
-    *pLcdData = 0x0000;
-    *pLcdData = 0x0025;
-    *pLcdData = 0x0027;
-    *pLcdData = 0x0005;
-    *pLcdData = 0x0010;
-    *pLcdData = 0x0009;
-    *pLcdData = 0x003A;
-    *pLcdData = 0x0078;
-    *pLcdData = 0x004D;
-    *pLcdData = 0x0005;
-    *pLcdData = 0x0018;
-    *pLcdData = 0x000D;
-    *pLcdData = 0x0038;
-    *pLcdData = 0x003A;
-    *pLcdData = 0x001F;
-
-    *pLcdCmd = 0x002A;                          // 21.	Column Address Set
-    *pLcdData = 0x0000;
-    *pLcdData = 0x0000;
-    *pLcdData = 0x0000;
-    *pLcdData = 0x00EF;
-
-    *pLcdCmd = 0x002B;                          // 22.	Page Address Set
-    *pLcdData = 0x0000;
-    *pLcdData = 0x0000;
-    *pLcdData = 0x0001;
-    *pLcdData = 0x003F;
-
-    *pLcdCmd = 0x00B7;                          // 23.	Entry Mode Set
-    *pLcdData = 0x0007;
-
-    *pLcdCmd = 0x00B6;                          // 24.	Display Function Control
-    *pLcdData = 0x000A;
-    *pLcdData = 0x0082;
-    *pLcdData = 0x0027;
-    *pLcdData = 0x0000;
-
-    *pLcdCmd = 0x0011;                          // 25.	Sleep Out
-    udelay(5000);                               //      Wait 5msek
-
-    *pLcdCmd = 0x0029;                          // 26.	Display On
- 
-//    ClearWindowRGB( 0, 0, 240, 320, 0x001F);
-//    ClearWindowRGB( 60, 80, 120, 160, 0xE000);
-//    ClearWindowRGB( 100, 100, 160, 120, 0x0F00);
-//    ClearWindowRGB( 0, 0, 240, 320, FTBLUE);
-
-printf("LCD-Init_4: \n");
-   
+    *pLcdCmd = 0x00D3;      
+    u16Data0 = *pLcdData;   
+    u16Data1 = *pLcdData;   
+    u16Data2 = *pLcdData;   
+    u16Data3 = *pLcdData;   
+    if ((u16Data1 != 0x0000) || (u16Data2 != 0x0093) || (u16Data3 != 0x0041))
+    {
+        printf("Info LCD-Read-D3 (0 00 93 41):  %2X %2X %2X %2X  \n", u16Data0, u16Data1, u16Data2, u16Data3);
+    }
 }
+
+
+
 // Clear Window 
 void ClearWindowRGB(u32 u32ColStart, u32 u32RowStart, u32 u32ColEnd, u32 u32RowEnd, u32 u32ColorRGB)
 {  
@@ -226,8 +230,9 @@ void ClearWindowRGB(u32 u32ColStart, u32 u32RowStart, u32 u32ColEnd, u32 u32RowE
 
     u32 u32Col,
         u32Row;
-
+        
     SetWindowSize(u32ColStart, u32RowStart, u32ColEnd-1, u32RowEnd-1);
+    printf("LCD-Clear \n");
     
     pLcdCmd = (unsigned short *)  &psLcdReg->lidd_cs0_addr;
     pLcdData = (unsigned short *) &psLcdReg->lidd_cs0_data;
@@ -255,12 +260,17 @@ void ClearWindowRGB(u32 u32ColStart, u32 u32RowStart, u32 u32ColEnd, u32 u32RowE
             }
         }
     }
+    *pLcdCmd = 0x0000;           
 }
+
+
 // Sets a window from top-left (0,0) corner to bottom-right corner (240,320  )
 void SetWindowSize(u32 u32ColStart, u32 u32RowStart, u32 u32ColEnd, u32 u32RowEnd)
 {
     unsigned short volatile  *pLcdCmd;
     unsigned short volatile  *pLcdData;
+
+    printf("LCD-SetSize \n");
 
     pLcdCmd = (unsigned short *)  &psLcdReg->lidd_cs0_addr;
     pLcdData = (unsigned short *) &psLcdReg->lidd_cs0_data;
@@ -277,5 +287,4 @@ void SetWindowSize(u32 u32ColStart, u32 u32RowStart, u32 u32ColEnd, u32 u32RowEn
     *pLcdData = (unsigned short) (u32RowEnd >> 8) & 0x00FF;     // obere 8 End-Adressbits setzen
     *pLcdData = (unsigned short) (u32RowEnd & 0x00FF);          // untere 8 End-Adressbits setzen
 }
-
 
