@@ -55,7 +55,7 @@ chmod 544 $TARGETDIR/opt/knobloch/SoundFiles/
 #chmod 444 $TARGETDIR/opt/knobloch/Sounds/.protected
 
 # libs
-chmod 544 $TARGETDIR/opt/knobloch/libs/
+chmod 775 $TARGETDIR/opt/knobloch/libs/
 chmod 544 $TARGETDIR/opt/knobloch/libs/libBME680.so
 chmod 544 $TARGETDIR/opt/knobloch/libs/libExampleSLI.so
 #touch $TARGETDIR/opt/knobloch/libs/.protected
