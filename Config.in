@@ -8,4 +8,4 @@ source "$BR2_EXTERNAL_FT_TXT_PATH/package/libfreefare-git/Config.in"
 source "$BR2_EXTERNAL_FT_TXT_PATH/package/civetweb-git/Config.in"
 source "$BR2_EXTERNAL_FT_TXT_PATH/package/python-mod_wsgi/Config.in"
 source "$BR2_EXTERNAL_FT_TXT_PATH/package/python-ftrobopy/Config.in"
-
+source "$BR2_EXTERNAL_FT_TXT_PATH/package/python-speedtest-cli/Config.in"
