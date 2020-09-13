@@ -1,4 +1,4 @@
-﻿config BR2_PACKAGE_LIBFREEFARE_GIT
+config BR2_PACKAGE_LIBFREEFARE_GIT
 	bool "libfreefare-git"
 	depends on BR2_TOOLCHAIN_HAS_THREADS # libusb
 	select BR2_PACKAGE_OPENSSL

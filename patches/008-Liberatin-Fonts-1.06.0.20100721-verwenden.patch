@@ -1,0 +1,51 @@
+From f2754bc667990570bd9fe095d8930752090e35c0 Mon Sep 17 00:00:00 2001
+From: Reinhard Russinger <reinhard@russinger.at>
+Date: Wed, 9 Sep 2020 13:48:38 +0000
+Subject: [PATCH] liberation
+
+---
+ package/liberation/Config.in       | 2 --
+ package/liberation/liberation.hash | 4 +---
+ package/liberation/liberation.mk   | 4 ++--
+ 3 files changed, 3 insertions(+), 7 deletions(-)
+
+diff --git a/package/liberation/Config.in b/package/liberation/Config.in
+index 8d6b3e7..b68166f 100644
+--- a/package/liberation/Config.in
++++ b/package/liberation/Config.in
+@@ -5,8 +5,6 @@ config BR2_PACKAGE_LIBERATION
+ 	  three most commonly used fonts on Microsoft systems:
+ 	  Times New Roman, Arial, and Courier New.
+ 
+-	  https://github.com/liberationfonts/liberation-fonts
+-
+ if BR2_PACKAGE_LIBERATION
+ 
+ config BR2_PACKAGE_LIBERATION_MONO
+diff --git a/package/liberation/liberation.hash b/package/liberation/liberation.hash
+index a15dc23..a67807f 100644
+--- a/package/liberation/liberation.hash
++++ b/package/liberation/liberation.hash
+@@ -1,3 +1 @@
+-# Locally calculated
+-sha256	f14ff0a0be87b5aeb672e669363b5a699db76feb1144b06798261c0fdcd2b24d	liberation-fonts-ttf-2.00.5.tar.gz
+-sha256	93fed46019c38bbe566b479d22148e2e8a1e85ada614accb0211c37b2c61c19b	LICENSE
++sha256	9cdea85d1ee40160cf48fc482fbd9038b07b47d909f2091039338d39b0bb7d2f	liberation-fonts-ttf-1.06.0.20100721.tar.gz
+diff --git a/package/liberation/liberation.mk b/package/liberation/liberation.mk
+index 495a1ff..120a7a0 100644
+--- a/package/liberation/liberation.mk
++++ b/package/liberation/liberation.mk
+@@ -4,8 +4,8 @@
+ #
+ ################################################################################
+ 
+-LIBERATION_VERSION = 2.00.5
+-LIBERATION_SITE = https://github.com/liberationfonts/liberation-fonts/files/2926169
++LIBERATION_VERSION = 1.06.0.20100721
++LIBERATION_SITE = https://releases.pagure.org/liberation-fonts
+ LIBERATION_SOURCE = liberation-fonts-ttf-$(LIBERATION_VERSION).tar.gz
+ LIBERATION_TARGET_DIR = $(TARGET_DIR)/usr/share/fonts/liberation
+ LIBERATION_LICENSE = OFL-1.1
+-- 
+2.7.4
+

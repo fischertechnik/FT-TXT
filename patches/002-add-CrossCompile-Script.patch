@@ -1,16 +1,75 @@
+From 1cf198926fbd03d59fe978c5bf752fcd9dfb57ff Mon Sep 17 00:00:00 2001
+From: Reinhard Russinger <reinhard@russinger.at>
+Date: Wed, 9 Sep 2020 08:12:52 +0000
+Subject: [PATCH] CrossCompile
+
+---
+ CrossCompile.sh | 87 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 87 insertions(+)
+ create mode 100755 CrossCompile.sh
+
 diff --git a/CrossCompile.sh b/CrossCompile.sh
 new file mode 100755
-index 0000000..3ad58d8
+index 0000000..0244bac
 --- /dev/null
 +++ b/CrossCompile.sh
-@@ -0,0 +1,33 @@
+@@ -0,0 +1,87 @@
 +#! /bin/bash
 +#
 +#
 +
 +WRKDIR=`pwd`
-+CMDDIR=`dirname $0`
++CMDDIR=`dirname \`readlink -f $0\``
 +cd $CMDDIR
++
++#=== Asssign GNU_TARGET_NAME from .config
++_ARCH=`grep BR2_ARCH\= .config | awk -F\= -F\" '{print $2}'`
++_TARGET_VENDOR=`grep BR2_TOOLCHAIN_BUILDROOT_VENDOR\= .config | awk -F\= -F\" '{print $2}'`
++
++# -- get target os
++_BR2_BINFMT_FLAT=`grep BR2_BINFMT_FLAT\= .config | awk -F\= '{print $2}'`
++
++if [ "$_BR2_BINFMT_FLAT" = "y" ]; then
++	_TARGET_OS="uclinux"
++	else
++	_TARGET_OS="linux"
++fi	
++
++# -- get libc
++_BR2_TOOLCHAIN_USES_UCLIBC=`grep BR2_TOOLCHAIN_USES_UCLIBC\= .config | awk -F\= '{print $2}'`
++_BR2_TOOLCHAIN_USES_MUSL=`grep BR2_TOOLCHAIN_USES_MUSL\= .config | awk -F\= '{print $2}'`
++
++if [ "$_BR2_TOOLCHAIN_USES_UCLIBC" = "y" ]; then
++	_LIBC="uclibc"
++	else
++	if [ "$_BR2_TOOLCHAIN_USES_MUSL" = "y" ]; then
++		_LIBC="musl"
++		else
++		_LIBC="gnu"
++	fi
++fi	 		
++
++# -- ABI
++_BR2_arm=`grep BR2_arm\= .config | awk -F\= '{print $2}'`
++_BR2_armeb=`grep BR2_armeb\= .config | awk -F\= '{print $2}'`
++_BR2_ARM_EABIHF=`grep BR2_ARM_EABIHF\= .config | awk -F\= '{print $2}'`
++if [ "$_BR2_arm" = "y" ] || [ "$_BR2_armeb" = "y" ]; then
++	if [ "$_LIBC" = "uclibc" ]; then
++		_ABI="gnueabi"
++		else
++		_ABI="eabi"
++	fi
++	if [ "$_BR2_ARM_EABIHF" = "y" ]; then
++		_ABI="${_ABI}hf"
++	fi
++fi
++
++if [ -z "${_TARGET_VENDOR}" ]; then	
++	_GNU_TARGET_NAME="${_ARCH}-${_TARGET_OS}-${_LIBC}${_ABI}"
++else	
++	_GNU_TARGET_NAME="${_ARCH}-${_TARGET_VENDOR}-${_TARGET_OS}-${_LIBC}${_ABI}"
++fi
++#===============================================================
 +
 +TOOLCHAIN=`grep BR2_HOST_DIR .config | awk -F\= -F\" '{print $2}'`
 +echo $TOOLCHAIN
@@ -23,12 +82,17 @@ index 0000000..3ad58d8
 +
 +export PATH=$PATH:$SYSROOT
 +
-+export CROSS_COMPILE=arm-buildroot-linux-gnueabihf-
-+export ARCH=arm
-+export KERNELDIR=`pwd`/output/build/linux-7f280334068b7c875ade51f8f3921ab311f0c824
++export CROSS_COMPILE="${_GNU_TARGET_NAME}-"
++export CROSS=${CROSS_COMPILE}
++
++export ARCH=${_ARCH}
++_KERNELDIR=`grep BR2_LINUX_KERNEL_VERSION\= .config | awk -F\= -F\" '{print $2}'`
++export KERNELDIR=${CMDDIR}/output/build/linux-${_KERNELDIR}
 +export BB_KERNEL_SOURCES=$KERNELDIR
-+export SYSROOTARM=`grep BR2_HOST_DIR .config | awk -F\= -F\" '{print $2}'`/usr/arm-buildroot-linux-gnueabihf/sysroot
-+export CC_FULLPATH="${SYSROOT}${CROSS_COMPILE}"
++export SYSROOTARM=`grep BR2_HOST_DIR .config | awk -F\= -F\" '{print $2}'`/usr/${_GNU_TARGET_NAME}/sysroot
++export CC_FULLPATH="${SYSROOT}/${CROSS_COMPILE}"
++export CC=${CROSS_COMPILE}gcc
++export CXX=${CROSS_COMPILE}g++
 +
 +cd $WRKDIR
 +if [ $# -eq "0" ] 
@@ -37,3 +101,6 @@ index 0000000..3ad58d8
 +else
 +$1
 +fi
+-- 
+2.7.4
+

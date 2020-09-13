@@ -1,4 +1,4 @@
-﻿config BR2_PACKAGE_LIBNFC_GIT
+config BR2_PACKAGE_LIBNFC_GIT
 	bool "libnfc-git"
 	depends on BR2_TOOLCHAIN_HAS_THREADS # libusb
 	select BR2_PACKAGE_LIBUSB
