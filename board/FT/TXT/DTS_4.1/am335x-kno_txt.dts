@@ -75,7 +75,7 @@
 			pinctrl-names = "default", "sleep";
 			pinctrl-0 = <&uart3_pins_default>;
 			pinctrl-1 = <&uart3_pins_sleep>;
-
+			has-hw-flow-control;
 			status = "okay";
 		};
 

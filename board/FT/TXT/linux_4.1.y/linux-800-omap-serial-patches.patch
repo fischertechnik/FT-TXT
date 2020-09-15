@@ -1,0 +1,99 @@
+diff --git a/arch/arm/boot/dts/am335x-kno_txt.dts b/arch/arm/boot/dts/am335x-kno_txt.dts
+index 7dc263a..94bc334 100644
+--- a/arch/arm/boot/dts/am335x-kno_txt.dts
++++ b/arch/arm/boot/dts/am335x-kno_txt.dts
+@@ -75,7 +75,7 @@
+ 			pinctrl-names = "default", "sleep";
+ 			pinctrl-0 = <&uart3_pins_default>;
+ 			pinctrl-1 = <&uart3_pins_sleep>;
+-
++			has-hw-flow-control;
+ 			status = "okay";
+ 		};
+ 
+diff --git a/drivers/tty/serial/omap-serial.c b/drivers/tty/serial/omap-serial.c
+index aaf3478..09a8ac7 100644
+--- a/drivers/tty/serial/omap-serial.c
++++ b/drivers/tty/serial/omap-serial.c
+@@ -559,6 +559,20 @@ static void serial_omap_rdi(struct uart_omap_port *up, unsigned int lsr)
+ }
+ 
+ /**
++ * serial_omap_fast_irq() - schedule interrupt handling
++ */
++static irqreturn_t serial_omap_fast_irq(int irq, void *dev_id)
++{
++	struct uart_omap_port *up = dev_id;
++	unsigned int iir = serial_in(up, UART_IIR);
++
++	if (iir & UART_IIR_NO_INT)
++		return IRQ_NONE;
++
++	return IRQ_WAKE_THREAD;
++}
++
++/**
+  * serial_omap_irq() - This handles the interrupt from one port
+  * @irq: uart port irq number
+  * @dev_id: uart port info
+@@ -568,7 +582,6 @@ static irqreturn_t serial_omap_irq(int irq, void *dev_id)
+ 	struct uart_omap_port *up = dev_id;
+ 	unsigned int iir, lsr;
+ 	unsigned int type;
+-	irqreturn_t ret = IRQ_NONE;
+ 	int max_count = 256;
+ 
+ 	spin_lock(&up->port.lock);
+@@ -579,7 +592,6 @@ static irqreturn_t serial_omap_irq(int irq, void *dev_id)
+ 		if (iir & UART_IIR_NO_INT)
+ 			break;
+ 
+-		ret = IRQ_HANDLED;
+ 		lsr = serial_in(up, UART_LSR);
+ 
+ 		/* extract IRQ type from IIR register */
+@@ -618,7 +630,7 @@ static irqreturn_t serial_omap_irq(int irq, void *dev_id)
+ 	pm_runtime_put_autosuspend(up->dev);
+ 	up->port_activity = jiffies;
+ 
+-	return ret;
++	return IRQ_HANDLED;
+ }
+ 
+ static unsigned int serial_omap_tx_empty(struct uart_port *port)
+@@ -726,14 +738,21 @@ static int serial_omap_startup(struct uart_port *port)
+ 	/*
+ 	 * Allocate the IRQ
+ 	 */
+-	retval = request_irq(up->port.irq, serial_omap_irq, up->port.irqflags,
+-				up->name, up);
++	retval = request_threaded_irq(up->port.irq, serial_omap_fast_irq,
++						serial_omap_irq,
++						IRQF_ONESHOT | up->port.irqflags,
++						up->name, up);		
++
+ 	if (retval)
+ 		return retval;
+ 
+ 	/* Optional wake-up IRQ */
+ 	if (up->wakeirq) {
+-		retval = dev_pm_set_dedicated_wake_irq(up->dev, up->wakeirq);
++		retval = request_threaded_irq(up->wakeirq, serial_omap_fast_irq,
++						serial_omap_irq,
++						IRQF_ONESHOT | up->port.irqflags,
++						up->name, up);		
++		
+ 		if (retval) {
+ 			free_irq(up->port.irq, up);
+ 			return retval;
+@@ -1540,6 +1559,10 @@ static struct omap_uart_port_info *of_get_uart_port_info(struct device *dev)
+ 
+ 	of_property_read_u32(dev->of_node, "clock-frequency",
+ 					 &omap_up_info->uartclk);
++
++	if (of_property_read_bool(dev->of_node, "has-hw-flow-control"))
++		omap_up_info->flags |= UPF_HARD_FLOW;
++					 
+ 	return omap_up_info;
+ }
+ 

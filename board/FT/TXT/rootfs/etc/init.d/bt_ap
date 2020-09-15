@@ -38,6 +38,8 @@ case "$1" in
             then
   	        touch /etc/init.d/bt_ap_on
             fi
+	    bluetoothctl discoverable yes
+	    bluetoothctl show
 	    bt-network -s nap pan0 &
   	else
   	    echo "Bluetooth name or pairing key not set"
@@ -48,9 +50,7 @@ case "$1" in
 	echo -n "Stopping bluetooth NAP..."
 	killall -SIGTERM bt_ser
 	killall -SIGTERM rfcomm
-##	killall -SIGTERM bt-nap
 	killall -SIGTERM bt-agent
-##	killall -SIGTERM pand
 	killall -SIGTERM bluetoothd
 	hciconfig hci0 down
  	rm /etc/init.d/bt_ap_on
