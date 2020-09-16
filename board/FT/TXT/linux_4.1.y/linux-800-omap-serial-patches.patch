@@ -1,16 +1,3 @@
-diff --git a/arch/arm/boot/dts/am335x-kno_txt.dts b/arch/arm/boot/dts/am335x-kno_txt.dts
-index 7dc263a..94bc334 100644
---- a/arch/arm/boot/dts/am335x-kno_txt.dts
-+++ b/arch/arm/boot/dts/am335x-kno_txt.dts
-@@ -75,7 +75,7 @@
- 			pinctrl-names = "default", "sleep";
- 			pinctrl-0 = <&uart3_pins_default>;
- 			pinctrl-1 = <&uart3_pins_sleep>;
--
-+			has-hw-flow-control;
- 			status = "okay";
- 		};
- 
 diff --git a/drivers/tty/serial/omap-serial.c b/drivers/tty/serial/omap-serial.c
 index aaf3478..09a8ac7 100644
 --- a/drivers/tty/serial/omap-serial.c
