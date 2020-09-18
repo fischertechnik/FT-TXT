@@ -15,21 +15,25 @@ case "$1" in
  	    echo "$BTMAC $BTNAME $BTDIR"
  	
  	    hciconfig hci0 up piscan lm master,accept class 0x020300
- 	    /usr/libexec/bluetooth/bluetoothd -dd &
+	    hciconfig hci0 sspmode 0 # for fixed pin pairing
+	    hciconfig hci0 auth #for fixed pin pairing
+
+ 	    /usr/libexec/bluetooth/bluetoothd --compat --noplugin=sap &
+
  	    if [ ! -L /sys/class/net/pan0 ]
  	    then
  	        brctl addbr pan0
  	        brctl setfd pan0 0
  	        brctl stp pan0 off
- 	        ifconfig pan0 192.168.9.2 netmask 255.255.255.0
+		ip addr add 192.168.9.2/24 dev pan0
+		ip link set pan0 up
  	    fi  
- 	    #----
+	    #----
  	    #-- Pairing agent
   	    BT_DEFAULTKEY=`cat $BT_DEFAULTKEY_FILE`
 	    #-- Pairing Agent starten
-	    hciconfig hci0 sspmode 0
-		echo "* $BT_DEFAULTKEY" > /tmp/bt_pincodes
-	    bt-agent -c NoInputNoOutput -p /tmp/bt_pincodes &
+	    echo "* $BT_DEFAULTKEY" > /tmp/bt_pincodes
+	    bt-agent -c KeyboardOnly -p /tmp/bt_pincodes &
 	    #-- SER Start
 	    sdptool add --channel 22 SP
 	    /etc/init.d/bt_ser &
@@ -40,7 +44,7 @@ case "$1" in
             fi
 	    bluetoothctl discoverable yes
 	    bluetoothctl show
-	    bt-network -s nap pan0 &
+	    bt-pan --debug server pan0 &
   	else
   	    echo "Bluetooth name or pairing key not set"
   	fi
