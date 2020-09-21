@@ -1,0 +1,13 @@
+diff --git a/package/libvncserver/libvncserver.mk b/package/libvncserver/libvncserver.mk
+index 890672d..ba25cd7 100644
+--- a/package/libvncserver/libvncserver.mk
++++ b/package/libvncserver/libvncserver.mk
+@@ -27,7 +27,7 @@ LIBVNCSERVER_CONF_OPTS += \
+ 	-DWITH_FFMPEG=OFF \
+ 	-DWITH_SDL=OFF
+ 
+-ifneq ($(BR2_TOOLCHAIN_HAS_THREADS),y)
++ifeq ($(BR2_TOOLCHAIN_HAS_THREADS),y)
+ LIBVNCSERVER_CONF_OPTS += -DWITH_THREADS=ON
+ else
+ LIBVNCSERVER_CONF_OPTS += -DWITH_THREADS=OFF
