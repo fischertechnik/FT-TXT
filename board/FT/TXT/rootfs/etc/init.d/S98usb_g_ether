@@ -1,27 +1,139 @@
 #!/bin/sh
-#
-# Start the usb gadget network....
-#
+set -e
 
-case "$1" in
-  start)
- 	echo "Starting usb g_ether network..."
-	modprobe g_ether
-	/sbin/ifdown usb0
-	/sbin/ifup usb0
-	;;
-  stop)
-	echo -n "Stopping usb g_ether network..."
-	rmmod g_ether
-	;;
-  restart|reload)
-	"$0" stop
-	"$0" start
-	;;
-  *)
-	echo "Usage: $0 {start|stop|restart}"
-	exit 1
+# USB Gadget for FT-TXT
+#
+if [ ! -d "/sys/kernel/config" ]; then
+    echo "load configfs"
+    modprobe configfs
+fi
+
+if [ -z "$(ls -A /sys/kernel/config)" ]; then
+   echo "mount configfs"
+   mount -t configfs none /sys/kernel/config 2>/dev/null
+fi
+
+if [ ! -d "/sys/kernel/config/usb_gadget" ]; then
+    echo "load libcomposite"
+    modprobe libcomposite
+fi
+
+# command line parameters
+command="$1" # "up|start" or "down"
+
+g="/sys/kernel/config/usb_gadget/rndisdev"
+
+rndis_usb_up() {
+    usb_ver="0x0200" # USB 2.0
+    dev_class="0xfe" # 
+    dev_subclass="0x04"
+    dev_protocol="0x01"
+    vid="0x146a" # Knobloch
+    pid="0x0015" # Linux-USB RNDIS Ethernet Gadget
+    device="0x0100" # v1.0.0
+    mfg="FT" # 
+    prod="FT-TXT" # 
+    serial="fedcba9875643210"
+    attr="0xC0" # Self powered
+    pwr="1" # 2mA
+    cfg2="RNDIS"
+    dev_mac2="00:54:58:54:FF:01"
+    host_mac2="00:54:58:54:FF:02"
+    ms_vendor_code="0xcd" # Microsoft
+    ms_qw_sign="MSFT100" # also Microsoft (if you couldn't tell)
+    ms_compat_id="RNDIS" # matches Windows RNDIS Drivers
+    ms_subcompat_id="5162001" # matches Windows RNDIS 6.0 Driver
+
+    if [ -d ${g} ]; then
+        if [ "$(cat ${g}/UDC)" != "" ]; then
+            echo "Gadget is already up."
+            exit 1
+        fi
+        echo "Cleaning up old directory..."
+        rndis_usb_down
+    fi
+    echo "Setting up gadget..."
+
+    # Create a new gadget
+    mkdir ${g}
+    echo "${usb_ver}" > ${g}/bcdUSB
+    echo "${dev_class}" > ${g}/bDeviceClass
+    echo "${dev_subclass}" > ${g}/bDeviceSubClass
+    echo "${dev_protocol}" > ${g}/bDeviceProtocol
+    echo "${vid}" > ${g}/idVendor
+    echo "${pid}" > ${g}/idProduct
+    echo "${device}" > ${g}/bcdDevice
+    mkdir ${g}/strings/0x409
+    echo "${mfg}" > ${g}/strings/0x409/manufacturer
+    echo "${prod}" > ${g}/strings/0x409/product
+    echo "${serial}" > ${g}/strings/0x409/serialnumber
+
+    # config RNDIS
+    mkdir ${g}/configs/c.1
+    echo "${attr}" > ${g}/configs/c.1/bmAttributes
+    echo "${pwr}" > ${g}/configs/c.1/MaxPower
+    mkdir ${g}/configs/c.1/strings/0x409
+    echo "${cfg2}" > ${g}/configs/c.1/strings/0x409/configuration
+
+    # On Windows 7 and later, the RNDIS 5.1 driver would be used by default,
+    # but it does not work very well. The RNDIS 6.0 driver works better. In
+    # order to get this driver to load automatically, we have to use a
+    # Microsoft-specific extension of USB.
+    echo "1" > ${g}/os_desc/use
+    echo "${ms_vendor_code}" > ${g}/os_desc/b_vendor_code
+    echo "${ms_qw_sign}" > ${g}/os_desc/qw_sign
+
+    # Create the RNDIS function, including the Microsoft-specific bits
+    mkdir ${g}/functions/rndis.usb0
+    echo "${dev_mac2}" > ${g}/functions/rndis.usb0/dev_addr
+    echo "${host_mac2}" > ${g}/functions/rndis.usb0/host_addr
+    echo "${ms_compat_id}" > ${g}/functions/rndis.usb0/os_desc/interface.rndis/compatible_id
+    echo "${ms_subcompat_id}" > ${g}/functions/rndis.usb0/os_desc/interface.rndis/sub_compatible_id
+
+    # Link everything up and bind the USB device
+    ln -s ${g}/functions/rndis.usb0 ${g}/configs/c.1
+    ln -s ${g}/configs/c.1 ${g}/os_desc
+    echo `ls /sys/class/udc/` > ${g}/UDC
+
+    echo "Done."
+}
+
+rndis_usb_down() {
+    if [ ! -d ${g} ]; then
+        echo "Gadget is already down."
+        exit 1
+    fi
+    echo "Taking down gadget..."
+
+    # Have to unlink and remove directories in reverse order.
+    # Checks allow to finish takedown after error.
+    if [ "$(cat ${g}/UDC)" != "" ]; then
+        echo "" > ${g}/UDC
+    fi
+    rm -f ${g}/os_desc/c.1
+    rm -f ${g}/configs/c.1/rndis.usb0
+    [ -d ${g}/functions/rndis.usb0 ] && rmdir ${g}/functions/rndis.usb0
+    [ -d ${g}/configs/c.1/strings/0x409 ] && rmdir ${g}/configs/c.1/strings/0x409
+    [ -d ${g}/configs/c.1 ] && rmdir ${g}/configs/c.1
+    [ -d ${g}/strings/0x409 ] && rmdir ${g}/strings/0x409
+    rmdir ${g}
+
+    echo "Done."
+}
+case ${command} in
+
+start | up)
+    rndis_usb_up
+    sleep 1
+    ifdown usb0
+    ifup usb0
+    ;;
+stop | down)
+#    ifdown usb0
+    rndis_usb_down
+    ;;
+*)
+    echo "Usage: $0 up|down"
+    exit 1
+    ;;
 esac
-
-exit $?
-

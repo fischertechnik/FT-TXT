@@ -1,0 +1,26 @@
+diff --git a/Documentation/devicetree/bindings/serial/omap_serial.txt b/Documentation/devicetree/bindings/serial/omap_serial.txt
+index 7a71b5d..955eb94 100644
+--- a/Documentation/devicetree/bindings/serial/omap_serial.txt
++++ b/Documentation/devicetree/bindings/serial/omap_serial.txt
+@@ -16,6 +16,7 @@ Required properties:
+ 
+ Optional properties:
+ - clock-frequency : frequency of the clock input to the UART
++- has-hw-flow-control : the hardware has flow control capability
+ - dmas : DMA specifier, consisting of a phandle to the DMA controller
+          node and a DMA channel number.
+ - dma-names : "rx" for receive channel, "tx" for transmit channel.
+diff --git a/drivers/tty/serial/omap-serial.c b/drivers/tty/serial/omap-serial.c
+index eb54d03..5353108 100644
+--- a/drivers/tty/serial/omap-serial.c
++++ b/drivers/tty/serial/omap-serial.c
+@@ -1540,6 +1540,10 @@ static struct omap_uart_port_info *of_get_uart_port_info(struct device *dev)
+ 
+ 	of_property_read_u32(dev->of_node, "clock-frequency",
+ 					 &omap_up_info->uartclk);
++
++	if (of_property_read_bool(dev->of_node, "has-hw-flow-control"))
++		omap_up_info->flags |= UPF_HARD_FLOW;
++					 
+ 	return omap_up_info;
+ }

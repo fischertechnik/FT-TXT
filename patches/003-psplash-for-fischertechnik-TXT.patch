@@ -1,3 +1,20 @@
+From ea98cf288402e3123795d39f8b759be565006f8f Mon Sep 17 00:00:00 2001
+From: Reinhard Russinger <reinhard@russinger.at>
+Date: Wed, 9 Sep 2020 08:27:29 +0000
+Subject: [PATCH] psplash
+
+---
+ package/psplash/0001-ft-splash.patch          | 144 ++++++++++++++++++++++
+ package/psplash/0002-ft-splash_BkCols.patch   | 169 ++++++++++++++++++++++++++
+ package/psplash/0003-remove-inline-func.patch |  24 ++++
+ package/psplash/Config.in                     |  16 +--
+ package/psplash/psplash.hash                  |   2 +-
+ package/psplash/psplash.mk                    |   2 +-
+ 6 files changed, 347 insertions(+), 10 deletions(-)
+ create mode 100644 package/psplash/0001-ft-splash.patch
+ create mode 100644 package/psplash/0002-ft-splash_BkCols.patch
+ create mode 100644 package/psplash/0003-remove-inline-func.patch
+
 diff --git a/package/psplash/0001-ft-splash.patch b/package/psplash/0001-ft-splash.patch
 new file mode 100644
 index 0000000..887ff1b
@@ -385,26 +402,27 @@ index 5053eba..d68aaa2 100644
  	  Usage:
  	  * Set progress bar to 50 percent:
 diff --git a/package/psplash/psplash.hash b/package/psplash/psplash.hash
-deleted file mode 100644
-index 68c6ffa..0000000
+index 46d5e12..1fda744 100644
 --- a/package/psplash/psplash.hash
-+++ /dev/null
-@@ -1,2 +0,0 @@
--# Locally computed
--sha256 aaddb20ef892dfb03d4e046cc634159bbcdfe555f7291652dde2b7d4cf491289  psplash-5b3c1cc28f5abdc2c33830150b48b278cc4f7bca.tar.gz
++++ b/package/psplash/psplash.hash
+@@ -1,3 +1,3 @@
+ # Locally computed
+-sha256 0042192bf94be4f5792d9ff6b7a2ddff77c79e51274745180d14be5815b3a0f4  psplash-fd33a9b3d68c89fa22ff6873f4f9fd28bd85830c.tar.gz
++sha256	a119cced0dab49dce0726ceda533f74ff8252731fcc36c3a53f876acb6e13c46	psplash-14c8f7b705de944beb4de3f296506d80871e410f.tar.gz
+ sha256 f9c375a1be4a41f7b70301dd83c91cb89e41567478859b77eef375a52d782505  COPYING
 diff --git a/package/psplash/psplash.mk b/package/psplash/psplash.mk
-index fe00978..4e365c5 100644
+index a0f0186..81f3950 100644
 --- a/package/psplash/psplash.mk
 +++ b/package/psplash/psplash.mk
-@@ -4,9 +4,9 @@
+@@ -4,7 +4,7 @@
  #
  ################################################################################
  
--PSPLASH_VERSION = 5b3c1cc28f5abdc2c33830150b48b278cc4f7bca
+-PSPLASH_VERSION = fd33a9b3d68c89fa22ff6873f4f9fd28bd85830c
 +PSPLASH_VERSION = 14c8f7b705de944beb4de3f296506d80871e410f
  PSPLASH_SITE = git://git.yoctoproject.org/psplash
--PSPLASH_LICENSE = GPL-2.0+
-+PSPLASH_LICENSE = GPLv2+
- PSPLASH_AUTORECONF = YES
- 
- define PSPLASH_INSTALL_INIT_SYSTEMD
+ PSPLASH_LICENSE = GPL-2.0+
+ PSPLASH_LICENSE_FILES = COPYING
+-- 
+2.7.4
+

@@ -36,6 +36,13 @@ for i in /etc/init.d/S??* ;do
 	    ;;
     esac
 done
+
+#---- Start WLAN AP if konfigured
+if [ -f /etc/init.d/wlan_ap_on ]; then
+        /etc/init.d/wlan_ap start
+fi      
+#----
+
 psplash-write "QUIT"
 
 /etc/init.d/rc.local

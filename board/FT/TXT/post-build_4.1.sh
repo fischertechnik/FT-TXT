@@ -45,19 +45,19 @@ mkdir $TARGETDIR/opt/knobloch/C-Program
 chmod 775 $TARGETDIR/opt/knobloch/C-Program
 
 # Cloud
-chmod 544 $TARGETDIR/opt/knobloch/Cloud/TxtSmartHome.cloud
+chmod 744 $TARGETDIR/opt/knobloch/Cloud/TxtSmartHome.cloud
 #touch $TARGETDIR/opt/knobloch/Cloud/.protected
 #chmod 444 $TARGETDIR/opt/knobloch/Cloud/.protected
 
 # SoundFiles
-chmod 544 $TARGETDIR/opt/knobloch/SoundFiles/
+chmod 744 $TARGETDIR/opt/knobloch/SoundFiles/
 #touch $TARGETDIR/opt/knobloch/Sounds/.protected
 #chmod 444 $TARGETDIR/opt/knobloch/Sounds/.protected
 
 # libs
 chmod 775 $TARGETDIR/opt/knobloch/libs/
-chmod 544 $TARGETDIR/opt/knobloch/libs/libBME680.so
-chmod 544 $TARGETDIR/opt/knobloch/libs/libExampleSLI.so
+chmod 744 $TARGETDIR/opt/knobloch/libs/libBME680.so
+chmod 744 $TARGETDIR/opt/knobloch/libs/libExampleSLI.so
 #touch $TARGETDIR/opt/knobloch/libs/.protected
 #chmod 444 $TARGETDIR/opt/knobloch/libs/.protected
 
@@ -78,7 +78,22 @@ mkdir $TARGETDIR/opt/knobloch/Data
 chmod 775 $TARGETDIR/opt/knobloch/Data
 
 # Rename S50sshd (start sshd manual)
-mv $TARGETDIR/etc/init.d/S50sshd $TARGETDIR/etc/init.d/mS50sshd
+SERVICE=S50sshd
+NSERVICE=mS50sshd
+if [ -f $TARGETDIR/etc/init.d/$SERVICE ]
+then
+        rm $TARGETDIR/etc/init.d/$NSERVICE
+        mv $TARGETDIR/etc/init.d/$SERVICE $TARGETDIR/etc/init.d/$NSERVICE
+fi
+
+# Rename S41dhcpcd (start dhcpcd manual, will be started from GUI if requested)
+SERVICE=S41dhcpcd
+NSERVICE=mS41dhcpcd
+if [ -f $TARGETDIR/etc/init.d/$SERVICE ]
+then
+        rm $TARGETDIR/etc/init.d/$NSERVICE
+        mv $TARGETDIR/etc/init.d/$SERVICE $TARGETDIR/etc/init.d/$NSERVICE
+fi
 
 # WEB server
 rm $TARGETDIR/var/www/civetweb_64x64.png
