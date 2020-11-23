@@ -11,7 +11,7 @@ git clone git://git.buildroot.net/buildroot ./buildroot
 cd buildroot
 
 #----- get fresh copy from git and patch
-git checkout 2020.05 -b FT-TXTwrk
+git checkout 2020.05.3 -b FT-TXTwrk
 #==== Patches
 for i in ../FT-TXT/patches/*.patch
 do
