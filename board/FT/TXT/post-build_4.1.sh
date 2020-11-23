@@ -46,32 +46,22 @@ chmod 775 $TARGETDIR/opt/knobloch/C-Program
 
 # Cloud
 chmod 744 $TARGETDIR/opt/knobloch/Cloud/TxtSmartHome.cloud
-#touch $TARGETDIR/opt/knobloch/Cloud/.protected
-#chmod 444 $TARGETDIR/opt/knobloch/Cloud/.protected
 
 # SoundFiles
 chmod 744 $TARGETDIR/opt/knobloch/SoundFiles/
-#touch $TARGETDIR/opt/knobloch/Sounds/.protected
-#chmod 444 $TARGETDIR/opt/knobloch/Sounds/.protected
 
 # libs
 chmod 775 $TARGETDIR/opt/knobloch/libs/
 chmod 744 $TARGETDIR/opt/knobloch/libs/libBME680.so
 chmod 744 $TARGETDIR/opt/knobloch/libs/libExampleSLI.so
-#touch $TARGETDIR/opt/knobloch/libs/.protected
-#chmod 444 $TARGETDIR/opt/knobloch/libs/.protected
 
 # Create Python
 #mkdir $TARGETDIR/opt/knobloch/Python
 #chmod 775 $TARGETDIR/opt/knobloch/Python
-#touch $TARGETDIR/opt/knobloch/Python/.protected
-#chmod 444 $TARGETDIR/opt/knobloch/Python/.protected
 
 # Create Scratch
 mkdir $TARGETDIR/opt/knobloch/Scratch
 chmod 775 $TARGETDIR/opt/knobloch/Scratch
-#touch $TARGETDIR/opt/knobloch/Scratch/.protected
-#chmod 444 $TARGETDIR/opt/knobloch/Scratch/.protected
 
 # Create Data
 mkdir $TARGETDIR/opt/knobloch/Data
@@ -100,4 +90,4 @@ rm $TARGETDIR/var/www/civetweb_64x64.png
 chmod -R 775 $TARGETDIR/var/www
 
 # Set build info
-echo "fischertechnik TXT Rel 2.0 Build $BUILD ($BUILDDATE)" > $TARGETDIR/etc/BUILD
+echo "fischertechnik TXT Rel 3.0 Build $BUILD ($BUILDDATE)" > $TARGETDIR/etc/BUILD
