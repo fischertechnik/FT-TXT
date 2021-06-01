@@ -4,7 +4,7 @@
 #
 ################################################################################
 
-PYTHON_FTROBOPY_VERSION = edc44bf00f
+PYTHON_FTROBOPY_VERSION = master
 PYTHON_FTROBOPY_SITE_METHOD = git
 PYTHON_FTROBOPY_SITE = https://github.com/ftrobopy/ftrobopy.git
 PYTHON_FTROBOPY_LICENSE = MIT
