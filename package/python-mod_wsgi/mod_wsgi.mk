@@ -4,7 +4,7 @@
 #
 ################################################################################
 
-PYTHON_MOD_WSGI_VERSION = 4.7.1
+PYTHON_MOD_WSGI_VERSION = 4.8.0
 PYTHON_MOD_WSGI_SOURCE = mod_wsgi-$(PYTHON_MOD_WSGI_VERSION).tar.gz
 PYTHON_MOD_WSGI_SITE = $(call github,GrahamDumpleton,mod_wsgi,$(PYTHON_MOD_WSGI_VERSION))
 PYTHON_MOD_WSGI_DEPENDENCIES = apache python3

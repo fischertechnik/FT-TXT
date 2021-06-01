@@ -4,7 +4,7 @@
 #
 ################################################################################
 
-CIVETWEB_GIT_VERSION = v1.13
+CIVETWEB_GIT_VERSION = v1.14
 CIVETWEB_GIT_SITE = https://github.com/civetweb/civetweb.git
 CIVETWEB_GIT_SITE_METHOD = git
 CIVETWEB_GIT_LICENSE = MIT
