@@ -1,3 +1,9 @@
+# Get latest version
+
+cd ~/FT-TXT
+git status
+git pull
+
 # Adjust version numbers in files in Ubuntu VM
 
 Run below command and edit the version number in all files and folders opened
@@ -5,12 +11,18 @@ Run below command and edit the version number in all files and folders opened
     ~/FT-TXT/Edit-Version-Files-Linux.sh
     ~/FT-TXT/Edit-Version-Files-Windows.sh
 
+# Build
+
+## Build Firmware
+
 In ~/FT-TXT (Clean / initial buil donly)
 
 - ./Make-TXT-Bootloader.sh 
 - ./Make-TXT-Buildroot-Clean.sh
 
 Modern Linux might use linker scripts in .so files. This means .so files can be text files which refer to one or multiple other .so files.
+
+## Build libraries
 
 For the TXT toolchain, in several files wrong absolute paths are given. The paths must be removed (just file name) in files:
 
@@ -34,6 +46,8 @@ In Eclipse (eclipse-cpp-2019-06-R-linux-gtk-x86_64, workspace ~/eclipse)
 - ATTENTION: From 4.4.3 on, Michael Soegtrop builds ROBOProLib.
   All other libs are provided binary by fischertechnik!
 
+## Rebuild Formware with new libraries
+
 In ~/FT-TXT:
 
 - ./Make-TXT-Buildroot-Incremental.sh
@@ -42,6 +56,8 @@ In ~/FT-TXT:
 - ./Sign-TXT-UpdateScripts.sh
 - sudo ./Make-TXT-Image.sh
 - ./Copy-TXT-Update-To-Windows.sh
+
+## Create setup
 
 In Windows
 - D:\fischertechnik\Update\Copy-TXT-Update-ROBOPro.bat
