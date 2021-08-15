@@ -27,6 +27,16 @@ cp -a ../FT-TXT/board/FT/TXT/rootfs/* $TARGETDIR/
 # right time zones are not used (all links are to posix) => remove unused time zones
 rm -rf $TARGETDIR/usr/share/zoneinfo/right
 
+# Remove UDEV HW database - this is very large any only required for clear text output of lsusb, lspci
+# rm -f $TARGETDIR/etc/udev/hwdb.bin
+# rm -rf $TARGETDIR/etc/udev/hwdb.d/
+
+# Remove /usr/share/hwdata
+rm -rf $TARGETDIR/usr/share/hwdata
+
+# Remove opencv (could also be removed from rootfs, but here it is more cenral)
+rm -f $TARGETDIR/usr/lib/libopencv_*
+
 # Copy fonts
 # TODO: fix this such that this works with fontconfig
 # Instead of copying the fonts to /usr/lib, create a symlink

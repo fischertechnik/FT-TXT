@@ -1,5 +1,9 @@
 #!/bin/bash
+
 WRKDIR=`pwd`
+
+#----- exit on command error
+set -e 
 
 #----- clean toolchain folder
 rm -rf /opt/FT/TXT
@@ -12,12 +16,14 @@ cd buildroot
 
 #----- get fresh copy from git and patch
 git checkout 2020.05.3 -b FT-TXTwrk
-#==== Patches
+
+#----- Patches
 for i in ../FT-TXT/patches/*.patch
 do
         echo "==Apply patch : <$i> =="
         patch -p1 < $i
 done
+
 #----- copy config files
 chmod a+x *.sh
 cp ../FT-TXT/configs/* ./configs
