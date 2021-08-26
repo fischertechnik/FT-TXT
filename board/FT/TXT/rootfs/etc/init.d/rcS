@@ -37,9 +37,13 @@ for i in /etc/init.d/S??* ;do
     esac
 done
 
-#---- Start WLAN AP if konfigured
+#---- Start WLAN AP if configured
 if [ -f /etc/init.d/wlan_ap_on ]; then
         /etc/init.d/wlan_ap start
+fi      
+#---- Start WLAN Client if configured
+if [ -f /etc/init.d/wlan_cl_on ]; then
+        /etc/init.d/wlan_cl_start
 fi      
 #----
 

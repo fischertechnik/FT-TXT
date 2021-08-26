@@ -34,9 +34,6 @@ rm -rf $TARGETDIR/usr/share/zoneinfo/right
 # Remove /usr/share/hwdata
 rm -rf $TARGETDIR/usr/share/hwdata
 
-# Remove opencv (could also be removed from rootfs, but here it is more cenral)
-rm -f $TARGETDIR/usr/lib/libopencv_*
-
 # Copy fonts
 # TODO: fix this such that this works with fontconfig
 # Instead of copying the fonts to /usr/lib, create a symlink
