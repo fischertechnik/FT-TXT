@@ -79,6 +79,7 @@ In ~/FT-TXT:
   - Note: in case the card reader does not work in VM, it might be due to Wireshark / USBpcap
 - ./Sign-TXT-UpdateScripts.sh
 - ./Copy-TXT-Update-To-Windows.sh
+- checkin modified build number and push
 
 ## Create setup
 
