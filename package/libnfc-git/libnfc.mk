@@ -4,7 +4,7 @@
 #
 ################################################################################
 
-LIBNFC_GIT_VERSION = libnfc-1.7.1
+LIBNFC_GIT_VERSION = 4ae4cc8
 LIBNFC_GIT_SITE = https://github.com/nfc-tools/libnfc.git
 LIBNFC_GIT_SITE_METHOD = git
 LIBNFC_GIT_LICENSE = LGPL-3.0+
