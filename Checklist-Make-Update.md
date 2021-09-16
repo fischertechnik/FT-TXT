@@ -67,6 +67,7 @@ In Eclipse:
 
 In ~/FT-TXT:
 
+- Check if build number in board/FT/TXT/BUILD is correct
 - ./Make-TXT-Buildroot-Incremental.sh
 - sudo ./Make-TXT-Image.sh
 - Possibly test above image via SD card boot
